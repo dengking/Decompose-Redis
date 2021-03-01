@@ -11,14 +11,14 @@ nav:
     # 首先搞清楚redis是一个event-driven system
     - Event-library: Event-library
     # 描述redis是如何实现底层网络通信的
-    - Network: Network
+    # - Network: Network
     # 描述redis是如何进行持久化的
-    - Persistence: Persistence
+    # - Persistence: Persistence
     
 ################## 第三部分 cluster redis，即 多机数据库##################
     # 主备是redis实现高可用的基础
-    - Replication: Replication
-    - High-available: High-available
+    # - Replication: Replication
+    # - High-available: High-available
     - Sentinel: Sentinel
     
 ################## 第四部分 描述redis各个独立功能的实现

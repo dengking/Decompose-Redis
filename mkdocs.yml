@@ -1,36 +1,65 @@
-site_name:  decompose-redis
-site_url: https://dengking.github.io/decompose-redis
-site_description: Project documentation with Markdown.
-site_author: DengKing
-
-
-repo_url: https://github.com/dengking/decompose-redis
-edit_uri: ""
-
-
-
-theme:
-    name: readthedocs
-    highlightjs: true
-    hljs_languages:
-        - yaml
-        - django
-        
+edit_uri: ''
+extra_css:
+- css/extra.css
+extra_javascript:
+- https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML
+google_analytics:
+- UA-27795084-5
+- mkdocs.org
+markdown_extensions:
+- toc:
+    separator: '#'
+- admonition
+- def_list
+- mdx_gh_links:
+    repo: mkdocs
+    user: mkdocs
+- pymdownx.arithmatex
+- pymdownx.betterem:
+    smart_enable: all
+- pymdownx.caret
+- pymdownx.critic
+- pymdownx.details
+- pymdownx.inlinehilite
+- pymdownx.magiclink
+- pymdownx.mark
+- pymdownx.smartsymbols
+- pymdownx.superfences
+- pymdownx.tasklist:
+    custom_checkbox: true
+- pymdownx.tilde
 nav:
 - Home: index.md
-
-    
-extra_css:
-    - css/extra.css
-
-markdown_extensions:
-    - toc:
-        permalink: 
-    - admonition
-    - def_list
-    - mdx_gh_links:
-        user: mkdocs
-        repo: mkdocs
-        
+- Books:
+  - Introduction: Books/index.md
+- Data-structure:
+  - Generic-double-linked-list:
+    - Generic-double-linked-list: Data-structure/Generic-double-linked-list/Generic-double-linked-list.md
+  - Rax:
+    - Introduction: Data-structure/Rax/index.md
+  - Dict:
+    - Dict: Data-structure/Dict/Dict.md
+    - Dict-usage: Data-structure/Dict/Dict-usage.md
+    - Dncremental-rehash: Data-structure/Dict/Dncremental-rehash.md
+- Event-library:
+  - Introduction: Event-library/index.md
+- Sentinel:
+  - Redis-Sentinel: Sentinel/Redis-Sentinel.md
+- Command:
+  - Commands: Command/Commands.md
+- Clients:
+  - Redis-plus-plus:
+    - Redis-plus-plus: Clients/Redis-plus-plus/Redis-plus-plus.md
+- Redis-cli:
+  - Redis-cli: Redis-cli/Redis-cli.md
+  - linenoise:
+    - linenoise: Redis-cli/linenoise/linenoise.md
 plugins:
-    - search
+- search
+repo_url: https://github.com/dengking/decompose-redis
+site_author: DengKing
+site_description: Project documentation with Markdown.
+site_name: decompose-redis
+site_url: https://dengking.github.io/decompose-redis
+theme:
+  name: material

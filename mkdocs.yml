@@ -43,6 +43,12 @@ nav:
     - Dncremental-rehash: Data-structure/Dict/Dncremental-rehash.md
 - Event-library:
   - Introduction: Event-library/index.md
+  - Redis-event-library-office-doc:
+    - Introduction: Event-library/Redis-event-library-office-doc/index.md
+  - Low-level-IO-multiplex:
+    - Introduction: Event-library/Low-level-IO-multiplex/index.md
+  - High-level:
+    - Introduction: Event-library/High-level/index.md
 - Sentinel:
   - Redis-Sentinel: Sentinel/Redis-Sentinel.md
 - Command:

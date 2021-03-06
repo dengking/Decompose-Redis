@@ -1,4 +1,5 @@
 nav:
     - Introduction: index.md
+    - Redis-event-library-office-doc: Redis-event-library-office-doc
     - Low-level-IO-multiplex: Low-level-IO-multiplex
     - High-level: High-level

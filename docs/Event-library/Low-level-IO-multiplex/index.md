@@ -50,7 +50,11 @@ typedef struct aeEventLoop {
 
 ### `int aeApiPoll(aeEventLoop *eventLoop, struct timeval *tvp)` 
 
-顾名思义，进行轮训
+顾名思义，进行轮训。
+
+
+
+
 
 ## Implementation
 

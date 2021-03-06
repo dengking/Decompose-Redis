@@ -290,3 +290,73 @@ err:
 ```
 
 入参`setsize`是原来初始化`struct aeEventLoop`的`setsize`字段的，其含义需要查看`ae.h`中定义的`struct aeEventLoop`，其中对其进行了解释；在redis中，`aeCreateEventLoop`是在`server.c`的`initServer`函数中调用，传入的值为`server.maxclients+CONFIG_FDSET_INCR`
+
+
+
+### [`aeCreateTimeEvent`](https://github.com/antirez/redis/blob/unstable/src/ae.c)  
+
+```C
+long long aeCreateTimeEvent(aeEventLoop *eventLoop, long long milliseconds,
+        aeTimeProc *proc, void *clientData,
+        aeEventFinalizerProc *finalizerProc)
+{
+    long long id = eventLoop->timeEventNextId++;
+    aeTimeEvent *te;
+
+    te = zmalloc(sizeof(*te));
+    if (te == NULL) return AE_ERR;
+    te->id = id;
+    aeAddMillisecondsToNow(milliseconds,&te->when_sec,&te->when_ms);
+    te->timeProc = proc;
+    te->finalizerProc = finalizerProc;
+    te->clientData = clientData;
+    te->prev = NULL;
+    te->next = eventLoop->timeEventHead;
+    if (te->next)
+        te->next->prev = te;
+    eventLoop->timeEventHead = te;
+    return id;
+}
+```
+
+
+
+### [`aeCreateFileEvent`](https://github.com/antirez/redis/blob/unstable/src/ae.c) 
+
+```c
+int aeCreateFileEvent(aeEventLoop *eventLoop, int fd, int mask,
+        aeFileProc *proc, void *clientData)
+{
+    if (fd >= eventLoop->setsize) {
+        errno = ERANGE;
+        return AE_ERR;
+    }
+    aeFileEvent *fe = &eventLoop->events[fd];
+
+    if (aeApiAddEvent(eventLoop, fd, mask) == -1)
+        return AE_ERR;
+    fe->mask |= mask;
+    if (mask & AE_READABLE) fe->rfileProc = proc;
+    if (mask & AE_WRITABLE) fe->wfileProc = proc;
+    fe->clientData = clientData;
+    if (fd > eventLoop->maxfd)
+        eventLoop->maxfd = fd;
+    return AE_OK;
+}
+```
+
+
+
+1、ae是否支持在event loop已经启动的情况下，继续添加event？
+
+肯定是可以的，因为:
+
+a、accept后，需要创建新的的network connection，因此需要将这些network connection添加到ae中，ae后续需要对这些file descriptor进行监控
+
+## Multiplex on time and file event
+
+参考 [aeProcessEvents](https://github.com/antirez/redis/blob/unstable/src/ae.c) 的source code可知: 
+
+> Note that we want call `select()` even if there are no file events to process as long as we want to process time events, in order to sleep until the next time event is ready to fire.
+>
+> 查看下面的代码，可以发现：`aeApiPoll`是将time even和file event杂糅起来了，它能够在这两种事件上进行multiplex；查看APUE的14.4.1 select and pselect Functions中关于select系统调用可知，该系统调用是支持用户设置一个timeout的；由于文件事件是由OS进行管理，而时间事件是有ae库自己来进行维护，所以下面的代码会先自己来查找出需要处理的时间事件的最短的超时时间，然后将该时间作为select系统调用的超时时间；

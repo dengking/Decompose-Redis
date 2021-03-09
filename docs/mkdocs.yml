@@ -28,3 +28,7 @@ nav:
     
     # 描述redis-cli的实现
     - Redis-cli: Redis-cli
+    
+    # Redis的memory management
+    - Memory-management: Memory-management
+    

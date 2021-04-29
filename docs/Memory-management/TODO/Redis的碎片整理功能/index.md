@@ -1,0 +1,1 @@
+# csdn [Redis的碎片整理功能只有在使用jemalloc的时候才支持](https://blog.csdn.net/Rong_Toa/article/details/115055656)

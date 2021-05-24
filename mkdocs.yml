@@ -34,13 +34,14 @@ nav:
   - Introduction: Books/index.md
 - Data-structure:
   - Generic-double-linked-list:
-    - Generic-double-linked-list: Data-structure/Generic-double-linked-list/Generic-double-linked-list.md
+    - Introduction: Data-structure/Generic-double-linked-list/index.md
   - Rax:
     - Introduction: Data-structure/Rax/index.md
   - Dict:
-    - Dict: Data-structure/Dict/Dict.md
+    - Introduction: Data-structure/Dict/index.md
     - Dict-usage: Data-structure/Dict/Dict-usage.md
-    - Dncremental-rehash: Data-structure/Dict/Dncremental-rehash.md
+    - Incremental-rehash:
+      - Introduction: Data-structure/Dict/Incremental-rehash/index.md
 - Event-library:
   - Introduction: Event-library/index.md
   - Redis-event-library-office-doc:
@@ -59,7 +60,11 @@ nav:
 - Redis-cli:
   - Redis-cli: Redis-cli/Redis-cli.md
   - linenoise:
-    - linenoise: Redis-cli/linenoise/linenoise.md
+    - Introduction: Redis-cli/linenoise/index.md
+- Memory-management:
+  - Introduction: Memory-management/index.md
+  - zmalloc:
+    - Introduction: Memory-management/zmalloc/index.md
 plugins:
 - search
 repo_url: https://github.com/dengking/decompose-redis

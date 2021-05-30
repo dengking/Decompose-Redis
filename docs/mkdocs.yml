@@ -14,7 +14,8 @@ nav:
     # - Network: Network
     # 描述redis是如何进行持久化的
     # - Persistence: Persistence
-    
+
+    - Redis-server: Redis-server
 ################## 第三部分 cluster redis，即 多机数据库##################
     # 主备是redis实现高可用的基础
     # - Replication: Replication

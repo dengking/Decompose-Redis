@@ -1,6 +1,7 @@
 nav:
     - Home: index.md
     - Books: Books
+    - doc: doc
     # 按照redis设计与实现(第二版).pdf的组织结构来进行排版
     
 ################## 第一部分 data structure##################

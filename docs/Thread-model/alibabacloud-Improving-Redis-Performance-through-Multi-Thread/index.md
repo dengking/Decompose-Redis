@@ -38,6 +38,10 @@ We suggest that the number of I/O threads should be increased to enable an indep
 
 2、For heavy I/O applications, a large amount of CPU capacity is consumed by the network I/O operations. Applications that use Redis as cache are often heavy I/O applications. These applications basically have a high QPS, use relatively simple commands (such as `get`, `set`, and `incr`), but are RT sensitive. They often have a high bandwidth usage, which may even reach hundreds of megabits. Thanks to popularization of the 10-GB and 25-GB network adapters, the network bandwidth is no longer a bottleneck. Therefore, what we need to think about is how to utilize the advantages of multi-core and performance of the network adapter.
 
+> NOTE: 
+>
+> "RT sensitive" 中 "RT" 应该是 realtime的意思
+
 ## Multi-Thread Model and Implementation
 
 ### Thread Model
@@ -48,15 +52,19 @@ There are three thread types, namely:
 2. I/O thread
 3. Worker thread
 
-![1](https://yqintl.alicdn.com/b2cde5253264240091a5ee696d9374bcd4851923.jpeg)
+![1](./b2cde5253264240091a5ee696d9374bcd4851923.jpeg)
 
 
 
-1. Main thread: Receives connections, creates clients, and forwards connections to the I/O thread.
-2. I/O thread: Processes the connection read/write events, parses commands, forwards the complete parsed commands to the worker thread for processing, sends the response packets, and deletes connections.
-3. Worker thread: Processes commands, generates the client response packets, and executes the timer events.
-4. The main thread, I/O thread, and worker thread are driven by events separately.
-5. Threads exchange data through the lock-free queue and send notifications through tunnels.
+1、Main thread: Receives connections, creates clients, and forwards connections to the I/O thread.
+
+2、I/O thread: Processes the connection read/write events, parses commands, forwards the complete parsed commands to the worker thread for processing, sends the response packets, and deletes connections.
+
+3、Worker thread: Processes commands, generates the client response packets, and executes the timer events.
+
+4、The main thread, I/O thread, and worker thread are driven by events separately.
+
+5、Threads exchange data through the lock-free queue and send notifications through tunnels.
 
 ## Benefits of Multi Thread Model
 
@@ -64,7 +72,7 @@ There are three thread types, namely:
 
 The stress test result indicates that the read/write performance can be improved by about three folds in the small packet scenario.
 
-![2](https://yqintl.alicdn.com/e3c05f12710efe70c0c51dd8f091b960526d0473.jpeg)
+![2](./e3c05f12710efe70c0c51dd8f091b960526d0473.jpeg)
 
 ### Increased Master/Slave Synchronization Speed
 
@@ -76,16 +84,14 @@ The first task is to increase the number of I/O threads and optimize the I/O rea
 
 ### Setting of the Number of I/O threads
 
+1、Test results indicate that the number of I/O threads should not exceed 6. Otherwise, the worker thread will become a bottleneck for simple operations.
 
-
-1. Test results indicate that the number of I/O threads should not exceed 6. Otherwise, the worker thread will become a bottleneck for simple operations.
-2. Upon startup of a process, the number of I/O threads must be set. When the process is running, the number of I/O threads cannot be modified. Based on the current connection allocation policy, modification of the number of I/O threads involves re-allocation of connections, which is quite complex.
+2、Upon startup of a process, the number of I/O threads must be set. When the process is running, the number of I/O threads cannot be modified. Based on the current connection allocation policy, modification of the number of I/O threads involves re-allocation of connections, which is quite complex.
 
 ### Considerations
 
+1、With popularization of the 10-GB and 25-GB network adapters, how to fully utilize the hardware performance must be carefully considered. We can use technologies, such as multiple threads for networkI/O and the kernel bypass user-mode protocol stack.
 
-
-1. With popularization of the 10-GB and 25-GB network adapters, how to fully utilize the hardware performance must be carefully considered. We can use technologies, such as multiple threads for networkI/O and the kernel bypass user-mode protocol stack.
-2. The I/O thread can be used to implement blocking-free data migration. The I/O thread encodes the data process or forwards commands, whereas the target node decodes data or executes commands.
+2、The I/O thread can be used to implement blocking-free data migration. The I/O thread encodes the data process or forwards commands, whereas the target node decodes data or executes commands.
 
 To learn more about Alibaba Cloud ApsaraDB for Redis, visit [www.alibabacloud.com/product/apsaradb-for-redis](https://www.alibabacloud.com/product/apsaradb-for-redis)

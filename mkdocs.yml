@@ -32,6 +32,11 @@ nav:
 - Home: index.md
 - Books:
   - Introduction: Books/index.md
+- doc:
+  - antirez:
+    - Introduction: doc/antirez/index.md
+    - An-update-about-Redis-developments-in-2019:
+      - Introduction: doc/antirez/An-update-about-Redis-developments-in-2019/index.md
 - Data-structure:
   - Generic-double-linked-list:
     - Introduction: Data-structure/Generic-double-linked-list/index.md
@@ -50,15 +55,21 @@ nav:
     - Introduction: Event-library/Low-level-IO-multiplex/index.md
   - High-level:
     - Introduction: Event-library/High-level/index.md
+- Redis-server:
+  - Introduction: Redis-server/index.md
+  - Redis-Signals-Handling:
+    - Introduction: Redis-server/Redis-Signals-Handling/index.md
+    - redis-doc-Redis-Signals-Handling:
+      - Introduction: Redis-server/Redis-Signals-Handling/redis-doc-Redis-Signals-Handling/index.md
 - Sentinel:
   - Redis-Sentinel: Sentinel/Redis-Sentinel.md
 - Command:
   - Commands: Command/Commands.md
 - Clients:
-  - Redis-plus-plus:
-    - Redis-plus-plus: Clients/Redis-plus-plus/Redis-plus-plus.md
+  - library-Redis-plus-plus:
+    - Introduction: Clients/library-Redis-plus-plus/index.md
 - Redis-cli:
-  - Redis-cli: Redis-cli/Redis-cli.md
+  - Introduction: Redis-cli/index.md
   - linenoise:
     - Introduction: Redis-cli/linenoise/index.md
 - Memory-management:

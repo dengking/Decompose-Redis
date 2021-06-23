@@ -1,8 +1,38 @@
 # High level interface and implementation
 
+## Source code
+
+[`ae.h`](https://github.com/antirez/redis/blob/unstable/src/ae.h) 
+
+[`ae.c`](https://github.com/antirez/redis/blob/unstable/src/ae.c) 
 
 
-## Callback
+
+## Multiplex on time and file event 
+
+参考 [aeProcessEvents](https://github.com/antirez/redis/blob/unstable/src/ae.c) 的source code可知: 
+
+> Note that we want call `select()` even if there are no file events to process as long as we want to process time events, in order to sleep until the next time event is ready to fire.
+
+查看下面的代码，可以发现：`aeApiPoll`是将time even和file event杂糅起来了，它能够在这两种事件上进行multiplex；查看APUE的14.4.1 select and pselect Functions中关于select系统调用可知，该系统调用是支持用户设置一个timeout的；由于文件事件是由OS进行管理，而时间事件是有ae库自己来进行维护，所以下面的代码会先自己来查找出需要处理的时间事件的最短的超时时间，然后将该时间作为select系统调用的超时时间；
+
+
+
+## ae data structure
+
+
+
+| data structure       |              |                                 |
+| -------------------- | ------------ | ------------------------------- |
+| `struct aeFileEvent` | `aeFileProc` | `#define AE_FILE_EVENTS (1<<0)` |
+| `struct aeTimeEvent` | `aeTimeProc` | `#define AE_TIME_EVENTS (1<<1)` |
+|                      |              |                                 |
+
+
+
+### Callback function type
+
+
 
 ```c
 typedef void aeFileProc(struct aeEventLoop *eventLoop, int fd, void *clientData, int mask);
@@ -10,12 +40,6 @@ typedef int aeTimeProc(struct aeEventLoop *eventLoop, long long id, void *client
 typedef void aeEventFinalizerProc(struct aeEventLoop *eventLoop, void *clientData);
 typedef void aeBeforeSleepProc(struct aeEventLoop *eventLoop);
 ```
-
-
-
-## ae data structure
-
-ae的data structure主要定义在[`ae.h`](https://github.com/antirez/redis/blob/unstable/src/ae.h) 文件中。
 
 
 
@@ -72,7 +96,7 @@ typedef struct aeEventLoop {
     int setsize; /* max number of file descriptors tracked */
     long long timeEventNextId;
     time_t lastTime;     /* Used to detect system clock skew */
-    aeFileEvent *events; /* Registered events */
+    aeFileEvent *events; /* Registered events */ // 在select 中会使用它
     aeFiredEvent *fired; /* Fired events */
     aeTimeEvent *timeEventHead;
     int stop; // 是否停止
@@ -86,7 +110,7 @@ typedef struct aeEventLoop {
 
 2、可以看到在`aeCreateFileEvent`中会更新`maxfd`成员变量，从而使`maxfd`始终记录最大的file descriptor
 
-3、`apidata`是典型的type erasure，用于C中实现polymorphism
+3、`apidata`是典型的type erasure，用于C中实现generic programming
 
 
 
@@ -106,7 +130,7 @@ void aeMain(aeEventLoop *eventLoop) {
 
 ```
 
-
+这就是event loop、main loop
 
 
 
@@ -151,7 +175,7 @@ int aeProcessEvents(aeEventLoop *eventLoop, int flags)
 
         if (flags & AE_TIME_EVENTS && !(flags & AE_DONT_WAIT))
             shortest = aeSearchNearestTimer(eventLoop);
-        if (shortest) { // 表示有时间事件
+        if (shortest) { // 最近需要处理的事件
             long now_sec, now_ms;
 
             aeGetTime(&now_sec, &now_ms);
@@ -266,7 +290,7 @@ aeEventLoop *aeCreateEventLoop(int setsize) {
     if (eventLoop->events == NULL || eventLoop->fired == NULL) goto err;
     eventLoop->setsize = setsize;
     eventLoop->lastTime = time(NULL);
-    eventLoop->timeEventHead = NULL; // aeTimeEvent和aeFileEvent不同，使用linked list来保存它
+    eventLoop->timeEventHead = NULL; // aeTimeEvent和aeFileEvent不同，使用double linked list来保存它
     eventLoop->timeEventNextId = 0;
     eventLoop->stop = 0;
     eventLoop->maxfd = -1;
@@ -314,7 +338,7 @@ long long aeCreateTimeEvent(aeEventLoop *eventLoop, long long milliseconds,
     te->next = eventLoop->timeEventHead;
     if (te->next)
         te->next->prev = te;
-    eventLoop->timeEventHead = te;
+    eventLoop->timeEventHead = te; // push_front
     return id;
 }
 ```
@@ -353,10 +377,33 @@ int aeCreateFileEvent(aeEventLoop *eventLoop, int fd, int mask,
 
 a、accept后，需要创建新的的network connection，因此需要将这些network connection添加到ae中，ae后续需要对这些file descriptor进行监控
 
-## Multiplex on time and file event
+### `aeSearchNearestTimer`
 
-参考 [aeProcessEvents](https://github.com/antirez/redis/blob/unstable/src/ae.c) 的source code可知: 
+`````c++
+/* Search the first timer to fire.
+ * This operation is useful to know how many time the select can be
+ * put in sleep without to delay any event.
+ * If there are no timers NULL is returned.
+ *
+ * Note that's O(N) since time events are unsorted.
+ * Possible optimizations (not needed by Redis so far, but...):
+ * 1) Insert the event in order, so that the nearest is just the head.
+ *    Much better but still insertion or deletion of timers is O(N).
+ * 2) Use a skiplist to have this operation as O(1) and insertion as O(log(N)).
+ */
+static aeTimeEvent *aeSearchNearestTimer(aeEventLoop *eventLoop)
+{
+    aeTimeEvent *te = eventLoop->timeEventHead;
+    aeTimeEvent *nearest = NULL;
 
-> Note that we want call `select()` even if there are no file events to process as long as we want to process time events, in order to sleep until the next time event is ready to fire.
->
-> 查看下面的代码，可以发现：`aeApiPoll`是将time even和file event杂糅起来了，它能够在这两种事件上进行multiplex；查看APUE的14.4.1 select and pselect Functions中关于select系统调用可知，该系统调用是支持用户设置一个timeout的；由于文件事件是由OS进行管理，而时间事件是有ae库自己来进行维护，所以下面的代码会先自己来查找出需要处理的时间事件的最短的超时时间，然后将该时间作为select系统调用的超时时间；
+    while(te) { // 通过打擂台的方式，选择出的nearest是linked list中，时间值最小的，即最近的
+        if (!nearest || te->when_sec < nearest->when_sec ||
+                (te->when_sec == nearest->when_sec &&
+                 te->when_ms < nearest->when_ms))
+            nearest = te;
+        te = te->next;
+    }
+    return nearest;
+}
+`````
+

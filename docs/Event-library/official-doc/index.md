@@ -71,7 +71,7 @@ A: No. For various [reasons](http://groups.google.com/group/redis-db/browse_thre
 
 
 
-## [Redis Event Library](https://redis.io/topics/internals-rediseventlib)
+## redis [Redis Event Library](https://redis.io/topics/internals-rediseventlib)
 
 > NOTE: 
 >

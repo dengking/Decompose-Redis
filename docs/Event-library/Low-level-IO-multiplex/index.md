@@ -96,9 +96,86 @@ redis的ae的IO multiplex实现:
 
 
 
+### `epoll`
+
+查看了一下source code，Redis在使用`epoll`的时候，并没有指定edge trigger、level trigger，根据下面文章的内容可知，epoll默认是level trigger，也就是说，Redis使用的是level trigger。
+
+1、chinaunix [epoll默认模式(LT），几乎总是触发EPOLL-OUT事件，怎么解决？](http://bbs.chinaunix.net/thread-1682066-1-1.html)
+
+2、[epoll_ctl(2)](https://man7.org/linux/man-pages/man2/epoll_ctl.2.html) 
+
+> Requests edge-triggered notification for the associated file descriptor.  The default behavior for epoll is level-triggered.  See epoll(7) for more detailed information about edge-triggered and level-triggered notification.
+
+
+
+#### `struct aeApiState`
+
+```C
+#include <sys/epoll.h>
+
+typedef struct aeApiState {
+    int epfd; // epoll instance的file descriptor
+    struct epoll_event *events; // 用于epoll_wait中，用于接收已经出发的事件 每个file descriptor都有一个对应的epoll_event，它是一个dynamic array
+} aeApiState;
+```
+
+#### `aeApiCreate`
+
+```C
+static int aeApiCreate(aeEventLoop *eventLoop) {
+    aeApiState *state = zmalloc(sizeof(aeApiState));
+
+    if (!state) return -1;
+    state->events = zmalloc(sizeof(struct epoll_event)*eventLoop->setsize);
+    if (!state->events) {
+        zfree(state);
+        return -1;
+    }
+    state->epfd = epoll_create(1024); /* 1024 is just a hint for the kernel */
+    if (state->epfd == -1) {
+        zfree(state->events);
+        zfree(state);
+        return -1;
+    }
+    eventLoop->apidata = state;
+    return 0;
+}
+```
+
+#### `aeApiPoll`
+
+```C++
+static int aeApiPoll(aeEventLoop *eventLoop, struct timeval *tvp) {
+    aeApiState *state = eventLoop->apidata;
+    int retval, numevents = 0;
+
+    retval = epoll_wait(state->epfd,state->events,eventLoop->setsize,
+            tvp ? (tvp->tv_sec*1000 + tvp->tv_usec/1000) : -1);
+    if (retval > 0) {
+        int j;
+
+        numevents = retval;
+        for (j = 0; j < numevents; j++) {
+            int mask = 0;
+            struct epoll_event *e = state->events+j;
+
+            if (e->events & EPOLLIN) mask |= AE_READABLE;
+            if (e->events & EPOLLOUT) mask |= AE_WRITABLE;
+            if (e->events & EPOLLERR) mask |= AE_WRITABLE|AE_READABLE;
+            if (e->events & EPOLLHUP) mask |= AE_WRITABLE|AE_READABLE;
+            eventLoop->fired[j].fd = e->data.fd;
+            eventLoop->fired[j].mask = mask;
+        }
+    }
+    return numevents;
+}
+```
+
+
+
 ### `select`
 
-下面以[`select`](https://en.wikipedia.org/wiki/Select_(Unix)) 为例来进行说明(因为APUE中所介绍的就是`select`，目前我只熟悉它)。
+下面以[`select`](https://en.wikipedia.org/wiki/Select_(Unix)) 为例来进行说明(因为APUE中所介绍的就是`select)。
 
 
 

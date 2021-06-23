@@ -1,51 +1,58 @@
-# Redis sentinel
+# redis [Redis Sentinel Documentation](https://redis.io/topics/sentinel)
 
-
-
-## 官方文档[Redis Sentinel Documentation](https://redis.io/topics/sentinel)
+Redis Sentinel provides **high availability** for Redis. In practical terms this means that using Sentinel you can create a Redis deployment that resists without human intervention certain kinds of failures.
 
 Redis Sentinel also provides other collateral（附属的） tasks such as **monitoring**, **notifications** and acts as a **configuration provider** for clients.
 
 This is the full list of Sentinel capabilities at a macroscopical（宏观的） level (i.e. the *big picture*):
 
-- **Monitoring**. Sentinel constantly checks if your master and slave instances are working as expected.
+1、**Monitoring**. Sentinel constantly checks if your master and slave instances are working as expected.
 
-- **Notification**. Sentinel can notify the **system administrator**, another computer programs, via an API, that something is wrong with one of the monitored Redis instances.
+2、**Notification**. Sentinel can notify the **system administrator**, another computer programs, via an API, that something is wrong with one of the monitored Redis instances.
 
-- **Automatic failover**. If a **master** is not working as expected, Sentinel can start a **failover process** where a slave is promoted to master, the other additional slaves are reconfigured to use the new master, and the applications using the Redis server informed about the new address to use when connecting.
+3、**Automatic failover**. If a **master** is not working as expected, Sentinel can start a **failover process** where a slave is promoted to master, the other additional slaves are reconfigured to use the new master, and the applications using the Redis server informed about the new address to use when connecting.
 
-  自动故障转移。 如果主服务器未按预期工作，Sentinel可以启动故障转移过程，其中从服务器升级为主服务器，其他其他服务器重新配置为使用新主服务器，并且使用Redis服务器的应用程序通知有关新服务器的地址。连接。
+> NOTE: 
+>
+> 一、自动故障转移。 如果主服务器未按预期工作，Sentinel可以启动故障转移过程，其中从服务器升级为主服务器，其他其他服务器重新配置为使用新主服务器，并且使用Redis服务器的应用程序通知有关新服务器的地址。连接。
+>
+> 二、这是一种中心化的架构
 
-- **Configuration provider**. Sentinel acts as a source of authority for **clients service discovery**: clients connect to **Sentinels** in order to ask for the address of the **current Redis master** responsible for a given service. If a **failover** occurs, **Sentinels** will report the new address.
+4、**Configuration provider**. Sentinel acts as a source of authority for **clients service discovery**: clients connect to **Sentinels** in order to ask for the address of the **current Redis master** responsible for a given service. If a **failover** occurs, **Sentinels** will report the new address.
 
-
+> NOTE: 
+>
+> 显然，Redis的HA需要由API、sentinel、master、slave来协作完成
 
 ## Distributed nature of Sentinel
+
+> NOTE: 
+>
+> 一、Redis sentinel让我想起来ZK，它们两者有着诸多的相似之处，显然，ZK可以为系统提供sentinel功能，比如kafka就是这样做的
 
 **Redis Sentinel** is a distributed system:
 
 **Sentinel** itself is designed to run in a configuration where there are multiple Sentinel processes cooperating together. The advantage of having multiple Sentinel processes cooperating are the following:
 
-1. Failure detection is performed when multiple Sentinels agree about the fact a given master is no longer available. This lowers the probability of **false positives**.
-2. **Sentinel** works even if not all the Sentinel processes are working, making the system robust against failures. There is no fun in having a fail over system which is itself a single point of failure, after all.
+1、Failure detection is performed when multiple Sentinels agree about the fact a given master is no longer available. This lowers the probability of **false positives**.
+
+2、**Sentinel** works even if not all the Sentinel processes are working, making the system robust against failures. There is no fun in having a fail over system which is itself a single point of failure, after all.
+
+> NOTE: 
+>
+> 避免"single point of failure"是HA的关键
 
 The sum of Sentinels, Redis instances (masters and slaves) and clients connecting to Sentinel and Redis, are also a larger distributed system with specific properties. In this document concepts will be introduced gradually starting from basic information needed in order to understand the basic properties of Sentinel, to more complex information (that are optional) in order to understand how exactly Sentinel works.
 
 
 
-# Quick Start
+## Quick Start
 
-## Obtaining Sentinel
+### Obtaining Sentinel
 
 The current version of Sentinel is called **Sentinel 2**. It is a rewrite of the initial Sentinel implementation using stronger and simpler to predict algorithms (that are explained in this documentation).
 
-A stable release of Redis Sentinel is shipped since Redis 2.8.
-
-New developments are performed in the *unstable* branch, and new features sometimes are back ported into the latest stable branch as soon as they are considered to be stable.
-
-Redis Sentinel version 1, shipped with Redis 2.6, is deprecated and should not be used.
-
-## Running Sentinel
+### Running Sentinel
 
 If you are using the `redis-sentinel` executable (or if you have a symbolic link with that name to the `redis-server`executable) you can run Sentinel with the following command line:
 
@@ -65,26 +72,41 @@ However **it is mandatory** to use a configuration file when running **Sentinel*
 
 **Sentinels** by default run **listening for connections to TCP port 26379**, so for Sentinels to work, port 26379 of your servers **must be open** to receive connections from the IP addresses of the other **Sentinel instances**. Otherwise Sentinels can't talk and can't agree about what to do, so failover will never be performed.
 
+> NOTE: 
+>
+> consensus algorithm 
+
+### Fundamental things to know about Sentinel before deploying
+
+1、You need at least three Sentinel instances for a robust deployment.
+
+> NOTE: 为了"Quorum"，需要能够裁决出一个结果
+
+2、The three Sentinel instances should be placed into computers or virtual machines that are believed to fail in an **independent** way. So for example different physical servers or Virtual Machines executed on different availability zones.
+
+3、Sentinel + Redis distributed system does not guarantee that **acknowledged writes** are retained(保持) during failures, since Redis uses **asynchronous replication**. However there are ways to deploy Sentinel that make the window to lose writes limited to certain moments, while there are other less secure ways to deploy it.
+
+> NOTE: 
+>
+> 一、如何实现？
+>
+> 二、这段话让我想起来CAP，我目前的想法是: Redis favor availability over consistency
+>
+> 三、上面这段话中的"**acknowledged writes**"要如何理解？
+
+4、You need Sentinel support in your clients. Popular client libraries have Sentinel support, but not all.
+
+5、There is no [HA](https://en.wikipedia.org/wiki/High-availability_cluster) setup which is safe if you don't test from time to time in development environments, or even better if you can, in production environments, if they work. You may have a misconfiguration that will become apparent only when it's too late (at 3am when your master stops working).
+
+6、**Sentinel, Docker, or other forms of Network Address Translation or Port Mapping should be mixed with care**: Docker performs port remapping, breaking Sentinel auto discovery of other Sentinel processes and the list of slaves for a master. Check the section about Sentinel and Docker later in this document for more information.
 
 
-## Fundamental things to know about Sentinel before deploying
 
-1. You need at least three Sentinel instances for a robust deployment.
-2. The three Sentinel instances should be placed into computers or virtual machines that are believed to fail in an **independent** way. So for example different physical servers or Virtual Machines executed on different availability zones.
-3. Sentinel + Redis distributed system does not guarantee that **acknowledged writes** are retained(保持) during failures, since Redis uses **asynchronous replication**. However there are ways to deploy Sentinel that make the window to lose writes limited to certain moments, while there are other less secure ways to deploy it.
-4. You need Sentinel support in your clients. Popular client libraries have Sentinel support, but not all.
-5. There is no [HA](https://en.wikipedia.org/wiki/High-availability_cluster) setup which is safe if you don't test from time to time in development environments, or even better if you can, in production environments, if they work. You may have a misconfiguration that will become apparent only when it's too late (at 3am when your master stops working).
-6. **Sentinel, Docker, or other forms of Network Address Translation or Port Mapping should be mixed with care**: Docker performs port remapping, breaking Sentinel auto discovery of other Sentinel processes and the list of slaves for a master. Check the section about Sentinel and Docker later in this document for more information.
-
-
-
-
-
-## Configuring Sentinel
+### Configuring Sentinel
 
 The Redis source distribution contains a file called `sentinel.conf` that is a self-documented example configuration file you can use to configure Sentinel, however a typical minimal configuration file looks like the following:
 
-```
+```shell
 sentinel monitor mymaster 127.0.0.1 6379 2
 sentinel down-after-milliseconds mymaster 60000
 sentinel failover-timeout mymaster 180000
@@ -96,7 +118,13 @@ sentinel failover-timeout resque 180000
 sentinel parallel-syncs resque 5
 ```
 
-You only need to specify the masters to monitor, giving to each separated master (that may have any number of slaves) a different **name**. There is no need to specify **slaves**, which are **auto-discovered**. **Sentinel** will update the configuration automatically with additional information about slaves (in order to retain the information in case of restart). The configuration is also rewritten every time a slave is promoted to master during a failover and every time a new Sentinel is discovered.
+You only need to specify the masters to monitor, giving to each separated master (that may have any number of slaves) a different **name**. There is no need to specify **slaves**, which are **auto-discovered**. 
+
+> NOTE: 
+>
+> 一、如何**auto-discovered** slave？
+
+**Sentinel** will update the configuration automatically with additional information about slaves (in order to retain the information in case of restart). The configuration is also rewritten every time a slave is promoted to master during a failover and every time a new Sentinel is discovered.
 
 The example configuration above, basically monitor two sets of **Redis instances**, each composed of a **master** and an undefined number of slaves. One set of instances is called `mymaster`, and the other `resque`.
 
@@ -108,23 +136,27 @@ sentinel monitor <master-group-name> <ip> <port> <quorum>
 
 For the sake of clarity, let's check line by line what the configuration options mean:
 
-The first line is used to tell Redis to monitor a master called *mymaster*, that is at address 127.0.0.1 and port 6379, with a quorum of 2. Everything is pretty obvious but the **quorum** argument:
+The first line is used to tell Redis to monitor a master called *mymaster*, that is at address 127.0.0.1 and port 6379, with a quorum(多数派) of 2. Everything is pretty obvious but the **quorum** argument:
 
-- The **quorum** is the number of **Sentinels** that need to agree about the fact the **master** is not reachable, in order for really mark the slave as failing, and eventually start a fail over procedure if possible.
-- However **the quorum is only used to detect the failure**. In order to actually perform a failover, one of the Sentinels need to be **elected leader** for the failover and be authorized to proceed. This only happens with the vote of the **majority of the Sentinel processes**.
+1、The **quorum** is the number of **Sentinels** that need to agree about the fact the **master** is not reachable, in order for really mark the slave as failing, and eventually start a fail over procedure if possible.
+
+2、However **the quorum is only used to detect the failure**. In order to actually perform a failover, one of the Sentinels need to be **elected leader** for the failover and be authorized to proceed. This only happens with the vote of the **majority of the Sentinel processes**.
 
 So for example if you have 5 Sentinel processes, and the quorum for a given master set to the value of 2, this is what happens:
 
-- If two Sentinels agree at the same time about the master being unreachable, one of the two will try to start a failover.
-- If there are at least a total of three Sentinels **reachable**, the failover will be authorized and will actually start.
+1、If two Sentinels agree at the same time about the master being unreachable, one of the two will try to start a failover.
+
+2、If there are at least a total of three Sentinels **reachable**, the failover will be authorized and will actually start.
 
 In practical terms this means during failures **Sentinel never starts a failover if the majority of Sentinel processes are unable to talk** (aka no failover in the minority partition).
 
-实际上，这意味着在故障期间，如果大多数Sentinel进程无法通话（在少数分区中也没有故障转移），Sentinel永远不会启动故障转移。
+> NOTE: 
+>
+> 实际上，这意味着在故障期间，如果大多数Sentinel进程无法通话（在少数分区中也没有故障转移），Sentinel永远不会启动故障转移。
 
 
 
-## Other Sentinel options
+### Other Sentinel options
 
 The other options are almost always in the form:
 
@@ -134,11 +166,11 @@ sentinel <option_name> <master_name> <option_value>
 
 And are used for the following purposes:
 
-- `down-after-milliseconds` is the time in milliseconds an instance should not be reachable (either does not reply to our PINGs or it is replying with an error) for a Sentinel starting to think it is down.
+1、`down-after-milliseconds` is the time in milliseconds an instance should not be reachable (either does not reply to our PINGs or it is replying with an error) for a Sentinel starting to think it is down.
 
-- `parallel-syncs` sets the number of slaves that can be reconfigured to use the new master after a failover at the same time. The lower the number, the more time it will take for the failover process to complete, however if the slaves are configured to serve old data, you may not want all the slaves to re-synchronize with the master at the same time. While the replication process is mostly non blocking for a slave, there is a moment when it stops to load the bulk data from the master. You may want to make sure only one slave at a time is not reachable by setting this option to the value of 1.
+2、v`parallel-syncs` sets the number of slaves that can be reconfigured to use the new master after a failover at the same time. The lower the number, the more time it will take for the failover process to complete, however if the slaves are configured to serve old data, you may not want all the slaves to re-synchronize with the master at the same time. While the replication process is mostly non blocking for a slave, there is a moment when it stops to load the bulk data from the master. You may want to make sure only one slave at a time is not reachable by setting this option to the value of 1.
 
-  parallel-syncs设置可在同一故障转移后重新配置为使用新主服务器的从服务器数。 数字越小，故障转移过程完成所需的时间就越多，但是如果从属服务器配置为提供旧数据，则可能不希望所有从属服务器同时与主服务器重新同步。 虽然复制过程对于从属设备大部分是非阻塞的，但是有一段时间它停止从主设备加载批量数据。 您可能希望通过将此选项设置为值1来确保一次只能访问一个从站。
+parallel-syncs设置可在同一故障转移后重新配置为使用新主服务器的从服务器数。 数字越小，故障转移过程完成所需的时间就越多，但是如果从属服务器配置为提供旧数据，则可能不希望所有从属服务器同时与主服务器重新同步。 虽然复制过程对于从属设备大部分是非阻塞的，但是有一段时间它停止从主设备加载批量数据。 您可能希望通过将此选项设置为值1来确保一次只能访问一个从站。
 
 Additional options are described in the rest of this document and documented in the example `sentinel.conf` file shipped with the Redis distribution.
 

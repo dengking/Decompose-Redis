@@ -644,18 +644,21 @@ The **common header** has the following information:
 
 As already mentioned, every node takes a list of flags associated with other known nodes. There are two flags that are used for **failure detection** that are called `PFAIL` and `FAIL`. `PFAIL` means *Possible failure*, and is a non-acknowledged failure type. `FAIL` means that a node is failing and that this condition was confirmed by a majority of masters within a fixed amount of time.
 
-***SUMMARY*** : 阅读了下面的内容就能够明白最后这段话中关于`FAIL`的解释中的两个限制条件：
+> NOTE: 
+>
+> 阅读了下面的内容就能够明白最后这段话中关于`FAIL`的解释中的两个限制条件：
+>
+> 1、confirmed by a majority of masters 
+>
+> 2、within a fixed amount of time
 
-- confirmed by a majority of masters 
-- within a fixed amount of time
-
-**PFAIL flag:**
+#### PFAIL flag:
 
 A node flags another node with the `PFAIL` flag when the node is not reachable for more than `NODE_TIMEOUT` time. Both master and slave nodes can flag another node as `PFAIL`, regardless of its type.
 
 The concept of non-reachability for a Redis Cluster node is that we have an **active ping** (a ping that we sent for which we have yet to get a reply) pending for longer than `NODE_TIMEOUT`. For this mechanism to work the `NODE_TIMEOUT` must be large compared to the **network round trip time**. In order to add reliability during normal operations, nodes will try to reconnect with other nodes in the cluster as soon as half of the `NODE_TIMEOUT` has elapsed without a reply to a ping. This mechanism ensures that connections are kept alive so **broken connections** usually won't result in **false failure reports** between nodes.
 
-**FAIL flag:**
+#### FAIL flag:
 
 The `PFAIL` flag alone is just local information every node has about other nodes, but it is not sufficient to trigger a **slave promotion**. For a node to be considered down（down表示fail了） the `PFAIL` condition needs to be escalated to a `FAIL` condition.
 
@@ -697,7 +700,19 @@ However the **Redis Cluster failure detection** has a **liveness requirement**: 
 
 ## Configuration handling, propagation, and failovers
 
-
+> NOTE: 
+>
+> |                |                     |                     |
+> | -------------- | ------------------- | ------------------- |
+> | `currentEpoch` |                     | cluster中的每个node |
+> | `configEpoch`  | Configuration epoch |                     |
+> |                |                     |                     |
+>
+> Cluster current epoch 是 cluster 中所有的node的consensus共识
+>
+>  是 每个 node 的一个属性，master、slave都有各自的  `currentEpoch`
+>
+> 
 
 ### Cluster current epoch
 
@@ -713,25 +728,29 @@ Because of these semantics, eventually all the nodes will agree to the greatest 
 
 This information is used when the state of the cluster is changed and a node seeks agreement in order to perform some action.
 
-Currently this happens only during **slave promotion**, as described in the next section. Basically the epoch is a **logical clock** for the cluster and dictates（规定） that given information wins over one with a smaller epoch.
+Currently this happens only during **slave promotion**, as described in the next section. Basically the epoch is a **logical clock** for the cluster and dictates(表明) that given information wins over one with a smaller epoch.
 
-
+> NOTE: 
+>
+> 一、raft算法
+>
+> 二、"epoch is a **logical clock** for the cluster"
+>
+> 三、consensus共识
 
 ### Configuration epoch
 
-
-
-Every master always advertises its `configEpoch` in ping and pong packets along with a bitmap advertising the set of slots it serves.
+Every master always advertises(广为告知) its `configEpoch` in ping and pong packets along with a bitmap advertising the set of slots it serves.
 
 The `configEpoch` is set to zero in masters when a new node is created.
 
 A new `configEpoch` is created during **slave election**. Slaves trying to replace failing masters increment their epoch and try to get authorization from a majority of masters. When a slave is authorized, a new unique `configEpoch` is created and the slave turns into a master using the new `configEpoch`.
 
-As explained in the next sections the `configEpoch` helps to resolve conflicts when different nodes claim divergent（相异的） configurations (a condition that may happen because of network partitions and node failures).
+As explained in the next sections, the `configEpoch` helps to resolve conflicts when different nodes claim divergent（相异的） configurations (a condition that may happen because of network partitions and node failures).
 
-Slave nodes also advertise the `configEpoch` field in ping and pong packets, but in the case of slaves the field represents the `configEpoch` of its master as of the last time they exchanged packets. This allows other instances to detect when a slave has an **old configuration** that needs to be updated (master nodes will not grant votes to slaves with an old configuration).
+Slave nodes also advertise(广为告知) the `configEpoch` field in ping and pong packets, but in the case of slaves the field represents the `configEpoch` of its master as of the last time they exchanged packets. This allows other instances to detect when a slave has an **old configuration** that needs to be updated (master nodes will not grant votes to slaves with an old configuration).
 
-***SUMMARY*** : 上面这段话是比较不好理解的，它的意思是：Slave node在它们的ping and pong packets中也会带上`configEpoch`字段，但是在这种情况下，这个`configEpoch`字段
+> NOTE: 上面这段话是比较不好理解的，它的意思是：Slave node在它们的ping and pong packets中也会带上`configEpoch`字段，但是在这种情况下，这个`configEpoch`字段
 
 Every time the `configEpoch` changes for some known node, it is permanently stored in the `nodes.conf` file by all the nodes that receive this information. The same also happens for the `currentEpoch` value. These two variables are guaranteed to be saved and `fsync-ed` to disk when updated before a node continues its operations.
 

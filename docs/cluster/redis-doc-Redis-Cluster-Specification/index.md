@@ -404,21 +404,43 @@ While Redis Cluster nodes form a full mesh, **nodes use a gossip protocol and a 
 
 > NOTE: 
 >
-> 如何实现的呢？
+> 如何实现的呢？在后面的"Fault Tolerance # Heartbeat and gossip messages"章节中， 进行了说明:
+>
+> > Usually a node will ping a few random nodes every second so that the total number of ping packets sent (and pong packets received) by each node is a constant amount regardless of the number of nodes in the cluster.
 
 ### Nodes handshake
+
+> NOTE: 
+>
+> 这一段其实告诉我们如何组建Redis cluster
 
 Nodes always accept connections on the cluster bus port, and even reply to pings when received, even if the pinging node is not trusted. However, all other packets will be discarded by the receiving node if the sending node is not considered part of the cluster.
 
 A node will accept another node as part of the cluster only in two ways:
 
-- If a node presents itself with a `MEET` message. A meet message is exactly like a [PING](https://redis.io/commands/ping) message, but forces the receiver to accept the node as part of the cluster. Nodes will send `MEET` messages to other nodes **only if** the system administrator requests this via the following command:
+1、If a node presents itself with a `MEET` message. A meet message is exactly like a [PING](https://redis.io/commands/ping) message, but forces the receiver to accept the node as part of the cluster. Nodes will send `MEET` messages to other nodes **only if** the system administrator requests this via the following command:
 
-  `CLUSTER MEET ip port`
+`CLUSTER MEET ip port`
 
-- A node will also register another node as part of the cluster if a node that is already trusted will gossip about this other node. So if A knows B, and B knows C, eventually B will send gossip messages to A about C. When this happens, A will register C as part of the network, and will try to connect with C.
+> NOTE: 
+>
+> 一、[CLUSTER MEET ip port](https://redis.io/commands/cluster-meet)
+>
+> 二、显然，通过"CLUSTER MEET ip port" command来组建Redis cluster
+>
+> 三、这种方式是administrator来组建Redis cluster
+
+2、A node will also register another node as part of the cluster if a node that is already trusted will gossip about this other node. So if A knows B, and B knows C, eventually B will send gossip messages to A about C. When this happens, A will register C as part of the network, and will try to connect with C.
+
+> NOTE: 
+>
+> 一、这种方式是Redis node通过gossip协议来auto discover其他node，然后与它建立连接
 
 This means that as long as we join nodes in any connected graph, they'll eventually form a fully connected graph automatically. This means that the cluster is able to auto-discover other nodes, but only if there is a trusted relationship that was forced by the system administrator.
+
+> NOTE: 
+>
+> 一、必须要由administrator首先建立基本的连接，然后才能够实现全连接图
 
 This mechanism makes the cluster more robust but prevents different Redis clusters from accidentally mixing after change of IP addresses or other network related events.
 
@@ -453,6 +475,10 @@ A client **must be also able to handle -ASK redirections** that are described la
 
 ### Cluster live reconfiguration
 
+> NOTE: 
+>
+> 这一段没有阅读
+
 Redis Cluster supports the ability to add and remove nodes while the cluster is running. Adding or removing a node is abstracted into the same operation: moving a hash slot from one node to another. This means that the same basic mechanism can be used in order to rebalance the cluster, add or remove nodes, and so forth.
 
 - To add a new node to the cluster an empty node is added to the cluster and some set of hash slots are moved from existing nodes to the new node.
@@ -463,7 +489,7 @@ The core of the implementation is the ability to move **hash slots** around. Fro
 
 To understand how this works we need to show the `CLUSTER` subcommands that are used to manipulate the ***slots translation table*** in a **Redis Cluster node**.
 
-***SUMMARY*** : slots translation table应该是由`cluster.h:struct clusterState`的`migrating_slots_to` 、`importing_slots_from`、`slots`成员变量实现的；
+> NOTE: slots translation table应该是由`cluster.h:struct clusterState`的`migrating_slots_to` 、`importing_slots_from`、`slots`成员变量实现的；
 
 The following subcommands are available (among others not useful in this case):
 
@@ -514,7 +540,7 @@ In **Redis Cluster** there is no need to specify a database other than 0, but [M
 
 When the migration process is finally finished, the `SETSLOT <slot> NODE <node-id>` command is sent to the two nodes involved in the migration in order to set the slots to their normal state again. The same command is usually sent to all other nodes to avoid waiting for the natural propagation of the new configuration across the cluster.
 
-***THINKING*** : 移动key，是否需要移动该key对应的数据？需要的，要想完整地理解这一节的内容，需要阅读：[Redis系列九：redis集群高可用](https://www.cnblogs.com/leeSmall/p/8414687.html)
+> NOTE: 移动key，是否需要移动该key对应的数据？需要的，要想完整地理解这一节的内容，需要阅读：[Redis系列九：redis集群高可用](https://www.cnblogs.com/leeSmall/p/8414687.html)
 
 ### ASK redirection
 
@@ -532,14 +558,25 @@ When the migration process is finally finished, the `SETSLOT <slot> NODE <node-i
 
 ### Scaling reads using slave nodes
 
+> NOTE: 
+>
+> 这和读写分离有关，参见: 
+>
+> zhihu [redis需要读写分离吗？](https://www.zhihu.com/question/38768751)
+>
+> cnblogs [Redis读写分离技术解析](https://www.cnblogs.com/williamjie/p/11250713.html)
+>
+> 
+
 Normally slave nodes will redirect clients to the authoritative master for the hash slot involved in a given command, however clients can use slaves in order to scale reads using the [READONLY](https://redis.io/commands/readonly) command.
 
 [READONLY](https://redis.io/commands/readonly) tells a **Redis Cluster slave node** that the client is ok reading possibly stale data and is not interested in running write queries.
 
 When the connection is in **readonly mode**, the cluster will send a redirection to the client only if the operation involves keys not served by the slave's master node. This may happen because:
 
-1. The client sent a command about hash slots never served by the master of this slave.
-2. The cluster was reconfigured (for example resharded) and the slave is no longer able to serve commands for a given hash slot.
+1、The client sent a command about hash slots never served by the master of this slave.
+
+2、The cluster was reconfigured (for example resharded) and the slave is no longer able to serve commands for a given hash slot.
 
 When this happens the client should update its hashslot map as explained in the previous sections.
 
@@ -557,11 +594,19 @@ Usually nodes send **ping packets** that will trigger the receivers to reply wit
 
 Usually a node will ping a few random nodes every second so that the total number of **ping packets** sent (and **pong packets** received) by each node is a constant amount regardless of the number of nodes in the cluster.
 
+> NOTE: 
+>
+> 这是非常重要的，在 "Cluster topology" 章节中，就谈到了这个问题
+
 However every node makes sure to ping every other node that hasn't sent a ping or received a pong for longer than half the `NODE_TIMEOUT` time. Before `NODE_TIMEOUT` has elapsed, nodes also try to reconnect the **TCP link** with another node to make sure nodes are not believed to be unreachable only because there is a problem in the current TCP connection.
 
-***SUMMARY*** : 需要注意的是，每个node不是每秒钟都去ping cluster中剩余的其他的所有的node，而是保证能够在half of the  `NODE_TIMEOUT`中能够ping到cluster中剩余的其他的所有的node，所以它需要做的是每秒钟只ping一部分。
-
-***SUMMARY*** : 为什么是half the `NODE_TIMEOUT` time？在下面的Failure detection章节中给出了这样做的原因。
+> NOTE: 
+>
+> 一、需要注意的是，每个node不是每秒钟都去ping cluster中剩余的其他的所有的node，而是保证能够在half of the  `NODE_TIMEOUT`中能够ping到cluster中剩余的其他的所有的node，所以它需要做的是每秒钟只ping一部分。
+>
+> 二、为什么是half the `NODE_TIMEOUT` time？在下面的Failure detection章节中给出了这样做的原因。
+>
+> 
 
 The number of messages globally exchanged can be sizable if `NODE_TIMEOUT` is set to a small figure and the number of nodes (N) is very large, since every node will try to ping every other node for which they don't have fresh information every half the `NODE_TIMEOUT` time.
 
@@ -577,17 +622,19 @@ Ping and pong packets contain a **header** that is common to all types of packet
 
 The **common header** has the following information:
 
-- Node ID, a 160 bit pseudorandom string that is assigned the first time a node is created and remains the same for all the life of a Redis Cluster node.
-- The `currentEpoch` and `configEpoch` fields of the sending node that are used to mount the distributed algorithms used by Redis Cluster (this is explained in detail in the next sections). If the node is a slave the `configEpoch` is the last known `configEpoch` of its master.
-- The **node flags**, indicating if the node is a slave, a master, and other single-bit node information.
-- A bitmap of the hash slots served by the sending node, or if the node is a slave, a bitmap of the slots served by its master.
-- The sender **TCP base port** (that is, the port used by Redis to accept client commands; add 10000 to this to obtain the cluster bus port).
-- The state of the cluster from the point of view of the sender (down or ok).
-- The master node ID of the sending node, if it is a slave.
+1、Node ID, a 160 bit pseudorandom string that is assigned the first time a node is created and remains the same for all the life of a Redis Cluster node.
 
+2、The `currentEpoch` and `configEpoch` fields of the sending node that are used to mount the distributed algorithms used by Redis Cluster (this is explained in detail in the next sections). If the node is a slave the `configEpoch` is the last known `configEpoch` of its master.
 
+3、The **node flags**, indicating if the node is a slave, a master, and other single-bit node information.
 
+4、A bitmap of the hash slots served by the sending node, or if the node is a slave, a bitmap of the slots served by its master.
 
+5、The sender **TCP base port** (that is, the port used by Redis to accept client commands; add 10000 to this to obtain the cluster bus port).
+
+6、The state of the cluster from the point of view of the sender (down or ok).
+
+7、The master node ID of the sending node, if it is a slave.
 
 
 
@@ -645,12 +692,6 @@ However the **Redis Cluster failure detection** has a **liveness requirement**: 
 **Case 2**: When only a minority of masters have flagged a node as `FAIL`, the **slave promotion** will not happen (as it uses a more formal algorithm that makes sure everybody knows about the promotion eventually) and every node will clear the `FAIL` state as per the `FAIL` state clearing rules above (i.e. no promotion after N times the `NODE_TIMEOUT` has elapsed).
 
 **The FAIL flag is only used as a trigger to run the safe part of the algorithm** for the **slave promotion**. In theory a slave may act independently and start a **slave promotion** when its master is not reachable, and wait for the masters to refuse to provide the acknowledgment if the master is actually reachable by the majority. However the added complexity of the `PFAIL -> FAIL` state, the weak agreement, and the `FAIL` message forcing the propagation of the state in the shortest amount of time in the reachable part of the cluster, have practical advantages. Because of these mechanisms, usually all the nodes will stop accepting writes at about the same time if the cluster is in an error state. This is a desirable feature from the point of view of applications using Redis Cluster. Also erroneous election attempts initiated by slaves that can't reach its master due to local problems (the master is otherwise reachable by the majority of other master nodes) are avoided.
-
-
-
-
-
-
 
 
 

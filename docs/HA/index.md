@@ -4,9 +4,9 @@ Redis的HA需要由:
 
 1、API
 
-2、sentinel
+2、Sentinel: automatic failover、lead election
 
-3、Redis instances: master、slave
+3、Replication: master、slave
 
 协作来实现
 

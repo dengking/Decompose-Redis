@@ -1,12 +1,18 @@
-[TOC]
+# Replication
+
+一、"replication"即我们平时所说的主备中的"备"，有备无患；
+
+二、Redis的HA的实现依赖于replication
+
+三、Redis的两种部署方式，都支持replication
 
 
 
-# replication在cluster mode disabled和cluster mode enabled的情况下对比分析
+## Replication在cluster mode disabled和cluster mode enabled的情况下对比分析
 
 
 
-## 实现分析
+### 实现分析
 
 在`server.h:struct redisServer`中有成员变量`list *slaves`，显然对于master而言，这个成员变量是用于保存它的所有的slaves的；
 
@@ -20,7 +26,7 @@
 
  
 
-## 构建分析
+### 构建分析
 
 cluster中，指定某个节点为另外一个节点的replication：
 

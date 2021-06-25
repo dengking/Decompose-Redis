@@ -1,4 +1,4 @@
-# redis [Redis cluster tutorial](https://redis.io/topics/cluster-tutorial)
+# redis doc [Redis cluster tutorial](https://redis.io/topics/cluster-tutorial)
 
 This document is a gentle introduction to Redis Cluster, that does not use complex to understand **distributed systems** concepts. It provides instructions about how to setup a cluster, test, and operate it, without going into the details that are covered in the [Redis Cluster specification](https://redis.io/topics/cluster-spec) but just describing how the system behaves from the point of view of the user.
 
@@ -16,12 +16,15 @@ Redis Cluster provides a way to run a Redis installation where data is **automat
 
 Redis Cluster also provides **some degree of availability during partitions**, that is in practical terms the ability to continue the operations when some nodes fail or are not able to communicate. However the cluster stops to operate in the event of larger failures (for example when the majority of masters are unavailable).
 
-***SUMMARY*** : 上面这段话中的partition的含义参见[Network partition](https://en.wikipedia.org/wiki/Network_partition)，关于availability，参见[High availability](https://en.wikipedia.org/wiki/High_availability)
+> NOTE: 
+>
+> 上面这段话中的partition的含义参见[Network partition](https://en.wikipedia.org/wiki/Network_partition)，关于availability，参见[High availability](https://en.wikipedia.org/wiki/High_availability)
 
 So in practical terms, what do you get with Redis Cluster?
 
-- The ability to **automatically split your dataset among multiple nodes**.
-- The ability to **continue operations when a subset of the nodes are experiencing failures** or are unable to communicate with the rest of the cluster.
+1、The ability to **automatically split your dataset among multiple nodes**.
+
+2、The ability to **continue operations when a subset of the nodes are experiencing failures** or are unable to communicate with the rest of the cluster.
 
 ## Redis Cluster TCP ports
 
@@ -35,8 +38,9 @@ The command port and cluster bus port offset is fixed and is always 10000.
 
 Note that for a **Redis Cluster** to work properly you need, for each node:
 
-1. The **normal client communication port** (usually 6379) used to communicate with clients to be open to all the clients that need to reach the cluster, plus all the other cluster nodes (that use the **client port** for keys migrations).
-2. The **cluster bus port** (the client port + 10000) must be reachable from all the other cluster nodes.
+1、The **normal client communication port** (usually 6379) used to communicate with clients to be open to all the clients that need to reach the cluster, plus all the other cluster nodes (that use the **client port** for keys migrations).
+
+2、The **cluster bus port** (the client port + 10000) must be reachable from all the other cluster nodes.
 
 
 
@@ -68,7 +72,15 @@ Every node in a Redis Cluster is responsible for a subset of the hash slots, so 
 
 This allows to add and remove nodes in the cluster easily. For example if I want to add a new node D, I need to move some **hash slot** from nodes A, B, C to D. Similarly if I want to remove node A from the cluster I can just move the **hash slots** served by A to B and C. When the node A will be empty I can remove it from the cluster completely.
 
+> NOTE: 
+>
+> hash slot是移动的单位
+
 Because moving **hash slots** from a node to another does not require to stop operations, adding and removing nodes, or changing the percentage of **hash slots** hold by nodes, does not require any downtime（停机时间）.
+
+> NOTE: 
+>
+> 这就是在 [Redis Cluster Specification](https://redis.io/topics/cluster-spec) 中所述的 "Cluster live reconfiguration"
 
 **Redis Cluster** supports multiple key operations as long as all the keys involved into a single command execution (or whole transaction, or Lua script execution) all belong to the same **hash slot**. The user can force multiple keys to be part of the same hash slot by using a concept called *hash tags*.
 
@@ -106,9 +118,15 @@ Basically there is a trade-off to take between **performance** and **consistency
 
 **Redis Cluster** has support for **synchronous writes** when absolutely needed, implemented via the [WAIT](https://redis.io/commands/wait) command, this makes losing writes a lot less likely, however note that **Redis Cluster** does not implement **strong consistency** even when **synchronous replication** is used: it is always possible under more complex failure scenarios that a **slave** that was not able to receive the write is elected as **master**.
 
+> NOTE: 
+>
+> 上面没有给出仔细的分析
+
 There is another notable scenario where **Redis Cluster** will lose writes, that happens during a **network partition** where a client is isolated with a minority of instances including at least a master.
 
-***SUMMARY*** : what is network partition？
+> NOTE: 
+>
+> 在 [Redis Cluster Specification](https://redis.io/topics/cluster-spec) 中的"write safety"章节中，对上述两种情况都进行了分析
 
 Take as an example our 6 nodes cluster composed of A, B, C, A1, B1, C1, with 3 masters and 3 slaves. There is also a client, that we will call Z1.
 
@@ -122,16 +140,16 @@ This amount of time is a very important configuration directive of Redis Cluster
 
 After **node timeout** has elapsed, a **master node** is considered to be failing, and can be replaced by one of its replicas. Similarly after **node timeout** has elapsed without a **master node** to be able to sense the majority of the other master nodes, it enters an error state and stops accepting writes.
 
-还有另一个值得注意的情况是，Redis群集将丢失写入，这种情况发生在网络分区中，其中客户端与少数实例（至少包括主服务器）隔离。
-
-以6个节点簇为例，包括A，B，C，A1，B1，C1，3个主站和3个从站。还有一个客户，我们称之为Z1。
-
-在发生分区之后，可能在分区的一侧有A，C，A1，B1，C1，在另一侧有B和Z1。
-
-Z1仍然可以写入B，它将接受其写入。如果分区在很短的时间内恢复，群集将继续正常运行。但是，如果分区持续足够的时间使B1在分区的多数侧被提升为主，则Z1发送给B的写入将丢失。
-
-请注意，Z1将能够发送到B的写入量存在最大窗口：如果分区的多数方面已经有足够的时间将从属设备选为主设备，则少数端的每个主节点都会停止接受写入。
-
-这段时间是Redis Cluster的一个非常重要的配置指令，称为节点超时。
-
-节点超时过后，主节点被视为失败，可以由其中一个副本替换。类似地，在节点超时已经过去而主节点无法感知大多数其他主节点之后，它进入错误状态并停止接受写入。
+> 还有另一个值得注意的情况是，Redis群集将丢失写入，这种情况发生在网络分区中，其中客户端与少数实例（至少包括主服务器）隔离。
+>
+> 以6个节点簇为例，包括A，B，C，A1，B1，C1，3个主站和3个从站。还有一个客户，我们称之为Z1。
+>
+> 在发生分区之后，可能在分区的一侧有A，C，A1，B1，C1，在另一侧有B和Z1。
+>
+> Z1仍然可以写入B，它将接受其写入。如果分区在很短的时间内恢复，群集将继续正常运行。但是，如果分区持续足够的时间使B1在分区的多数侧被提升为主，则Z1发送给B的写入将丢失。
+>
+> 请注意，Z1将能够发送到B的写入量存在最大窗口：如果分区的多数方面已经有足够的时间将从属设备选为主设备，则少数端的每个主节点都会停止接受写入。
+>
+> 这段时间是Redis Cluster的一个非常重要的配置指令，称为节点超时。
+>
+> 节点超时过后，主节点被视为失败，可以由其中一个副本替换。类似地，在节点超时已经过去而主节点无法感知大多数其他主节点之后，它进入错误状态并停止接受写入。

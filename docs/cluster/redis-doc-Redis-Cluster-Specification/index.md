@@ -248,7 +248,7 @@ Each master node in a cluster handles a subset of the 16384 hash slots. The clus
 
 The base algorithm used to map keys to **hash slots** is the following (read the next paragraph for the hash tag exception to this rule):
 
-```shell
+```c++
 HASH_SLOT = CRC16(key) mod 16384
 ```
 
@@ -477,13 +477,29 @@ A client **must be also able to handle -ASK redirections** that are described la
 
 > NOTE: 
 >
-> 这一段没有阅读
+> 一、这一段所描述的其实就是resharding
+>
+> 二、Redis使用的是hash tag，resharding的过程其实就是对hash slot的移动
 
 Redis Cluster supports the ability to add and remove nodes while the cluster is running. Adding or removing a node is abstracted into the same operation: moving a hash slot from one node to another. This means that the same basic mechanism can be used in order to rebalance the cluster, add or remove nodes, and so forth.
 
-- To add a new node to the cluster an empty node is added to the cluster and some set of hash slots are moved from existing nodes to the new node.
-- To remove a node from the cluster the hash slots assigned to that node are moved to other existing nodes.
-- To rebalance the cluster a given set of hash slots are moved between nodes.
+1、To add a new node to the cluster an empty node is added to the cluster and some set of hash slots are moved from existing nodes to the new node.
+
+2、To remove a node from the cluster the hash slots assigned to that node are moved to other existing nodes.
+
+3、To rebalance the cluster a given set of hash slots are moved between nodes.
+
+> NOTE: 
+>
+> 一、对Redis cluster进行CRUD:
+>
+> 1、选择节点
+>
+> 2、删除节点
+>
+> 3、修改节点
+>
+> 4、对节点进行查询
 
 The core of the implementation is the ability to move **hash slots** around. From a practical point of view a hash slot is just a set of keys, so what Redis Cluster really does during *resharding* is to move keys from an instance to another instance. Moving a hash slot means moving all the keys that happen to hash into this hash slot.
 
@@ -493,24 +509,41 @@ To understand how this works we need to show the `CLUSTER` subcommands that are 
 
 The following subcommands are available (among others not useful in this case):
 
-- [CLUSTER ADDSLOTS](https://redis.io/commands/cluster-addslots) slot1 [slot2] ... [slotN]
-- [CLUSTER DELSLOTS](https://redis.io/commands/cluster-delslots) slot1 [slot2] ... [slotN]
-- [CLUSTER SETSLOT](https://redis.io/commands/cluster-setslot) slot NODE node
-- [CLUSTER SETSLOT](https://redis.io/commands/cluster-setslot) slot MIGRATING node
-- [CLUSTER SETSLOT](https://redis.io/commands/cluster-setslot) slot IMPORTING node
+1、[CLUSTER ADDSLOTS](https://redis.io/commands/cluster-addslots) slot1 [slot2] ... [slotN]
+
+2、[CLUSTER DELSLOTS](https://redis.io/commands/cluster-delslots) slot1 [slot2] ... [slotN]
+
+3、[CLUSTER SETSLOT](https://redis.io/commands/cluster-setslot) slot NODE node
+
+4、[CLUSTER SETSLOT](https://redis.io/commands/cluster-setslot) slot MIGRATING node
+
+5、[CLUSTER SETSLOT](https://redis.io/commands/cluster-setslot) slot IMPORTING node
 
 The first two commands, `ADDSLOTS` and `DELSLOTS`, are simply used to assign (or remove) slots to a Redis node. Assigning a slot means to tell a given **master node** that it will be in charge of storing and serving content for the specified hash slot.
 
 After the hash slots are assigned they will propagate across the cluster using the gossip protocol, as specified later in the *configuration propagation* section.
 
+> NOTE: 
+>
+> 一、是 "Hash slots configuration propagation" 段
+
+#### `ADDSLOTS`
+
 The `ADDSLOTS` command is usually used when a new cluster is created from scratch to assign each **master node** a subset of all the 16384 hash slots available.
+
+####  `DELSLOTS`
 
 The `DELSLOTS` is mainly used for manual modification of a cluster configuration or for debugging tasks: in practice it is rarely used.
 
+#### `SETSLOT` 
+
 The `SETSLOT` subcommand is used to assign a slot to a specific node ID if the `SETSLOT <slot> NODE` form is used. Otherwise the **slot** can be set in the two special states `MIGRATING` and `IMPORTING`. Those two special states are used in order to migrate a **hash slot** from one node to another.
 
-- When a slot is set as **MIGRATING**, the node will accept all queries that are about this **hash slot**, but only if the key in question exists, otherwise the query is forwarded using a `-ASK` redirection to the node that is target of the migration.
-- When a slot is set as **IMPORTING**, the node will accept all queries that are about this **hash slot**, but only if the request is preceded by an `ASKING` command. If the `ASKING` command was not given by the client, the query is redirected to the real hash slot owner via a `-MOVED` redirection error, as would happen normally.
+1、When a slot is set as **MIGRATING**, the node will accept all queries that are about this **hash slot**, but only if the key in question exists, otherwise the query is forwarded using a `-ASK` redirection to the node that is target of the migration.
+
+2、When a slot is set as **IMPORTING**, the node will accept all queries that are about this **hash slot**, but only if the request is preceded by an `ASKING` command. If the `ASKING` command was not given by the client, the query is redirected to the real hash slot owner via a `-MOVED` redirection error, as would happen normally.
+
+#### Hash slot migration
 
 Let's make this clearer with an example of **hash slot migration**. Assume that we have two Redis master nodes, called A and B. We want to move hash slot 8 from A to B, so we issue commands like this:
 
@@ -702,15 +735,11 @@ However the **Redis Cluster failure detection** has a **liveness requirement**: 
 
 > NOTE: 
 >
-> |                |                     |                     |
-> | -------------- | ------------------- | ------------------- |
-> | `currentEpoch` |                     | cluster中的每个node |
-> | `configEpoch`  | Configuration epoch |                     |
-> |                |                     |                     |
->
-> Cluster current epoch 是 cluster 中所有的node的consensus共识
->
->  是 每个 node 的一个属性，master、slave都有各自的  `currentEpoch`
+> |                |                     |                                                              |
+> | -------------- | ------------------- | ------------------------------------------------------------ |
+> | `currentEpoch` |                     | Cluster current epoch 是 cluster 中所有的node的consensus共识 |
+> | `configEpoch`  | Configuration epoch | 每个node的configuration                                      |
+> |                |                     |                                                              |
 >
 > 
 

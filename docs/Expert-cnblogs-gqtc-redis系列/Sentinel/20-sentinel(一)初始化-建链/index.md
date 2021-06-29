@@ -296,6 +296,12 @@ sentinelRedisInstance *createSentinelRedisInstance(char *name, int flags, char *
 
 在介绍哨兵进程的各种流程之前，需要先了解一下哨兵进程的“主函数”。
 
+> NOTE: 
+>
+> 从后面可知，"哨兵进程的“主函数”"就是`sentinelHandleRedisInstance`
+
+### `sentinelTimer`
+
 在redis服务器中的定时器函数`serverCron`中，每隔100ms就会调用一次`sentinelTimer`函数。该函数就是哨兵进程的主要处理函数，哨兵中的所有流程都是在该函数中处理的。
 
 ```C
@@ -333,3 +339,50 @@ void sentinelTimer(void) {
 > 这是raft算法的"随机超时"机制，在下面文章中进行了介绍:
 >
 > 1、csdn [用动图讲解分布式 Raft](https://blog.csdn.net/jackson0714/article/details/113144730?spm=1001.2014.3001.5501)
+
+### `sentinelHandleDictOfRedisInstances`
+
+`sentinelHandleDictOfRedisInstances`函数，是处理该哨兵中保存的所有实例的函数。它的代码如下：
+
+```C
+void sentinelHandleDictOfRedisInstances(dict *instances) {
+    dictIterator *di;
+    dictEntry *de;
+    sentinelRedisInstance *switch_to_promoted = NULL;
+
+    /* There are a number of things we need to perform against every master. */
+    di = dictGetIterator(instances);
+    while((de = dictNext(di)) != NULL) {
+        sentinelRedisInstance *ri = dictGetVal(de);
+
+        sentinelHandleRedisInstance(ri);
+        if (ri->flags & SRI_MASTER) {
+            sentinelHandleDictOfRedisInstances(ri->slaves);
+            sentinelHandleDictOfRedisInstances(ri->sentinels);
+            if (ri->failover_state == SENTINEL_FAILOVER_STATE_UPDATE_CONFIG) {
+                switch_to_promoted = ri;
+            }
+        }
+    }
+    if (switch_to_promoted)
+        sentinelFailoverSwitchToPromotedSlave(switch_to_promoted);
+    dictReleaseIterator(di);
+}
+```
+
+函数的最后，如果针对某个主节点，发起了故障转移流程，并且流程已经到了最后一步，则会调用函数`sentinelFailoverSwitchToPromotedSlave`进行处理；
+
+### `sentinelHandleRedisInstance`
+
+`sentinelHandleRedisInstance`函数，就是相当于哨兵进程的“主函数”。有关实例的几乎所有动作，都在该函数中进行的。该函数的代码如下：
+
+## 五：建链
+
+哨兵对于其所监控的所有**主节点**，及其属下的所有**从节点**，都会建立两个**TCP连接**。一个用于发送命令，一个用于订阅其**HELLO频道**。而哨兵对于监控**同一主节点**的其他哨兵实例，只建立一个**命令连接**。
+
+哨兵向主节点和从节点建立的**订阅连接**，主要是为了监控同一主节点的所有哨兵之间，能够相互发现，以及交换信息。
+
+> NOTE: 
+>
+> 为什么要专门使用一个特殊的连接？
+

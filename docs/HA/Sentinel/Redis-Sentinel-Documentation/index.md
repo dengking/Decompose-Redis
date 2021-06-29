@@ -1,6 +1,18 @@
 # redis [Redis Sentinel Documentation](https://redis.io/topics/sentinel)
 
+> NOTE: 
+>
+> jianshu [Redis哨兵（Sentinel）模式](https://www.jianshu.com/p/06ab9daf921d)
+>
+> ![](Redis-sentinel-deploy.webp)
+
 Redis Sentinel provides **high availability** for Redis. In practical terms this means that using Sentinel you can create a Redis deployment that resists without human intervention certain kinds of failures.
+
+> NOTE: 
+>
+> "human intervention"即"人工干预"
+>
+> 
 
 Redis Sentinel also provides other collateral（附属的） tasks such as **monitoring**, **notifications** and acts as a **configuration provider** for clients.
 
@@ -83,6 +95,10 @@ However **it is mandatory** to use a configuration file when running **Sentinel*
 > NOTE: 为了"Quorum"，需要能够裁决出一个结果
 
 2、The three Sentinel instances should be placed into computers or virtual machines that are believed to fail in an **independent** way. So for example different physical servers or Virtual Machines executed on different availability zones.
+
+> NOTE: 
+>
+> 跨机房灾备
 
 3、Sentinel + Redis distributed system does not guarantee that **acknowledged writes** are retained(保持) during failures, since Redis uses **asynchronous replication**. However there are ways to deploy Sentinel that make the window to lose writes limited to certain moments, while there are other less secure ways to deploy it.
 
@@ -303,25 +319,25 @@ In every Sentinel setup, being Redis asynchronously replicated, there is always 
 
 
 
-# A quick tutorial
+## A quick tutorial
 
 
 
 
 
-## Asking Sentinel about the state of a master
+### Asking Sentinel about the state of a master
 
 
 
 
 
-## Obtaining the address of the current master
+### Obtaining the address of the current master
 
 
 
 
 
-## Testing the failover
+### Testing the failover
 
 
 
@@ -329,41 +345,41 @@ In every Sentinel setup, being Redis asynchronously replicated, there is always 
 
 
 
-# Sentinel API
+## Sentinel API
 
 
 
-## Sentinel commands
+### Sentinel commands
 
 
 
 
 
-## Reconfiguring Sentinel at Runtime
+### Reconfiguring Sentinel at Runtime
 
 
 
 
 
-## Adding or removing Sentinels
+### Adding or removing Sentinels
 
 
 
-##  Removing the old master or unreachable slaves
+###  Removing the old master or unreachable slaves
 
 
 
-## Pub/Sub Messages
+### Pub/Sub Messages
 
 
 
 
 
-## Handling of -BUSY state
+### Handling of -BUSY state
 
 
 
-## Slaves priority
+### Slaves priority
 
 
 
@@ -371,17 +387,15 @@ In every Sentinel setup, being Redis asynchronously replicated, there is always 
 
 
 
-##  Sentinel and Redis authentication
+###  Sentinel and Redis authentication
 
 
 
-## Configuring Sentinel instances with authentication
+### Configuring Sentinel instances with authentication
 
 
 
-# More advanced concepts
-
-
+## More advanced concepts
 
 In the following sections we'll cover a few details about how Sentinel work, without to resorting to implementation details and algorithms that will be covered in the final part of this document.
 
@@ -389,24 +403,24 @@ In the following sections we'll cover a few details about how Sentinel work, wit
 
 
 
-## SDOWN and ODOWN failure state
+### SDOWN and ODOWN failure state
 
 
 
-## Sentinels and Slaves auto discovery
+### Sentinels and Slaves auto discovery
 
 
 
-## Sentinel reconfiguration of instances outside the failover procedure
+### Sentinel reconfiguration of instances outside the failover procedure
 
 
 
-## Slave selection and priority
+### Slave selection and priority
 
 
 
-# Algorithms and internals
+## Algorithms and internals
 
 In the following sections we will explore the details of Sentinel behavior. It is not strictly needed for users to be aware of all the details, but a deep understanding of Sentinel may help to deploy and operate Sentinel in a more effective way.
 
-## Quorum
+### Quorum

@@ -6,10 +6,10 @@ nav:
     - Expert-cnblogs-小不点啊: Expert-cnblogs-小不点啊
     - Basic: Basic
     - Deploy-topology: deploy-topology
+    - Distributed-computing: Distributed-computing
     - HA: HA
     - Cluster: cluster
     - Command: Command
     - Clients: Clients # redis客户端
-    - Redis-write-safety-analysis: Redis-write-safety-analysis
     - Application: Application
     - Amazon-ElastiCache: Amazon-ElastiCache

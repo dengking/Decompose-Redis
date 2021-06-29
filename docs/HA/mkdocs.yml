@@ -1,5 +1,4 @@
 nav:
     - Introduction: index.md
-    - 流程: 流程
     - Sentinel: Sentinel
     - Replication: Replication

@@ -12,7 +12,7 @@ Redis sentinel、Redis cluster都属于distributed system存在着诸多共同�
 | --------------------- | --------------------------- | --------------------------- |
 | Consensus protocol    | raft                        | raft                        |
 |                       | current epoch、config epoch | current epoch、config epoch |
-| 下线                  |                             |                             |
+| 下线                  | 主观下线、客观下线          | 疑似下线、下线              |
 | system/topology state | `sentinelState`             | `clusterState`              |
 | auto discover         | HELLO channel               | gossip                      |
 

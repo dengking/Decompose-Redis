@@ -4,11 +4,11 @@ Redis sentinel、Redis cluster都属于distributed system，存在着诸多共�
 
 
 
-|      |      |      |
-| ---- | ---- | ---- |
-|      |      |      |
-|      |      |      |
-|      |      |      |
+|                    | Redis sentinel | Redis cluster |
+| ------------------ | -------------- | ------------- |
+| Consensus protocol | raft           | raft          |
+|                    |                |               |
+|                    |                |               |
 
 
 

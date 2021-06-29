@@ -1,4 +1,5 @@
 nav:
+    - Introduction: index.md
     - Generic-double-linked-list: Generic-double-linked-list
     - Rax: Rax
     - Dict: Dict

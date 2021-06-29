@@ -1,4 +1,6 @@
-```
+# Generic double linked pointer
+
+```C
 typedef struct listNode {
     struct listNode *prev;
     struct listNode *next;
@@ -9,7 +11,7 @@ typedef struct listNode {
 节点的数据类型是pointer，因为redis中的所有的数据都是来自于网络，都是从接收到的数据new出一片空间的；
 
 在`networking.c`中有如下函数：
-```
+```C
 /* This function links the client to the global linked list of clients.
  * unlinkClient() does the opposite, among other things. */
 void linkClient(client *c) {
@@ -25,7 +27,7 @@ void linkClient(client *c) {
 
 `listAddNodeTail`函数的原型如下：
 
-```
+```C
 list *listAddNodeTail(list *list, void *value)
 ```
 显然在`linkClient`函数中，涉及了从`client *`到`void *`类型的转换

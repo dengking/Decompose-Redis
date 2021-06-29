@@ -2,8 +2,9 @@
 
 redis的rax实现其实是即支持trie又支持radix tree的；认知到这一点，我是先通过阅读了trie的实现后，再阅读redis rax的实现才发现的这个问题，以下是trie的两种实现：
 
-- python trie：https://github.com/dengking/TheAlgorithms-Python/tree/master/data_structures/trie
-- c trie：https://github.com/dengking/TheAlgorithms-C/tree/master/data_structures/trie
+1、python trie：https://github.com/dengking/TheAlgorithms-Python/tree/master/data_structures/trie
+
+2、c trie：https://github.com/dengking/TheAlgorithms-C/tree/master/data_structures/trie
 
 python trie中，node的定义是如下的：
 

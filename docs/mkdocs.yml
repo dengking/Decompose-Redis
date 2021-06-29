@@ -4,8 +4,8 @@ nav:
     - Expert-antirez: Expert-antirez
     - Expert-cnblogs-gqtc-redis系列: Expert-cnblogs-gqtc-redis系列
     - Expert-cnblogs-小不点啊: Expert-cnblogs-小不点啊
-    - Impl: Impl
-    - deploy-topology: deploy-topology
+    - Basic: Basic
+    - Deploy-topology: deploy-topology
     - HA: HA
     - Cluster: cluster
     - Command: Command

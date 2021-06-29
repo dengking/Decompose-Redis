@@ -1,6 +1,6 @@
 # Redis cluster data sharding strategy
 
-Redis cluster 采用的是它 "hash slot" 的data sharding strategy，这在下面的文章中进行了说明:
+Redis cluster 采用的是 "hash slot" 的data sharding strategy，这在下面的文章中进行了说明:
 
 1、redis doc [redis partition](https://redis.io/topics/partitioning)
 
@@ -12,9 +12,9 @@ Redis cluster 采用的是它 "hash slot" 的data sharding strategy，这在下�
 
 ## Redis hash slot VS consistent hash
 
-而不是consistent hash，我觉得Redis的hash  slot方案的优势是: 
+Redis采用的是hash slot，而不是consistent hash，我觉得Redis的hash  slot方案的优势是: 
 
-允许用户"keys-to-nodes map"进行灵活的控制(其实从另外一个角度来说，它的优势也是它的劣势)。
+**允许用户"keys-to-nodes map"进行灵活的控制(其实从另外一个角度来说，它的优势也是它的劣势)**
 
 下面是对此的详细说明:
 

@@ -1,44 +1,54 @@
 # Distributed computing: sentinel、cluster
 
-Redis sentinel、Redis cluster都属于distributed system，存在着诸多共同之处，可以认为: Redis cluster集成了Redis sentinel的功能。
+Redis sentinel、Redis cluster都属于distributed system，其中使用了很多distributed computing中的技术，我们可以将Redis作为学习distributed computing的一个非常好的案例，也可以使用distributedcomputing的理论来对它进行分析；
+
+## Redis sentinel、Redis cluster
+
+Redis sentinel、Redis cluster都属于distributed system存在着诸多共同之处，可以认为: Redis cluster集成了Redis sentinel的功能。
 
 
 
-|                    | Redis sentinel | Redis cluster |
-| ------------------ | -------------- | ------------- |
-| Consensus protocol | raft           | raft          |
-|                    |                |               |
-|                    |                |               |
+|                       | Redis sentinel              | Redis cluster               |
+| --------------------- | --------------------------- | --------------------------- |
+| Consensus protocol    | raft                        | raft                        |
+|                       | current epoch、config epoch | current epoch、config epoch |
+| 下线                  |                             |                             |
+| system/topology state | `sentinelState`             | `clusterState`              |
+| auto discover         | HELLO channel               | gossip                      |
 
 
 
+### stackoverflow [Redis sentinel vs clustering](https://stackoverflow.com/questions/31143072/redis-sentinel-vs-clustering)
 
 
-## Redis Consensus protocol: raft
+
+### fnordig [Redis Sentinel & Redis Cluster - what?](https://fnordig.de/2015/06/01/redis-sentinel-and-redis-cluster/)
+
+#### Redis Sentinel
+
+It will **monitor** your master & slave instances, **notify** you about changed behaviour, handle **automatic failover** in case a master is down and act as a **configuration provider**, so your clients can find the current master instance.
+
+> NOTE: 
+>
+> 上面这段话，介绍了"configuration provider"的功能
+
+#### Redis Cluster
+
+Redis Cluster is a **data sharding** solution with **automatic management**, **handling failover** and **replication**.
+
+
+
+### See also
+
+amazon [**Amazon ElastiCache for Redis**](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html)
+
+其中总结了Redis sentinel、Redis cluster
+
+
+
+## CAP
 
 Redis的两种部署方式(sentinel、cluster)都属于distributed system，都涉及CAP:
 
 consistency、availability、partition；
-
-本章对Redis的"consensus protocol"进行讨论。
-
-在阅读[Redis源码解析：27集群(三)主从复制、故障转移](https://www.cnblogs.com/gqtcgq/p/7247042.html)的时候，其中提及：
-
-> 理解Redis集群中的故障转移，必须要理解纪元(epoch)在分布式Redis集群中的作用，Redis集群使用RAFT算法中类似term的概念，在Redis集群中这被称之为纪元(epoch)。纪元的概念在介绍哨兵时已经介绍过了，在Redis集群中，纪元的概念和作用与哨兵中的纪元类似。Redis集群中的纪元主要是两种：currentEpoch和configEpoch。
-
-上面提到了redis哨兵，redis哨兵的文档在[Redis Sentinel Documentation](https://redis.io/topics/sentinel)中介绍，其中的确有epoch的概念，并且redis哨兵所实现的high availability，其实是依赖于故障转移功能的，而redis cluster也能够提供故障转移(failover)功能，并且它的实现也借鉴了redis sentinel的实现，这说明redis cluster集成了redis sentinel的部分功能，并且实现上也是借鉴的redis sentinel；
-
-阅读[gqtc ](https://home.cnblogs.com/u/gqtcgq/)的[redis系列博客](https://www.cnblogs.com/gqtcgq/category/1043761.html)中，关于sentinel的文章，我能够从中看到一些redis cluster实现中同样使用的技术：
-
-
-
-|                           sentinel                           |                           cluster                            |
-| :----------------------------------------------------------: | :----------------------------------------------------------: |
-| [Redis源码解析：21sentinel(二)定期发送消息、检测主观下线](https://www.cnblogs.com/gqtcgq/p/7247048.html) | [Redis源码解析：25集群(一)握手、心跳消息以及下线检测](https://www.cnblogs.com/gqtcgq/p/7247044.html) |
-| [Redis源码解析：22sentinel(三)客观下线以及故障转移之选举领导节点](https://www.cnblogs.com/gqtcgq/p/7247047.html) | [Redis源码解析：27集群(三)主从复制、故障转移](https://www.cnblogs.com/gqtcgq/p/7247042.html) |
-| [Redis源码解析：23sentinel(四)故障转移流程](https://www.cnblogs.com/gqtcgq/p/7247046.html) |                                                              |
-
-
-
-其实现在想想本质上redis sentinel和redis cluster都是distribution system，并且它们需要实现的功能是存在一定的重复的，所以实现上的重复是非常正常的；
 

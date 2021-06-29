@@ -1,5 +1,6 @@
 nav:
     - Introduction: index.md
+    - redis-doc-Redis-data-type: redis-doc-Redis-data-type
     - Generic-double-linked-list: Generic-double-linked-list
     - Rax: Rax
     - Dict: Dict

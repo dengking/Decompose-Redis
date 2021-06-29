@@ -12,21 +12,3 @@
 
 其中总结了Redis sentinel、Redis cluster
 
-## Sentinel VS cluster
-
-stackoverflow [Redis sentinel vs clustering](https://stackoverflow.com/questions/31143072/redis-sentinel-vs-clustering)
-
-### fnordig [Redis Sentinel & Redis Cluster - what?](https://fnordig.de/2015/06/01/redis-sentinel-and-redis-cluster/)
-
-#### Redis Sentinel
-
-It will **monitor** your master & slave instances, **notify** you about changed behaviour, handle **automatic failover** in case a master is down and act as a **configuration provider**, so your clients can find the current master instance.
-
-> NOTE: 
->
-> 上面这段话，介绍了"configuration provider"的功能
-
-#### Redis Cluster
-
-Redis Cluster is a **data sharding** solution with **automatic management**, **handling failover** and **replication**.
-

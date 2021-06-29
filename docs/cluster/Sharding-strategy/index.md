@@ -6,7 +6,9 @@ Redis cluster 采用的是它 "hash slot" 的data sharding strategy，这在下�
 
 2、redis [Redis Cluster Specification](https://redis.io/topics/cluster-spec)
 
+3、csdn [Redis Cluster and Consistent Hashing](https://blog.csdn.net/xinzhongtianxia/article/details/81543838)
 
+在这篇文章中也对Redis没有采用consistent hash进行了说明。
 
 ## Redis hash slot VS consistent hash
 

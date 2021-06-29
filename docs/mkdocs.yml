@@ -1,7 +1,8 @@
 nav:
     - Home: index.md
     - Books: Books
-    - doc: doc
+    - Expert-antirez: Expert-antirez
+    - Expert-cnblogs-gqtc-redis系列: Expert-cnblogs-gqtc-redis系列
     - Impl: Impl
     - deploy-topology: deploy-topology
     - HA: HA

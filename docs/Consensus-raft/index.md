@@ -1,3 +1,11 @@
+# Redis Consensus protocol: raft
+
+Redis的两种部署方式(sentinel、cluster)都属于distributed system，都涉及CAP:
+
+consistency、availability、partition；
+
+本章对Redis的"consensus protocol"进行讨论。
+
 在阅读[Redis源码解析：27集群(三)主从复制、故障转移](https://www.cnblogs.com/gqtcgq/p/7247042.html)的时候，其中提及：
 
 > 理解Redis集群中的故障转移，必须要理解纪元(epoch)在分布式Redis集群中的作用，Redis集群使用RAFT算法中类似term的概念，在Redis集群中这被称之为纪元(epoch)。纪元的概念在介绍哨兵时已经介绍过了，在Redis集群中，纪元的概念和作用与哨兵中的纪元类似。Redis集群中的纪元主要是两种：currentEpoch和configEpoch。

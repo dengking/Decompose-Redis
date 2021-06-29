@@ -2,9 +2,13 @@
 
 > NOTE: 
 >
+> 一、首先需要了解拓扑结构
+>
 > jianshu [Redis哨兵（Sentinel）模式](https://www.jianshu.com/p/06ab9daf921d)
 >
 > ![](Redis-sentinel-deploy.webp)
+>
+> sentinel之间相互连接
 
 Redis Sentinel provides **high availability** for Redis. In practical terms this means that using Sentinel you can create a Redis deployment that resists without human intervention certain kinds of failures.
 

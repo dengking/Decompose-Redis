@@ -2,6 +2,5 @@ nav:
     - Introduction: index.md
     - alibabacloud-Improving-Redis-Performance-through-Multi-Thread: alibabacloud-Improving-Redis-Performance-through-Multi-Thread
     - zhihu-Redis-6.0-多线程IO处理过程详解: zhihu-Redis-6.0-多线程IO处理过程详解
-
-    - Background-IO-service-for-Redis: Background-IO-service-for-Redis
+    - Background-IO-thread: Background-IO-thread
     - Read-code: Read-code    

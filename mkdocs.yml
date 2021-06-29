@@ -37,45 +37,89 @@ nav:
     - Introduction: doc/antirez/index.md
     - An-update-about-Redis-developments-in-2019:
       - Introduction: doc/antirez/An-update-about-Redis-developments-in-2019/index.md
-- Data-structure:
-  - Generic-double-linked-list:
-    - Introduction: Data-structure/Generic-double-linked-list/index.md
-  - Rax:
-    - Introduction: Data-structure/Rax/index.md
-  - Dict:
-    - Introduction: Data-structure/Dict/index.md
-    - Dict-usage: Data-structure/Dict/Dict-usage.md
-    - Incremental-rehash:
-      - Introduction: Data-structure/Dict/Incremental-rehash/index.md
-- Event-library:
-  - Introduction: Event-library/index.md
-  - Redis-event-library-office-doc:
-    - Introduction: Event-library/Redis-event-library-office-doc/index.md
-  - Low-level-IO-multiplex:
-    - Introduction: Event-library/Low-level-IO-multiplex/index.md
-  - High-level:
-    - Introduction: Event-library/High-level/index.md
-- Redis-server:
-  - Introduction: Redis-server/index.md
-  - Redis-Signals-Handling:
-    - Introduction: Redis-server/Redis-Signals-Handling/index.md
-    - redis-doc-Redis-Signals-Handling:
-      - Introduction: Redis-server/Redis-Signals-Handling/redis-doc-Redis-Signals-Handling/index.md
-- Sentinel:
-  - Redis-Sentinel: Sentinel/Redis-Sentinel.md
+- Impl:
+  - Event-library:
+    - Introduction: Impl/Event-library/index.md
+    - official-doc:
+      - Introduction: Impl/Event-library/official-doc/index.md
+    - Low-level-IO-multiplex:
+      - Introduction: Impl/Event-library/Low-level-IO-multiplex/index.md
+    - High-level:
+      - Introduction: Impl/Event-library/High-level/index.md
+  - Network:
+    - Introduction: Impl/Network/index.md
+  - Thread-model:
+    - Introduction: Impl/Thread-model/index.md
+    - alibabacloud-Improving-Redis-Performance-through-Multi-Thread:
+      - Introduction: Impl/Thread-model/alibabacloud-Improving-Redis-Performance-through-Multi-Thread/index.md
+    - "zhihu-Redis-6.0-\u591A\u7EBF\u7A0BIO\u5904\u7406\u8FC7\u7A0B\u8BE6\u89E3":
+      - Introduction: "Impl/Thread-model/zhihu-Redis-6.0-\u591A\u7EBF\u7A0BIO\u5904\
+          \u7406\u8FC7\u7A0B\u8BE6\u89E3/index.md"
+    - Background-IO-thread:
+      - Introduction: Impl/Thread-model/Background-IO-thread/index.md
+    - Read-code:
+      - Introduction: Impl/Thread-model/Read-code/index.md
+  - Redis-server:
+    - Introduction: Impl/Redis-server/index.md
+    - Redis-Signals-Handling:
+      - Introduction: Impl/Redis-server/Redis-Signals-Handling/index.md
+      - redis-doc-Redis-Signals-Handling:
+        - Introduction: Impl/Redis-server/Redis-Signals-Handling/redis-doc-Redis-Signals-Handling/index.md
+  - Data-structure:
+    - Generic-double-linked-list:
+      - Introduction: Impl/Data-structure/Generic-double-linked-list/index.md
+    - Rax:
+      - Introduction: Impl/Data-structure/Rax/index.md
+    - Dict:
+      - Introduction: Impl/Data-structure/Dict/index.md
+      - Dict-usage: Impl/Data-structure/Dict/Dict-usage.md
+      - Incremental-rehash:
+        - Introduction: Impl/Data-structure/Dict/Incremental-rehash/index.md
+  - Memory-management:
+    - Introduction: Impl/Memory-management/index.md
+    - zmalloc:
+      - Introduction: Impl/Memory-management/zmalloc/index.md
+  - Persistence:
+    - Introduction: Impl/Persistence/index.md
+- deploy-topology:
+  - Introduction: deploy-topology/index.md
+- HA:
+  - Introduction: HA/index.md
+  - Sentinel:
+    - Introduction: HA/Sentinel/index.md
+    - Redis-Sentinel-Documentation:
+      - Introduction: HA/Sentinel/Redis-Sentinel-Documentation/index.md
+  - Replication:
+    - Introduction: HA/Replication/index.md
+- Cluster:
+  - Introduction: cluster/index.md
+  - redis-doc-Redis-Cluster-Tutorial:
+    - Introduction: cluster/redis-doc-Redis-Cluster-Tutorial/index.md
+  - redis-doc-Redis-Cluster-Specification:
+    - Introduction: cluster/redis-doc-Redis-Cluster-Specification/index.md
+  - Sharding-strategy:
+    - Introduction: cluster/Sharding-strategy/index.md
 - Command:
-  - Commands: Command/Commands.md
+  - Introduction: Command/index.md
 - Clients:
   - library-Redis-plus-plus:
     - Introduction: Clients/library-Redis-plus-plus/index.md
-- Redis-cli:
-  - Introduction: Redis-cli/index.md
-  - linenoise:
-    - Introduction: Redis-cli/linenoise/index.md
-- Memory-management:
-  - Introduction: Memory-management/index.md
-  - zmalloc:
-    - Introduction: Memory-management/zmalloc/index.md
+  - Redis-cli:
+    - Introduction: Clients/Redis-cli/index.md
+    - linenoise:
+      - Introduction: Clients/Redis-cli/linenoise/index.md
+- Redis-write-safety-analysis:
+  - Introduction: Redis-write-safety-analysis/index.md
+- Application:
+  - Redis-Cache:
+    - Introduction: Application/Redis-Cache/index.md
+    - "CSDN-\u5F7B\u5E95\u641E\u61C2\u7F13\u5B58\u7A7F\u900F-\u7F13\u5B58\u51FB\u7A7F-\u7F13\u5B58\u96EA\u5D29":
+      - Introduction: "Application/Redis-Cache/CSDN-\u5F7B\u5E95\u641E\u61C2\u7F13\
+          \u5B58\u7A7F\u900F-\u7F13\u5B58\u51FB\u7A7F-\u7F13\u5B58\u96EA\u5D29/index.md"
+- Amazon-ElastiCache:
+  - Introduction: Amazon-ElastiCache/index.md
+  - High-availability-using-replication-groups:
+    - Introduction: Amazon-ElastiCache/High-availability-using-replication-groups/index.md
 plugins:
 - search
 repo_url: https://github.com/dengking/decompose-redis

@@ -1,4 +1,20 @@
-# Redis Consensus protocol: raft
+# Distributed computing: sentinel、cluster
+
+Redis sentinel、Redis cluster都属于distributed system，存在着诸多共同之处，可以认为: Redis cluster集成了Redis sentinel的功能。
+
+
+
+|      |      |      |
+| ---- | ---- | ---- |
+|      |      |      |
+|      |      |      |
+|      |      |      |
+
+
+
+
+
+## Redis Consensus protocol: raft
 
 Redis的两种部署方式(sentinel、cluster)都属于distributed system，都涉及CAP:
 

@@ -1,8 +1,9 @@
 nav:
     - Introduction: index.md
+    - main: main
+    - Event-library: Event-library # 首先搞清楚redis是一个event-driven system    
+    - Network: Network # 描述redis是如何实现底层网络通信的        
     - Redis-server: Redis-server
-    - Event-library: Event-library # 首先搞清楚redis是一个event-driven system
-    - Network: Network # 描述redis是如何实现底层网络通信的    
     - Thread-model: Thread-model
     - Background-process: Background-process
     - Data-structure: Data-structure # 首先描述redis中的data structure，因为redis是一个data structure server

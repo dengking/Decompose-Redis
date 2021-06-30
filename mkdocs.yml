@@ -46,6 +46,9 @@ nav:
       - Introduction: "Expert-cnblogs-gqtc-redis\u7CFB\u5217/Sentinel/22-sentinel\u4E09\
           \u5BA2\u89C2\u4E0B\u7EBF\u4EE5\u53CA\u6545\u969C\u8F6C\u79FB\u4E4B\u9009\
           \u4E3E\u9886\u5BFC\u8282\u70B9/index.md"
+    - "23-sentinel\u56DB\u6545\u969C\u8F6C\u79FB\u6D41\u7A0B":
+      - Introduction: "Expert-cnblogs-gqtc-redis\u7CFB\u5217/Sentinel/23-sentinel\u56DB\
+          \u6545\u969C\u8F6C\u79FB\u6D41\u7A0B/index.md"
   - Cluster:
     - "25-\u96C6\u7FA4\u4E00\u63E1\u624B-\u5FC3\u8DF3\u6D88\u606F\u4EE5\u53CA\u4E0B\u7EBF\u68C0\u6D4B":
       - Introduction: "Expert-cnblogs-gqtc-redis\u7CFB\u5217/Cluster/25-\u96C6\u7FA4\
@@ -64,12 +67,12 @@ nav:
         -redis\u96C6\u7FA4\u9AD8\u53EF\u7528/index.md"
 - Basic:
   - Introduction: Basic/index.md
-  - Redis-server:
-    - Introduction: Basic/Redis-server/index.md
-    - Redis-Signals-Handling:
-      - Introduction: Basic/Redis-server/Redis-Signals-Handling/index.md
-      - redis-doc-Redis-Signals-Handling:
-        - Introduction: Basic/Redis-server/Redis-Signals-Handling/redis-doc-Redis-Signals-Handling/index.md
+  - main:
+    - Introduction: Basic/main/index.md
+    - Event&&handler:
+      - Introduction: Basic/main/Event&&handler/index.md
+    - redis-doc-Redis-internals:
+      - Introduction: Basic/main/redis-doc-Redis-internals/index.md
   - Event-library:
     - Introduction: Basic/Event-library/index.md
     - official-doc:
@@ -80,6 +83,12 @@ nav:
       - Introduction: Basic/Event-library/High-level/index.md
   - Network:
     - Introduction: Basic/Network/index.md
+  - Redis-server:
+    - Introduction: Basic/Redis-server/index.md
+    - Redis-Signals-Handling:
+      - Introduction: Basic/Redis-server/Redis-Signals-Handling/index.md
+      - redis-doc-Redis-Signals-Handling:
+        - Introduction: Basic/Redis-server/Redis-Signals-Handling/redis-doc-Redis-Signals-Handling/index.md
   - Thread-model:
     - Introduction: Basic/Thread-model/index.md
     - alibabacloud-Improving-Redis-Performance-through-Multi-Thread:
@@ -147,6 +156,8 @@ nav:
       - Introduction: cluster/Gossip/redis-cluster-gossip-aliyun/index.md
   - Read-the-code:
     - Introduction: cluster/Read-the-code/index.md
+  - "\u8BFB\u5199\u5206\u79BB":
+    - Introduction: "cluster/\u8BFB\u5199\u5206\u79BB/index.md"
 - Command:
   - Introduction: Command/index.md
 - Clients:

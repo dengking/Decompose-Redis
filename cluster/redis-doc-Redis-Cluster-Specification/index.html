@@ -1,0 +1,4451 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Project documentation with Markdown.">
+      
+      
+      
+        <meta name="author" content="DengKing">
+      
+      
+        <link rel="canonical" href="https://dengking.github.io/decompose-redis/cluster/redis-doc-Redis-Cluster-Specification/">
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.3">
+    
+    
+      
+        <title>Introduction - decompose-redis</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.1655a90d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.7fa14f5b.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+    
+      
+        
+<script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-27795084-5","mkdocs.org"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#redis#redis#cluster#specification" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="https://dengking.github.io/decompose-redis" title="decompose-redis" class="md-header__button md-logo" aria-label="decompose-redis">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            decompose-redis
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Introduction
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="md-header__options">
+      
+    </div>
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/dengking/decompose-redis" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://dengking.github.io/decompose-redis" title="decompose-redis" class="md-nav__button md-logo" aria-label="decompose-redis">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    decompose-redis
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/dengking/decompose-redis" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      <label class="md-nav__link" for="__nav_2">
+        Books
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Books" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Books
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Books/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      <label class="md-nav__link" for="__nav_3">
+        Expert-antirez
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Expert-antirez" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Expert-antirez
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Expert-antirez/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" >
+      
+      <label class="md-nav__link" for="__nav_3_2">
+        An-update-about-Redis-developments-in-2019
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="An-update-about-Redis-developments-in-2019" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          An-update-about-Redis-developments-in-2019
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Expert-antirez/An-update-about-Redis-developments-in-2019/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      <label class="md-nav__link" for="__nav_4">
+        Expert-cnblogs-gqtc-redis系列
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Expert-cnblogs-gqtc-redis系列" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Expert-cnblogs-gqtc-redis系列
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Expert-cnblogs-gqtc-redis%E7%B3%BB%E5%88%97/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_2" type="checkbox" id="__nav_4_2" >
+      
+      <label class="md-nav__link" for="__nav_4_2">
+        Sentinel
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Sentinel" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_2">
+          <span class="md-nav__icon md-icon"></span>
+          Sentinel
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_2_1" type="checkbox" id="__nav_4_2_1" >
+      
+      <label class="md-nav__link" for="__nav_4_2_1">
+        20-sentinel一初始化-建链
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="20-sentinel一初始化-建链" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          20-sentinel一初始化-建链
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Expert-cnblogs-gqtc-redis%E7%B3%BB%E5%88%97/Sentinel/20-sentinel%E4%B8%80%E5%88%9D%E5%A7%8B%E5%8C%96-%E5%BB%BA%E9%93%BE/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_2_2" type="checkbox" id="__nav_4_2_2" >
+      
+      <label class="md-nav__link" for="__nav_4_2_2">
+        22-sentinel三客观下线以及故障转移之选举领导节点
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="22-sentinel三客观下线以及故障转移之选举领导节点" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          22-sentinel三客观下线以及故障转移之选举领导节点
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Expert-cnblogs-gqtc-redis%E7%B3%BB%E5%88%97/Sentinel/22-sentinel%E4%B8%89%E5%AE%A2%E8%A7%82%E4%B8%8B%E7%BA%BF%E4%BB%A5%E5%8F%8A%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB%E4%B9%8B%E9%80%89%E4%B8%BE%E9%A2%86%E5%AF%BC%E8%8A%82%E7%82%B9/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_2_3" type="checkbox" id="__nav_4_2_3" >
+      
+      <label class="md-nav__link" for="__nav_4_2_3">
+        23-sentinel四故障转移流程
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="23-sentinel四故障转移流程" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          23-sentinel四故障转移流程
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Expert-cnblogs-gqtc-redis%E7%B3%BB%E5%88%97/Sentinel/23-sentinel%E5%9B%9B%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB%E6%B5%81%E7%A8%8B/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_3" type="checkbox" id="__nav_4_3" >
+      
+      <label class="md-nav__link" for="__nav_4_3">
+        Cluster
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Cluster" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_3">
+          <span class="md-nav__icon md-icon"></span>
+          Cluster
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_3_1" type="checkbox" id="__nav_4_3_1" >
+      
+      <label class="md-nav__link" for="__nav_4_3_1">
+        25-集群一握手-心跳消息以及下线检测
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="25-集群一握手-心跳消息以及下线检测" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          25-集群一握手-心跳消息以及下线检测
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Expert-cnblogs-gqtc-redis%E7%B3%BB%E5%88%97/Cluster/25-%E9%9B%86%E7%BE%A4%E4%B8%80%E6%8F%A1%E6%89%8B-%E5%BF%83%E8%B7%B3%E6%B6%88%E6%81%AF%E4%BB%A5%E5%8F%8A%E4%B8%8B%E7%BA%BF%E6%A3%80%E6%B5%8B/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_3_2" type="checkbox" id="__nav_4_3_2" >
+      
+      <label class="md-nav__link" for="__nav_4_3_2">
+        26-集群二键的分配与迁移
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="26-集群二键的分配与迁移" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          26-集群二键的分配与迁移
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Expert-cnblogs-gqtc-redis%E7%B3%BB%E5%88%97/Cluster/26-%E9%9B%86%E7%BE%A4%E4%BA%8C%E9%94%AE%E7%9A%84%E5%88%86%E9%85%8D%E4%B8%8E%E8%BF%81%E7%A7%BB/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_3_3" type="checkbox" id="__nav_4_3_3" >
+      
+      <label class="md-nav__link" for="__nav_4_3_3">
+        27-集群三主从复制-故障转移
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="27-集群三主从复制-故障转移" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          27-集群三主从复制-故障转移
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Expert-cnblogs-gqtc-redis%E7%B3%BB%E5%88%97/Cluster/27-%E9%9B%86%E7%BE%A4%E4%B8%89%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6-%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      <label class="md-nav__link" for="__nav_5">
+        Expert-cnblogs-小不点啊
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Expert-cnblogs-小不点啊" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Expert-cnblogs-小不点啊
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Expert-cnblogs-%E5%B0%8F%E4%B8%8D%E7%82%B9%E5%95%8A/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_2" type="checkbox" id="__nav_5_2" >
+      
+      <label class="md-nav__link" for="__nav_5_2">
+        Redis系列九-redis集群高可用
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Redis系列九-redis集群高可用" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_2">
+          <span class="md-nav__icon md-icon"></span>
+          Redis系列九-redis集群高可用
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Expert-cnblogs-%E5%B0%8F%E4%B8%8D%E7%82%B9%E5%95%8A/Redis%E7%B3%BB%E5%88%97%E4%B9%9D-redis%E9%9B%86%E7%BE%A4%E9%AB%98%E5%8F%AF%E7%94%A8/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      <label class="md-nav__link" for="__nav_6">
+        Basic
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Basic" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Basic
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2" type="checkbox" id="__nav_6_2" >
+      
+      <label class="md-nav__link" for="__nav_6_2">
+        main
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="main" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          main
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/main/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_2" type="checkbox" id="__nav_6_2_2" >
+      
+      <label class="md-nav__link" for="__nav_6_2_2">
+        Event&&handler
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Event&&handler" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          Event&&handler
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/main/Event%26%26handler/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_3" type="checkbox" id="__nav_6_2_3" >
+      
+      <label class="md-nav__link" for="__nav_6_2_3">
+        redis-doc-Redis-internals
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="redis-doc-Redis-internals" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          redis-doc-Redis-internals
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/main/redis-doc-Redis-internals/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3" type="checkbox" id="__nav_6_3" >
+      
+      <label class="md-nav__link" for="__nav_6_3">
+        Event-library
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Event-library" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_3">
+          <span class="md-nav__icon md-icon"></span>
+          Event-library
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Event-library/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_2" type="checkbox" id="__nav_6_3_2" >
+      
+      <label class="md-nav__link" for="__nav_6_3_2">
+        official-doc
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="official-doc" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          official-doc
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Event-library/official-doc/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_3" type="checkbox" id="__nav_6_3_3" >
+      
+      <label class="md-nav__link" for="__nav_6_3_3">
+        Low-level-IO-multiplex
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Low-level-IO-multiplex" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          Low-level-IO-multiplex
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Event-library/Low-level-IO-multiplex/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_4" type="checkbox" id="__nav_6_3_4" >
+      
+      <label class="md-nav__link" for="__nav_6_3_4">
+        High-level
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="High-level" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_3_4">
+          <span class="md-nav__icon md-icon"></span>
+          High-level
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Event-library/High-level/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4" type="checkbox" id="__nav_6_4" >
+      
+      <label class="md-nav__link" for="__nav_6_4">
+        Network
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Network" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_4">
+          <span class="md-nav__icon md-icon"></span>
+          Network
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Network/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_5" type="checkbox" id="__nav_6_5" >
+      
+      <label class="md-nav__link" for="__nav_6_5">
+        Redis-server
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Redis-server" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_5">
+          <span class="md-nav__icon md-icon"></span>
+          Redis-server
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Redis-server/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_5_2" type="checkbox" id="__nav_6_5_2" >
+      
+      <label class="md-nav__link" for="__nav_6_5_2">
+        Redis-Signals-Handling
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Redis-Signals-Handling" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_5_2">
+          <span class="md-nav__icon md-icon"></span>
+          Redis-Signals-Handling
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Redis-server/Redis-Signals-Handling/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_5_2_2" type="checkbox" id="__nav_6_5_2_2" >
+      
+      <label class="md-nav__link" for="__nav_6_5_2_2">
+        redis-doc-Redis-Signals-Handling
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="redis-doc-Redis-Signals-Handling" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_5_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          redis-doc-Redis-Signals-Handling
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Redis-server/Redis-Signals-Handling/redis-doc-Redis-Signals-Handling/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_6" type="checkbox" id="__nav_6_6" >
+      
+      <label class="md-nav__link" for="__nav_6_6">
+        Thread-model
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Thread-model" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_6">
+          <span class="md-nav__icon md-icon"></span>
+          Thread-model
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Thread-model/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_6_2" type="checkbox" id="__nav_6_6_2" >
+      
+      <label class="md-nav__link" for="__nav_6_6_2">
+        alibabacloud-Improving-Redis-Performance-through-Multi-Thread
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="alibabacloud-Improving-Redis-Performance-through-Multi-Thread" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          alibabacloud-Improving-Redis-Performance-through-Multi-Thread
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Thread-model/alibabacloud-Improving-Redis-Performance-through-Multi-Thread/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_6_3" type="checkbox" id="__nav_6_6_3" >
+      
+      <label class="md-nav__link" for="__nav_6_6_3">
+        zhihu-Redis-6.0-多线程IO处理过程详解
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="zhihu-Redis-6.0-多线程IO处理过程详解" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_6_3">
+          <span class="md-nav__icon md-icon"></span>
+          zhihu-Redis-6.0-多线程IO处理过程详解
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Thread-model/zhihu-Redis-6.0-%E5%A4%9A%E7%BA%BF%E7%A8%8BIO%E5%A4%84%E7%90%86%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_6_4" type="checkbox" id="__nav_6_6_4" >
+      
+      <label class="md-nav__link" for="__nav_6_6_4">
+        Background-IO-thread
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Background-IO-thread" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_6_4">
+          <span class="md-nav__icon md-icon"></span>
+          Background-IO-thread
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Thread-model/Background-IO-thread/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_6_5" type="checkbox" id="__nav_6_6_5" >
+      
+      <label class="md-nav__link" for="__nav_6_6_5">
+        Read-code
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Read-code" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_6_5">
+          <span class="md-nav__icon md-icon"></span>
+          Read-code
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Thread-model/Read-code/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_7" type="checkbox" id="__nav_6_7" >
+      
+      <label class="md-nav__link" for="__nav_6_7">
+        Background-process
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Background-process" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_7">
+          <span class="md-nav__icon md-icon"></span>
+          Background-process
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Background-process/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8" type="checkbox" id="__nav_6_8" >
+      
+      <label class="md-nav__link" for="__nav_6_8">
+        Data-structure
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Data-structure" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_8">
+          <span class="md-nav__icon md-icon"></span>
+          Data-structure
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Data-structure/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8_2" type="checkbox" id="__nav_6_8_2" >
+      
+      <label class="md-nav__link" for="__nav_6_8_2">
+        redis-doc-Redis-data-type
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="redis-doc-Redis-data-type" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_8_2">
+          <span class="md-nav__icon md-icon"></span>
+          redis-doc-Redis-data-type
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Data-structure/redis-doc-Redis-data-type/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8_3" type="checkbox" id="__nav_6_8_3" >
+      
+      <label class="md-nav__link" for="__nav_6_8_3">
+        Generic-double-linked-list
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Generic-double-linked-list" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_8_3">
+          <span class="md-nav__icon md-icon"></span>
+          Generic-double-linked-list
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Data-structure/Generic-double-linked-list/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8_4" type="checkbox" id="__nav_6_8_4" >
+      
+      <label class="md-nav__link" for="__nav_6_8_4">
+        Rax
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Rax" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_8_4">
+          <span class="md-nav__icon md-icon"></span>
+          Rax
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Data-structure/Rax/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8_5" type="checkbox" id="__nav_6_8_5" >
+      
+      <label class="md-nav__link" for="__nav_6_8_5">
+        Dict
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Dict" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_8_5">
+          <span class="md-nav__icon md-icon"></span>
+          Dict
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Data-structure/Dict/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Data-structure/Dict/Dict-usage/" class="md-nav__link">
+        Dict-usage
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8_5_3" type="checkbox" id="__nav_6_8_5_3" >
+      
+      <label class="md-nav__link" for="__nav_6_8_5_3">
+        Incremental-rehash
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Incremental-rehash" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_8_5_3">
+          <span class="md-nav__icon md-icon"></span>
+          Incremental-rehash
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Data-structure/Dict/Incremental-rehash/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_9" type="checkbox" id="__nav_6_9" >
+      
+      <label class="md-nav__link" for="__nav_6_9">
+        Memory-management
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Memory-management" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_9">
+          <span class="md-nav__icon md-icon"></span>
+          Memory-management
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Memory-management/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_9_2" type="checkbox" id="__nav_6_9_2" >
+      
+      <label class="md-nav__link" for="__nav_6_9_2">
+        zmalloc
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="zmalloc" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_9_2">
+          <span class="md-nav__icon md-icon"></span>
+          zmalloc
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Memory-management/zmalloc/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_10" type="checkbox" id="__nav_6_10" >
+      
+      <label class="md-nav__link" for="__nav_6_10">
+        Persistence
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Persistence" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_10">
+          <span class="md-nav__icon md-icon"></span>
+          Persistence
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basic/Persistence/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      <label class="md-nav__link" for="__nav_7">
+        Deploy-topology
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Deploy-topology" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Deploy-topology
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy-topology/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      <label class="md-nav__link" for="__nav_8">
+        Distributed-computing
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Distributed-computing" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Distributed-computing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Distributed-computing/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2" type="checkbox" id="__nav_8_2" >
+      
+      <label class="md-nav__link" for="__nav_8_2">
+        Consensus-raft
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Consensus-raft" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_2">
+          <span class="md-nav__icon md-icon"></span>
+          Consensus-raft
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Distributed-computing/Consensus-raft/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2" type="checkbox" id="__nav_8_2_2" >
+      
+      <label class="md-nav__link" for="__nav_8_2_2">
+        zhihu-Redis集群中的纪元-epoch
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="zhihu-Redis集群中的纪元-epoch" data-md-level="3">
+        <label class="md-nav__title" for="__nav_8_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          zhihu-Redis集群中的纪元-epoch
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Distributed-computing/Consensus-raft/zhihu-Redis%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E7%BA%AA%E5%85%83-epoch/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_3" type="checkbox" id="__nav_8_3" >
+      
+      <label class="md-nav__link" for="__nav_8_3">
+        Consistency
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Consistency" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_3">
+          <span class="md-nav__icon md-icon"></span>
+          Consistency
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Distributed-computing/Consistency/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_4" type="checkbox" id="__nav_8_4" >
+      
+      <label class="md-nav__link" for="__nav_8_4">
+        Write-safety-analysis
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Write-safety-analysis" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_4">
+          <span class="md-nav__icon md-icon"></span>
+          Write-safety-analysis
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Distributed-computing/Write-safety-analysis/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      <label class="md-nav__link" for="__nav_9">
+        HA
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="HA" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          HA
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../HA/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2" type="checkbox" id="__nav_9_2" >
+      
+      <label class="md-nav__link" for="__nav_9_2">
+        Sentinel
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Sentinel" data-md-level="2">
+        <label class="md-nav__title" for="__nav_9_2">
+          <span class="md-nav__icon md-icon"></span>
+          Sentinel
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../HA/Sentinel/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_2" type="checkbox" id="__nav_9_2_2" >
+      
+      <label class="md-nav__link" for="__nav_9_2_2">
+        Redis-Sentinel-Documentation
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Redis-Sentinel-Documentation" data-md-level="3">
+        <label class="md-nav__title" for="__nav_9_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          Redis-Sentinel-Documentation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../HA/Sentinel/Redis-Sentinel-Documentation/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_3" type="checkbox" id="__nav_9_3" >
+      
+      <label class="md-nav__link" for="__nav_9_3">
+        Replication
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Replication" data-md-level="2">
+        <label class="md-nav__title" for="__nav_9_3">
+          <span class="md-nav__icon md-icon"></span>
+          Replication
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../HA/Replication/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10" type="checkbox" id="__nav_10" checked>
+      
+      <label class="md-nav__link" for="__nav_10">
+        Cluster
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Cluster" data-md-level="1">
+        <label class="md-nav__title" for="__nav_10">
+          <span class="md-nav__icon md-icon"></span>
+          Cluster
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2" type="checkbox" id="__nav_10_2" >
+      
+      <label class="md-nav__link" for="__nav_10_2">
+        redis-doc-Redis-Cluster-Tutorial
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="redis-doc-Redis-Cluster-Tutorial" data-md-level="2">
+        <label class="md-nav__title" for="__nav_10_2">
+          <span class="md-nav__icon md-icon"></span>
+          redis-doc-Redis-Cluster-Tutorial
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../redis-doc-Redis-Cluster-Tutorial/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_3" type="checkbox" id="__nav_10_3" checked>
+      
+      <label class="md-nav__link" for="__nav_10_3">
+        redis-doc-Redis-Cluster-Specification
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="redis-doc-Redis-Cluster-Specification" data-md-level="2">
+        <label class="md-nav__title" for="__nav_10_3">
+          <span class="md-nav__icon md-icon"></span>
+          redis-doc-Redis-Cluster-Specification
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Introduction
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Introduction
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#main#properties#and#rationales#of#the#design" class="md-nav__link">
+    Main properties and rationales of the design
+  </a>
+  
+    <nav class="md-nav" aria-label="Main properties and rationales of the design">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#redis#cluster#goals" class="md-nav__link">
+    Redis Cluster goals
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implemented#subset" class="md-nav__link">
+    Implemented subset
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clients#and#servers#roles#in#the#redis#cluster#protocol" class="md-nav__link">
+    Clients and Servers roles in the Redis Cluster protocol
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write#safety" class="md-nav__link">
+    Write safety
+  </a>
+  
+    <nav class="md-nav" aria-label="Write safety">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#in#the#majority#partitions" class="md-nav__link">
+    In the majority partitions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#in#the#minority#side#of#a#partition" class="md-nav__link">
+    In the minority side of a partition
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#availability" class="md-nav__link">
+    Availability
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    Performance
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why#merge#operations#are#avoided" class="md-nav__link">
+    Why merge operations are avoided
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview#of#redis#cluster#main#components" class="md-nav__link">
+    Overview of Redis Cluster main components
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview of Redis Cluster main components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#keys#distribution#model" class="md-nav__link">
+    Keys distribution model
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keys#hash#tags" class="md-nav__link">
+    Keys hash tags
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cluster#nodes#attributes" class="md-nav__link">
+    Cluster nodes attributes
+  </a>
+  
+    <nav class="md-nav" aria-label="Cluster nodes attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#node#id#node#name" class="md-nav__link">
+    node ID /  node name
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the#cluster#bus" class="md-nav__link">
+    The Cluster bus
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cluster#topology" class="md-nav__link">
+    Cluster topology
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nodes#handshake" class="md-nav__link">
+    Nodes handshake
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#redirection#and#resharding" class="md-nav__link">
+    Redirection and resharding
+  </a>
+  
+    <nav class="md-nav" aria-label="Redirection and resharding">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#moved#redirection" class="md-nav__link">
+    MOVED Redirection
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cluster#live#reconfiguration" class="md-nav__link">
+    Cluster live reconfiguration
+  </a>
+  
+    <nav class="md-nav" aria-label="Cluster live reconfiguration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#addslots" class="md-nav__link">
+    ADDSLOTS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delslots" class="md-nav__link">
+    DELSLOTS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setslot" class="md-nav__link">
+    SETSLOT
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hash#slot#migration" class="md-nav__link">
+    Hash slot migration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ask#redirection" class="md-nav__link">
+    ASK redirection
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clients#first#connection#and#handling#of#redirections" class="md-nav__link">
+    Clients first connection and handling of redirections
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple#keys#operations" class="md-nav__link">
+    Multiple keys operations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scaling#reads#using#slave#nodes" class="md-nav__link">
+    Scaling reads using slave nodes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fault#tolerance" class="md-nav__link">
+    Fault Tolerance
+  </a>
+  
+    <nav class="md-nav" aria-label="Fault Tolerance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#heartbeat#and#gossip#messages" class="md-nav__link">
+    Heartbeat and gossip messages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#heartbeat#packet#content" class="md-nav__link">
+    Heartbeat packet content
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#failure#detection" class="md-nav__link">
+    Failure detection
+  </a>
+  
+    <nav class="md-nav" aria-label="Failure detection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pfail#flag" class="md-nav__link">
+    PFAIL flag:
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fail#flag" class="md-nav__link">
+    FAIL flag:
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration#handling#propagation#and#failovers" class="md-nav__link">
+    Configuration handling, propagation, and failovers
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration handling, propagation, and failovers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cluster#current#epoch" class="md-nav__link">
+    Cluster current epoch
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration#epoch" class="md-nav__link">
+    Configuration epoch
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#slave#election#and#promotion" class="md-nav__link">
+    Slave election and promotion
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#slave#rank" class="md-nav__link">
+    Slave rank
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#masters#reply#to#slave#vote#request" class="md-nav__link">
+    Masters reply to slave vote request
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical#example#of#configuration#epoch#usefulness#during#partitions" class="md-nav__link">
+    Practical example of configuration epoch usefulness during partitions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hash#slots#configuration#propagation" class="md-nav__link">
+    Hash slots configuration propagation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update#messages#a#closer#look" class="md-nav__link">
+    UPDATE messages, a closer look
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how#nodes#rejoin#the#cluster" class="md-nav__link">
+    How nodes rejoin the cluster
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#replica#migration" class="md-nav__link">
+    Replica migration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#replica#migration#algorithm" class="md-nav__link">
+    Replica migration algorithm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configepoch#conflicts#resolution#algorithm" class="md-nav__link">
+    configEpoch conflicts resolution algorithm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node#resets" class="md-nav__link">
+    Node resets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removing#nodes#from#a#cluster" class="md-nav__link">
+    Removing nodes from a cluster
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publishsubscribe" class="md-nav__link">
+    Publish/Subscribe
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix" class="md-nav__link">
+    Appendix
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_4" type="checkbox" id="__nav_10_4" >
+      
+      <label class="md-nav__link" for="__nav_10_4">
+        Sharding-strategy
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Sharding-strategy" data-md-level="2">
+        <label class="md-nav__title" for="__nav_10_4">
+          <span class="md-nav__icon md-icon"></span>
+          Sharding-strategy
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Sharding-strategy/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_5" type="checkbox" id="__nav_10_5" >
+      
+      <label class="md-nav__link" for="__nav_10_5">
+        Gossip
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Gossip" data-md-level="2">
+        <label class="md-nav__title" for="__nav_10_5">
+          <span class="md-nav__icon md-icon"></span>
+          Gossip
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gossip/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_5_2" type="checkbox" id="__nav_10_5_2" >
+      
+      <label class="md-nav__link" for="__nav_10_5_2">
+        redis-cluster-gossip-aliyun
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="redis-cluster-gossip-aliyun" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_5_2">
+          <span class="md-nav__icon md-icon"></span>
+          redis-cluster-gossip-aliyun
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gossip/redis-cluster-gossip-aliyun/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_6" type="checkbox" id="__nav_10_6" >
+      
+      <label class="md-nav__link" for="__nav_10_6">
+        Read-the-code
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Read-the-code" data-md-level="2">
+        <label class="md-nav__title" for="__nav_10_6">
+          <span class="md-nav__icon md-icon"></span>
+          Read-the-code
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Read-the-code/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_7" type="checkbox" id="__nav_10_7" >
+      
+      <label class="md-nav__link" for="__nav_10_7">
+        读写分离
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="读写分离" data-md-level="2">
+        <label class="md-nav__title" for="__nav_10_7">
+          <span class="md-nav__icon md-icon"></span>
+          读写分离
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_11" type="checkbox" id="__nav_11" >
+      
+      <label class="md-nav__link" for="__nav_11">
+        Command
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Command" data-md-level="1">
+        <label class="md-nav__title" for="__nav_11">
+          <span class="md-nav__icon md-icon"></span>
+          Command
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Command/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_12" type="checkbox" id="__nav_12" >
+      
+      <label class="md-nav__link" for="__nav_12">
+        Clients
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Clients" data-md-level="1">
+        <label class="md-nav__title" for="__nav_12">
+          <span class="md-nav__icon md-icon"></span>
+          Clients
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_12_1" type="checkbox" id="__nav_12_1" >
+      
+      <label class="md-nav__link" for="__nav_12_1">
+        library-Redis-plus-plus
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="library-Redis-plus-plus" data-md-level="2">
+        <label class="md-nav__title" for="__nav_12_1">
+          <span class="md-nav__icon md-icon"></span>
+          library-Redis-plus-plus
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Clients/library-Redis-plus-plus/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_12_2" type="checkbox" id="__nav_12_2" >
+      
+      <label class="md-nav__link" for="__nav_12_2">
+        Redis-cli
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Redis-cli" data-md-level="2">
+        <label class="md-nav__title" for="__nav_12_2">
+          <span class="md-nav__icon md-icon"></span>
+          Redis-cli
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Clients/Redis-cli/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_12_2_2" type="checkbox" id="__nav_12_2_2" >
+      
+      <label class="md-nav__link" for="__nav_12_2_2">
+        linenoise
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="linenoise" data-md-level="3">
+        <label class="md-nav__title" for="__nav_12_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          linenoise
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Clients/Redis-cli/linenoise/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_13" type="checkbox" id="__nav_13" >
+      
+      <label class="md-nav__link" for="__nav_13">
+        Application
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Application" data-md-level="1">
+        <label class="md-nav__title" for="__nav_13">
+          <span class="md-nav__icon md-icon"></span>
+          Application
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_13_1" type="checkbox" id="__nav_13_1" >
+      
+      <label class="md-nav__link" for="__nav_13_1">
+        Redis-Cache
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Redis-Cache" data-md-level="2">
+        <label class="md-nav__title" for="__nav_13_1">
+          <span class="md-nav__icon md-icon"></span>
+          Redis-Cache
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Application/Redis-Cache/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_13_1_2" type="checkbox" id="__nav_13_1_2" >
+      
+      <label class="md-nav__link" for="__nav_13_1_2">
+        CSDN-彻底搞懂缓存穿透-缓存击穿-缓存雪崩
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="CSDN-彻底搞懂缓存穿透-缓存击穿-缓存雪崩" data-md-level="3">
+        <label class="md-nav__title" for="__nav_13_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          CSDN-彻底搞懂缓存穿透-缓存击穿-缓存雪崩
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Application/Redis-Cache/CSDN-%E5%BD%BB%E5%BA%95%E6%90%9E%E6%87%82%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F-%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF-%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14" type="checkbox" id="__nav_14" >
+      
+      <label class="md-nav__link" for="__nav_14">
+        Amazon-ElastiCache
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Amazon-ElastiCache" data-md-level="1">
+        <label class="md-nav__title" for="__nav_14">
+          <span class="md-nav__icon md-icon"></span>
+          Amazon-ElastiCache
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Amazon-ElastiCache/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_2" type="checkbox" id="__nav_14_2" >
+      
+      <label class="md-nav__link" for="__nav_14_2">
+        High-availability-using-replication-groups
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="High-availability-using-replication-groups" data-md-level="2">
+        <label class="md-nav__title" for="__nav_14_2">
+          <span class="md-nav__icon md-icon"></span>
+          High-availability-using-replication-groups
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Amazon-ElastiCache/High-availability-using-replication-groups/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#main#properties#and#rationales#of#the#design" class="md-nav__link">
+    Main properties and rationales of the design
+  </a>
+  
+    <nav class="md-nav" aria-label="Main properties and rationales of the design">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#redis#cluster#goals" class="md-nav__link">
+    Redis Cluster goals
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implemented#subset" class="md-nav__link">
+    Implemented subset
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clients#and#servers#roles#in#the#redis#cluster#protocol" class="md-nav__link">
+    Clients and Servers roles in the Redis Cluster protocol
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write#safety" class="md-nav__link">
+    Write safety
+  </a>
+  
+    <nav class="md-nav" aria-label="Write safety">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#in#the#majority#partitions" class="md-nav__link">
+    In the majority partitions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#in#the#minority#side#of#a#partition" class="md-nav__link">
+    In the minority side of a partition
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#availability" class="md-nav__link">
+    Availability
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    Performance
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why#merge#operations#are#avoided" class="md-nav__link">
+    Why merge operations are avoided
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview#of#redis#cluster#main#components" class="md-nav__link">
+    Overview of Redis Cluster main components
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview of Redis Cluster main components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#keys#distribution#model" class="md-nav__link">
+    Keys distribution model
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keys#hash#tags" class="md-nav__link">
+    Keys hash tags
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cluster#nodes#attributes" class="md-nav__link">
+    Cluster nodes attributes
+  </a>
+  
+    <nav class="md-nav" aria-label="Cluster nodes attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#node#id#node#name" class="md-nav__link">
+    node ID /  node name
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the#cluster#bus" class="md-nav__link">
+    The Cluster bus
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cluster#topology" class="md-nav__link">
+    Cluster topology
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nodes#handshake" class="md-nav__link">
+    Nodes handshake
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#redirection#and#resharding" class="md-nav__link">
+    Redirection and resharding
+  </a>
+  
+    <nav class="md-nav" aria-label="Redirection and resharding">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#moved#redirection" class="md-nav__link">
+    MOVED Redirection
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cluster#live#reconfiguration" class="md-nav__link">
+    Cluster live reconfiguration
+  </a>
+  
+    <nav class="md-nav" aria-label="Cluster live reconfiguration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#addslots" class="md-nav__link">
+    ADDSLOTS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delslots" class="md-nav__link">
+    DELSLOTS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setslot" class="md-nav__link">
+    SETSLOT
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hash#slot#migration" class="md-nav__link">
+    Hash slot migration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ask#redirection" class="md-nav__link">
+    ASK redirection
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clients#first#connection#and#handling#of#redirections" class="md-nav__link">
+    Clients first connection and handling of redirections
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple#keys#operations" class="md-nav__link">
+    Multiple keys operations
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scaling#reads#using#slave#nodes" class="md-nav__link">
+    Scaling reads using slave nodes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fault#tolerance" class="md-nav__link">
+    Fault Tolerance
+  </a>
+  
+    <nav class="md-nav" aria-label="Fault Tolerance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#heartbeat#and#gossip#messages" class="md-nav__link">
+    Heartbeat and gossip messages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#heartbeat#packet#content" class="md-nav__link">
+    Heartbeat packet content
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#failure#detection" class="md-nav__link">
+    Failure detection
+  </a>
+  
+    <nav class="md-nav" aria-label="Failure detection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pfail#flag" class="md-nav__link">
+    PFAIL flag:
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fail#flag" class="md-nav__link">
+    FAIL flag:
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration#handling#propagation#and#failovers" class="md-nav__link">
+    Configuration handling, propagation, and failovers
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration handling, propagation, and failovers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cluster#current#epoch" class="md-nav__link">
+    Cluster current epoch
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration#epoch" class="md-nav__link">
+    Configuration epoch
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#slave#election#and#promotion" class="md-nav__link">
+    Slave election and promotion
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#slave#rank" class="md-nav__link">
+    Slave rank
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#masters#reply#to#slave#vote#request" class="md-nav__link">
+    Masters reply to slave vote request
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical#example#of#configuration#epoch#usefulness#during#partitions" class="md-nav__link">
+    Practical example of configuration epoch usefulness during partitions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hash#slots#configuration#propagation" class="md-nav__link">
+    Hash slots configuration propagation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update#messages#a#closer#look" class="md-nav__link">
+    UPDATE messages, a closer look
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how#nodes#rejoin#the#cluster" class="md-nav__link">
+    How nodes rejoin the cluster
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#replica#migration" class="md-nav__link">
+    Replica migration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#replica#migration#algorithm" class="md-nav__link">
+    Replica migration algorithm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configepoch#conflicts#resolution#algorithm" class="md-nav__link">
+    configEpoch conflicts resolution algorithm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node#resets" class="md-nav__link">
+    Node resets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removing#nodes#from#a#cluster" class="md-nav__link">
+    Removing nodes from a cluster
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publishsubscribe" class="md-nav__link">
+    Publish/Subscribe
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix" class="md-nav__link">
+    Appendix
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="redis#redis#cluster#specification">redis <a href="https://redis.io/topics/cluster-spec">Redis Cluster Specification</a></h1>
+<p>Welcome to the <strong>Redis Cluster Specification</strong>. Here you'll find information about algorithms and design rationales of <strong>Redis Cluster</strong>. This document is a work in progress as it is continuously synchronized with the actual implementation of Redis.</p>
+<h2 id="main#properties#and#rationales#of#the#design">Main properties and rationales of the design</h2>
+<h3 id="redis#cluster#goals">Redis Cluster goals</h3>
+<p>Redis Cluster is a distributed implementation of Redis with the following goals, in order of importance in the design:</p>
+<p>1、High performance and linear scalability up to 1000 nodes. There are no proxies, <strong>asynchronous replication</strong> is used, and no merge operations are performed on values.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、Redis都是使用的**asynchronous replication** </p>
+<p>二、关于 "no merge operations are performed on values"，参见 "Why merge operations are avoided" 章节</p>
+</blockquote>
+<p>2、Acceptable degree of <strong>write safety</strong>: the system tries (in a best-effort way) to retain all the writes originating from clients connected with the majority of the <strong>master nodes</strong>. Usually there are small <strong>windows</strong> where acknowledged writes can be lost. Windows to lose acknowledged writes are larger when clients are in a <strong>minority partition</strong>.</p>
+<blockquote>
+<p>NOTE: 可接受的写安全性:系统尝试(以最佳方式)保留来自连接到大多数主节点的客户机的所有写。通常有一些小窗口，在那里可以丢失已确认的写操作。当客户端位于少数分区时，丢失已确认写操作的窗口会更大。</p>
+</blockquote>
+<p>3、Availability: Redis Cluster is able to survive partitions where the majority of the <strong>master nodes</strong> are reachable and there is at least one reachable <strong>slave</strong> for every <strong>master node</strong> that is no longer reachable. Moreover using <em>replicas migration</em>, <strong>masters</strong> no longer replicated by any <strong>slave</strong> will receive one from a <strong>master</strong> which is covered by multiple slaves.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、可用性:Redis集群能够在大多数主节点都可访问的分区中存活，并且对于每个不再可访问的主节点，至少有一个可访问的从属节点。此外，使用副本迁移，不再由任何奴隶复制的主人将从一个由多个奴隶覆盖的主人那里接收一个。</p>
+<p>二、"replicas migration"指的是Redis cluster将一个拥有多个slave的master的其中一个slave指定为另外一个没有slave的master的slave</p>
+</blockquote>
+<p>What is described in this document is implemented in Redis 3.0 or greater.</p>
+<h3 id="implemented#subset">Implemented subset</h3>
+<p>Redis Cluster implements all the single key commands available in the non-distributed version of Redis. Commands performing complex multi-key operations like Set type unions or intersections are implemented as well as long as the keys all belong to the <strong>same node</strong>.</p>
+<p>Redis Cluster implements a concept called <strong>hash tags</strong> that can be used in order to force certain keys to be stored in the same node. However during manual reshardings, multi-key operations may become unavailable for some time while single key operations are always available.</p>
+<p>Redis Cluster does not support multiple databases like the stand alone version of Redis. There is just database 0 and the <a href="https://redis.io/commands/select">SELECT</a> command is not allowed.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>why?</p>
+</blockquote>
+<h3 id="clients#and#servers#roles#in#the#redis#cluster#protocol">Clients and Servers roles in the Redis Cluster protocol</h3>
+<p>In Redis <strong>Cluster nodes</strong> are responsible for holding the data, and taking the <strong>state</strong> of the cluster, including mapping keys to the right nodes. <strong>Cluster nodes</strong> are also able to auto-discover other nodes, detect non-working nodes, and promote slave nodes to master when needed in order to continue to operate when a failure occurs.</p>
+<blockquote>
+<p>NOTE: 实现上，<code>cluster.h:struct clusterNode</code>用于描述cluster node，<code>cluster.h:struct clusterState</code>用于描述the state of the cluster；正如上面这段话中所描述的，每个cluster node都需要使用<code>cluster.h:struct clusterState</code>来记录the state of the cluster。</p>
+</blockquote>
+<p>To perform their tasks all the <strong>cluster nodes</strong> are connected using a <strong>TCP bus</strong> and a <strong>binary protocol</strong>, called the <strong>Redis Cluster Bus</strong>. Every node is connected to every other node in the cluster using the <strong>cluster bus</strong>. Nodes use a <strong>gossip protocol</strong> </p>
+<p>1、to propagate information about the <strong>cluster</strong> in order to discover new nodes, </p>
+<p>2、to send <strong>ping packets</strong> to make sure all the other nodes are working properly, and </p>
+<p>3、to send <strong>cluster messages</strong> needed to signal specific conditions. </p>
+<p>The <strong>cluster bus</strong> is also used in order to propagate <strong>Pub/Sub messages</strong> across the cluster and to orchestrate <strong>manual failovers</strong> when requested by users (<strong>manual failovers</strong> are failovers which are not initiated by the Redis Cluster failure detector, but by the system administrator directly).</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、cluster node之间的连接方式是怎样的？</p>
+<p>"Every node is connected to every other node in the cluster using the <strong>cluster bus</strong>"</p>
+<p>节点之间是相互连接的</p>
+<p>上面说node use a gossip protocol，那能否据此推断出是两两互联？关于这个问题参见下面的topology。</p>
+<p>二、总的来说，cluster node之间的通信:</p>
+<p>1、<strong>Redis Cluster Bus</strong></p>
+<p>2、<strong>gossip protocol</strong> </p>
+</blockquote>
+<p>Since <strong>cluster nodes</strong> are not able to <strong>proxy</strong> requests, clients may be redirected to other nodes using redirection errors <code>-MOVED</code> and <code>-ASK</code>. The client is in theory free to send requests to all the nodes in the cluster, getting redirected if needed, so the client is not required to hold the state of the cluster. However clients that are able to cache the map between <strong>keys</strong> and <strong>nodes</strong> can improve the performance in a sensible way.</p>
+<h3 id="write#safety">Write safety</h3>
+<p><strong>Redis Cluster</strong> uses <strong>asynchronous replication</strong> between nodes, and <strong>last failover wins</strong> implicit merge function. This means that the last elected master dataset eventually replaces all the other replicas. There is always a <strong>window of time</strong> when it is possible to lose writes during partitions. However these windows are very different in the case of a client that is connected to the majority of masters, and a client that is connected to the minority of masters.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、Redis Cluster使用节点之间的异步复制，上次故障转移赢得隐式合并功能。 这意味着最后选出的主数据集最终将替换所有其他副本。 在分区期间可能会丢失写入时，总会有一个时间窗口。 然而，在连接到大多数主设备的客户端和连接到少数主设备的客户端的情况下，这些窗口是非常不同的。</p>
+<p>二、"<strong>last failover wins</strong> implicit merge function"是什么含义呢？</p>
+<p>"the last elected master dataset eventually replaces all the other replicas" 即 所有的数据以最终"the last elected master"的数据为准</p>
+</blockquote>
+<p><strong>Redis Cluster</strong> tries harder to retain（保持） writes that are performed by clients connected to the <strong>majority of masters</strong>, compared to writes performed in the <strong>minority side</strong>. </p>
+<blockquote>
+<p>NOTE: </p>
+<p>需要注意原文的写作思路: 原文是根据 majority partition 和 minority partition 来进行分类讨论的</p>
+</blockquote>
+<h4 id="in#the#majority#partitions">In the majority partitions</h4>
+<p>The following are examples of scenarios that lead to loss of acknowledged writes received in the majority partitions during failures:</p>
+<blockquote>
+<p>NOTE: </p>
+<p>"acknowledged writes" 指的是 master接收到了write请求</p>
+</blockquote>
+<p>1、A write may reach a master, but while the master may be able to reply to the client, the write may not be propagated to slaves via the <strong>asynchronous replication</strong> used between <strong>master</strong> and <strong>slave nodes</strong>. If the <strong>master</strong> dies without the write reaching the slaves, the write is lost forever if the <strong>master</strong> is unreachable for a long enough period that one of its slaves is promoted. This is usually hard to observe in the case of a total, sudden failure of a master node since masters try to reply to clients (with the acknowledge of the write) and slaves (propagating the write) at about the same time. However it is a real world <strong>failure mode</strong>.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、上面这段话其实描述地并不简介，让人难以抓住重要意思，其实场景非常简单:</p>
+<p>master接收到了write，并"reply to the client"，但是 "the write may not be propagated to slaves via the <strong>asynchronous replication</strong> used between <strong>master</strong> and <strong>slave nodes</strong>"；如果此时 "the <strong>master</strong> dies without the write reaching the slaves"，显然会进入failover流程，那么就存在这样的可能性:</p>
+<p>一个没有同步刚刚的write的slave，被选举为新的master，那么 "the write is lost forever if the <strong>master</strong> is unreachable for a long enough period that one of its slaves is promoted"</p>
+<p>在 csdn <a href="https://blog.csdn.net/duysh/article/details/103304134">Redis Cluster 会丢数据吗？</a> 中，对这个场景有分析</p>
+<p>二、思考: 如何保证不丢失呢？synchronous replication</p>
+</blockquote>
+<p>2、Another theoretically possible failure mode where writes are lost is the following:</p>
+<ul>
+<li>A master is unreachable because of a partition.</li>
+<li>It gets failed over by one of its slaves.</li>
+<li>After some time it may be reachable again.</li>
+<li>A client with an <strong>out-of-date routing table</strong> may write to the old master before it is converted into a slave (of the new master) by the cluster.</li>
+</ul>
+<p>The second failure mode is unlikely to happen because master nodes unable to communicate with the majority of the other masters for enough time to be failed over will no longer accept writes, and when the partition is fixed writes are still refused for a small amount of time to allow other nodes to inform about configuration changes. This failure mode also requires that the client's routing table has not yet been updated.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、"<strong>master nodes</strong> unable to communicate with the majority of the other masters for enough time to be failed over will no longer accept writes"</p>
+<p>主语是 <strong>master nodes</strong></p>
+<p>定语是 "unable to communicate with the majority of the other masters for enough time to be failed over"</p>
+<p>二、在 "csdn <a href="https://blog.csdn.net/duysh/article/details/103304134">Redis Cluster 会丢数据吗？</a> # 网络分区" 段中，给出了比较好的图示</p>
+<p>三、在partition恢复后，"writes are still refused for a small amount of time to allow other nodes to inform about configuration changes"</p>
+<p>是谁继续"refuse write"？</p>
+</blockquote>
+<h4 id="in#the#minority#side#of#a#partition">In the minority side of a partition</h4>
+<p>Writes targeting the minority side of a partition have a larger window in which to get lost. For example, Redis Cluster loses a non-trivial number of writes on partitions where there is a minority of masters and at least one or more clients, since all the writes sent to the masters may potentially get lost if the masters are failed over in the majority side.</p>
+<p>Specifically, for a master to be failed over it must be unreachable by the majority of masters for at least <code>NODE_TIMEOUT</code>, so if the partition is fixed before that time, no writes are lost. When the partition lasts for more than <code>NODE_TIMEOUT</code>, all the writes performed in the minority side up to that point may be lost. However the minority side of a Redis Cluster will start refusing writes as soon as <code>NODE_TIMEOUT</code> time has elapsed without contact with the majority, so there is a maximum window after which the minority becomes no longer available. Hence, no writes are accepted or lost after that time.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>感觉这种情况和前面的"2"是类似的</p>
+</blockquote>
+<h3 id="availability">Availability</h3>
+<blockquote>
+<p>NOTE: </p>
+<p>一、"Redis Cluster is not available in the minority side of the partition"</p>
+<p>需要对它进行解释，结合前面对内容、"csdn <a href="https://blog.csdn.net/duysh/article/details/103304134">Redis Cluster 会丢数据吗？</a> # 网络分区" 中的内容，可知: 在 <code>NODE_TIMEOUT</code> 后， "the minority side of the partition"就不可用了</p>
+</blockquote>
+<p>Redis Cluster is not available in the minority side of the partition. In the majority side of the partition assuming that there are at least the majority of masters and a slave for every unreachable master, the cluster becomes available again after <code>NODE_TIMEOUT</code> time plus a few more seconds required for a slave to get elected and failover its master (failovers are usually executed in a matter of 1 or 2 seconds).</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、需要注意的是: majority side of the partition能够恢复是有前提条件的:</p>
+<p>1、the majority of masters</p>
+<p>2、slave for every unreachable master</p>
+</blockquote>
+<p>This means that Redis Cluster is designed to survive failures of a few nodes in the cluster, but it is not a suitable solution for applications that require availability in the event of large net splits.</p>
+<p>In the example of a cluster composed of N master nodes where every node has a single slave, the majority side of the cluster will remain available as long as a single node is partitioned away, and will remain available with a probability of <code>1-(1/(N*2-1))</code> when two nodes are partitioned away (after the first node fails we are left with <code>N*2-1</code> nodes in total, and the probability of the only master without a replica to fail is <code>1/(N*2-1))</code>.</p>
+<p>For example, in a cluster with 5 nodes and a single slave per node, there is a <code>1/(5*2-1) = 11.11%</code> probability that after two nodes are partitioned away from the majority, the cluster will no longer be available.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>在 segmentfault <a href="https://segmentfault.com/a/1190000039234661">Redis Cluster availability 分析</a> 中，对上述计算过程进行了说明:</p>
+<p>举个例子，包含 N 个 master 的集群，每个 master 有唯一 slave。
+单个 node 出现故障，cluster 仍然可用，第二个 node 再出现故障，集群仍然可用的概率是 <code>1-(1/(N*2-1)</code>。</p>
+<p>计算方式如下，第一个 node fail 后，集群剩下 <code>N*2-1</code> 个健康节点，此时 orphan master 恰好 fail 的概率是 <code>1/(N*2-1)</code>。</p>
+<blockquote>
+<p>NOTE: orphan master 指的是没有slave的master，下面进行了说明</p>
+</blockquote>
+<p>套用公式，假设 N = 5，那么，2 个节点从 majority partition 出去，集群不可用的概率是 11.11%。</p>
+</blockquote>
+<p>Thanks to a Redis Cluster feature called <strong>replicas migration</strong> the Cluster availability is improved in many real world scenarios by the fact that replicas migrate to orphaned masters (masters no longer having replicas). So at every successful failure event, the cluster may reconfigure the slaves layout in order to better resist the next failure.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>在  segmentfault <a href="https://segmentfault.com/a/1190000039234661">Redis Cluster availability 分析</a> 中，对 <strong>replicas migration</strong> 的过程进行了详细说明</p>
+</blockquote>
+<h3 id="performance">Performance</h3>
+<p>In Redis Cluster nodes don't proxy commands to the right node in charge for a given key, but instead they redirect clients to the right nodes serving a given portion of the key space.</p>
+<p>Eventually clients obtain an up-to-date representation of the cluster and which node serves which subset of keys, so during normal operations clients directly contact the right nodes in order to send a given command.</p>
+<p>Because of the use of asynchronous replication, nodes do not wait for other nodes' acknowledgment of writes (if not explicitly requested using the <a href="https://redis.io/commands/wait">WAIT</a> command).</p>
+<p>Also, because multi-key commands are only limited to <em>near</em> keys, data is never moved between nodes except when resharding.</p>
+<p>Normal operations are handled exactly as in the case of a single Redis instance. This means that in a Redis Cluster with N master nodes you can expect the same performance as a single Redis instance multiplied by N as the design scales linearly. At the same time the query is usually performed in a single round trip, since clients usually retain persistent connections with the nodes, so latency figures are also the same as the single standalone Redis node case.</p>
+<p>Very high performance and scalability while preserving weak but reasonable forms of data safety and availability is the main goal of Redis Cluster.</p>
+<h3 id="why#merge#operations#are#avoided">Why merge operations are avoided</h3>
+<blockquote>
+<p>NOTE: </p>
+<p>一、在 "Write safety"中介绍了，Redis采用的是"<strong>last failover wins</strong> implicit merge function"</p>
+<p>二、这一段则是介绍: 为什么Redis要这样做，通过原文的内容可知: 因为Redis的data type是比较复杂的、Redis的数据量是非常大的，如果采用merge的方式，那么复杂度将是非常高的，将造成 "bottleneck"</p>
+</blockquote>
+<p>Redis Cluster design avoids conflicting versions of the same key-value pair in multiple nodes as in the case of the Redis data model this is not always desirable. Values in Redis are often very large; it is common to see lists or sorted sets with millions of elements. Also data types are semantically(语义) complex. Transferring and merging these kind of values can be a major bottleneck and/or may require the non-trivial involvement of application-side logic, additional memory to store meta-data, and so forth.</p>
+<p>There are no strict technological limits here. CRDTs or synchronously replicated state machines can model complex data types similar to Redis. However, the actual run time behavior of such systems would not be similar to Redis Cluster. Redis Cluster was designed in order to cover the exact use cases of the non-clustered Redis version.</p>
+<h2 id="overview#of#redis#cluster#main#components">Overview of Redis Cluster main components</h2>
+<h3 id="keys#distribution#model">Keys distribution model</h3>
+<p>The <strong>key space</strong> is split into 16384 <strong>slots</strong>, effectively setting an upper limit for the cluster size of 16384 master nodes (however the suggested max size of nodes is in the order of ~ 1000 nodes).</p>
+<blockquote>
+<p>NOTE: Each master node in a cluster handles a subset of the 16384 hash slots. cluster中的所有node均分这16384个slot，每个node至少需要分得一个slot，所以cluster size的上限就是16374. <code>struct clusterNode</code>的<code>slots</code>成员变量保存这个node的所有的slot。</p>
+</blockquote>
+<p>Each master node in a cluster handles a subset of the 16384 hash slots. The cluster is <strong>stable</strong> when there is no <strong>cluster reconfiguration</strong> in progress (i.e. where <strong>hash slots</strong> are being moved from one node to another). When the cluster is stable, a single <strong>hash slot</strong> will be served by a single node (however the serving node can have one or more slaves that will replace it in the case of net splits or failures, and that can be used in order to scale read operations where reading stale(旧) data is acceptable).</p>
+<p>The base algorithm used to map keys to <strong>hash slots</strong> is the following (read the next paragraph for the hash tag exception to this rule):</p>
+<div class="highlight"><pre><span></span><code><span class="n">HASH_SLOT</span> <span class="o">=</span> <span class="n">CRC16</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="n">mod</span> <span class="mi">16384</span>
+</code></pre></div>
+<p>The <code>CRC16</code> is specified as follows:</p>
+<ul>
+<li>Name: XMODEM (also known as ZMODEM or CRC-16/ACORN)</li>
+<li>Width: 16 bit</li>
+<li>Poly: 1021 (That is actually <span><span class="MathJax_Preview">x^{16} + x^{12} + x^{5} + 1</span><script type="math/tex">x^{16} + x^{12} + x^{5} + 1</script></span>)</li>
+<li>Initialization: 0000</li>
+<li>Reflect Input byte: False</li>
+<li>Reflect Output CRC: False</li>
+<li>Xor constant to output CRC: 0000</li>
+<li>Output for "123456789": 31C3</li>
+</ul>
+<p>14 out of 16 CRC16 output bits are used (this is why there is a modulo 16384 operation in the formula above).</p>
+<p>In our tests CRC16 behaved remarkably well in distributing different kinds of keys evenly across the 16384 slots.</p>
+<p><strong>Note</strong>: A reference implementation of the CRC16 algorithm used is available in the Appendix A of this document.</p>
+<blockquote>
+<p>NOTE: 在代码中是由<code>cluser.c:keyHashSlot</code>函数实现的key space到hash slot的映射的；</p>
+</blockquote>
+<h3 id="keys#hash#tags">Keys hash tags</h3>
+<p>There is an exception for the computation of the hash slot that is used in order to implement <strong>hash tags</strong>. Hash tags are a way to ensure that multiple keys are allocated in the same hash slot. This is used in order to implement multi-key operations in Redis Cluster.</p>
+<p>In order to implement hash tags, the hash slot for a key is computed in a slightly different way in certain conditions. If the key contains a "{...}" pattern only the substring between <code>{</code> and <code>}</code> is hashed in order to obtain the hash slot. However since it is possible that there are multiple occurrences of <code>{</code> or <code>}</code> the algorithm is well specified by the following rules:</p>
+<ul>
+<li>IF the key contains a <code>{</code> character.</li>
+<li>AND IF there is a <code>}</code> character to the right of <code>{</code></li>
+<li>AND IF there are one or more characters between the first occurrence of <code>{</code> and the first occurrence of <code>}</code>.</li>
+</ul>
+<p>Then instead of hashing the key, only what is between the first occurrence of <code>{</code> and the following first occurrence of <code>}</code>is hashed.</p>
+<p>Examples:</p>
+<ul>
+<li>The two keys <code>{user1000}.following</code> and <code>{user1000}.followers</code> will hash to the same hash slot since only the substring <code>user1000</code> will be hashed in order to compute the hash slot.</li>
+<li>For the key <code>foo{}{bar}</code> the whole key will be hashed as usually since the first occurrence of <code>{</code> is followed by <code>}</code> on the right without characters in the middle.</li>
+<li>For the key <code>foo{{bar}}zap</code> the substring <code>{bar</code> will be hashed, because it is the substring between the first occurrence of <code>{</code> and the first occurrence of <code>}</code> on its right.</li>
+<li>For the key <code>foo{bar}{zap}</code> the substring <code>bar</code> will be hashed, since the algorithm stops at the first valid or invalid (without bytes inside) match of <code>{</code> and <code>}</code>.</li>
+<li>What follows from the algorithm is that if the key starts with <code>{}</code>, it is guaranteed to be hashed as a whole. This is useful when using binary data as key names.</li>
+</ul>
+<p>Adding the hash tags exception, the following is an implementation of the <code>HASH_SLOT</code> function in Ruby and C language.</p>
+<p>Ruby example code:</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">HASH_SLOT</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">index</span> <span class="s2">&quot;{&quot;</span>
+    <span class="k">if</span> <span class="n">s</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">index</span> <span class="s2">&quot;}&quot;</span><span class="p">,</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">e</span> <span class="o">&amp;&amp;</span> <span class="n">e</span> <span class="o">!=</span> <span class="n">s</span><span class="o">+</span><span class="mi">1</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="n">s</span><span class="o">+</span><span class="mf">1.</span><span class="o">.</span><span class="n">e</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">end</span>
+    <span class="n">end</span>
+    <span class="n">crc16</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">%</span> <span class="mi">16384</span>
+<span class="n">end</span>
+</code></pre></div>
+<p>C example code:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">HASH_SLOT</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="kt">int</span> <span class="n">keylen</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span><span class="p">;</span> <span class="cm">/* start-end indexes of { and } */</span>
+
+    <span class="cm">/* Search the first occurrence of &#39;{&#39;. */</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">s</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="n">keylen</span><span class="p">;</span> <span class="n">s</span><span class="o">++</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;{&#39;</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span>
+
+    <span class="cm">/* No &#39;{&#39; ? Hash the whole key. This is the base case. */</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="n">keylen</span><span class="p">)</span> <span class="k">return</span> <span class="n">crc16</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">keylen</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">16383</span><span class="p">;</span>
+
+    <span class="cm">/* &#39;{&#39; found? Check if we have the corresponding &#39;}&#39;. */</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">e</span> <span class="o">=</span> <span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span> <span class="n">e</span> <span class="o">&lt;</span> <span class="n">keylen</span><span class="p">;</span> <span class="n">e</span><span class="o">++</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;}&#39;</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span>
+
+    <span class="cm">/* No &#39;}&#39; or nothing between {} ? Hash the whole key. */</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">e</span> <span class="o">==</span> <span class="n">keylen</span> <span class="o">||</span> <span class="n">e</span> <span class="o">==</span> <span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="n">crc16</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">keylen</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">16383</span><span class="p">;</span>
+
+    <span class="cm">/* If we are here there is both a { and a } on its right. Hash</span>
+<span class="cm">     * what is in the middle between { and }. */</span>
+    <span class="k">return</span> <span class="nf">crc16</span><span class="p">(</span><span class="n">key</span><span class="o">+</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">e</span><span class="o">-</span><span class="n">s</span><span class="mi">-1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">16383</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="cluster#nodes#attributes">Cluster nodes attributes</h3>
+<h4 id="node#id#node#name">node ID /  node name</h4>
+<blockquote>
+<p>NOTE: </p>
+<p>需要注意，node ID就是node name</p>
+</blockquote>
+<p>Every node has a unique name in the cluster. The <strong>node name</strong> is the hex representation of a 160 bit random number, obtained the first time a node is started (usually using <code>/dev/urandom</code>). The node will save its ID in the <strong>node configuration file</strong>, and will use the same ID forever, or at least as long as the node configuration file is not deleted by the system administrator, or a <em>hard reset</em> is requested via the <a href="https://redis.io/commands/cluster-reset">CLUSTER RESET</a> command.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、显然，node name需要保证不能够冲突；<code>cluster.c:struct clusterNode</code>的<code>name</code>成员变量就表示它的node name。</p>
+<p>二、如何保证生成的node name不冲突呢？</p>
+</blockquote>
+<p>The <strong>node ID</strong> is used to identify every node across the whole cluster. It is possible for a given node to change its IP address without any need to also change the <strong>node ID</strong>. The cluster is also able to detect the change in IP/port and <strong>reconfigure</strong> using the <strong>gossip protocol</strong> running over the cluster bus.</p>
+<blockquote>
+<p>NOTE: reconfigure cluster</p>
+</blockquote>
+<p>The <strong>node ID</strong> is not the only information associated with each node, but is the only one that is always <strong>globally consistent</strong>（不会再改变）. Every node has also the following set of information associated. Some information is about the cluster configuration detail of this specific node, and is eventually consistent across the cluster. Some other information, like the last time a node was pinged, is instead local to each node.</p>
+<p>Every node maintains the following information about other nodes that it is aware of in the cluster: The node ID, IP and port of the node, a set of flags, what is the master of the node if it is flagged as <code>slave</code>, last time the node was pinged and the last time the pong was received, the current <em>configuration epoch</em> of the node (explained later in this specification), the link state and finally the set of hash slots served.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、cluster中的每个node还需要保存其他node的一些配置信息；那是哪些node呢？是cluster中的所有其他的node还是仅仅那些和它connect的node？关于这个问题，需要阅读下面的Cluster topology章节</p>
+</blockquote>
+<p>A detailed <a href="http://redis.io/commands/cluster-nodes">explanation of all the node fields</a> is described in the <a href="https://redis.io/commands/cluster-nodes">CLUSTER NODES</a> documentation.</p>
+<p>The <a href="https://redis.io/commands/cluster-nodes">CLUSTER NODES</a> command can be sent to any node in the cluster and provides the state of the cluster and the information for each node according to the local view the queried node has of the cluster.</p>
+<p>The following is sample output of the <a href="https://redis.io/commands/cluster-nodes">CLUSTER NODES</a> command sent to a master node in a small cluster of three nodes.</p>
+<h3 id="the#cluster#bus">The Cluster bus</h3>
+<p>Every Redis Cluster node has an additional TCP port for receiving incoming connections from other Redis Cluster nodes. This port is at a fixed offset from the normal TCP port used to receive incoming connections from clients. To obtain the Redis Cluster port, 10000 should be added to the normal commands port. For example, if a Redis node is listening for client connections on port 6379, the Cluster bus port 16379 will also be opened.</p>
+<p>Node-to-node communication happens exclusively using the <strong>Cluster bus</strong> and the <strong>Cluster bus protocol</strong>: a binary protocol composed of frames of different types and sizes. The <strong>Cluster bus binary protocol</strong> is not publicly documented since it is not intended for external software devices to talk with Redis Cluster nodes using this protocol. However you can obtain more details about the Cluster bus protocol by reading the <code>cluster.h</code> and <code>cluster.c</code> files in the Redis Cluster source code.</p>
+<h3 id="cluster#topology">Cluster topology</h3>
+<p><strong>Redis Cluster</strong> is a full mesh（网格） where every node is connected with every other node using a TCP connection.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>关于full mesh，参见https://<a href="http://www.webopedia.com/TERM/M/mesh.html">www.webopedia.com/TERM/M/mesh.html</a></p>
+</blockquote>
+<p>In a cluster of N nodes, every node has N-1 outgoing（传出） TCP connections, and N-1 incoming（传入） connections.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>每个node需要连接到cluster中的剩余N-1个node，同时cluster中的另外的N-1个node也要连接到它；</p>
+<p>slave是否也算是cluster中的node？slave是否也需要和cluster中的另外的node interconnect呢？</p>
+</blockquote>
+<p>These TCP connections are kept alive all the time and are not created on demand. When a node expects a pong reply in response to a ping in the cluster bus, before waiting long enough to mark the node as unreachable, it will try to refresh the connection with the node by reconnecting from scratch.</p>
+<p>While Redis Cluster nodes form a full mesh, <strong>nodes use a gossip protocol and a configuration update mechanism in order to avoid exchanging too many messages between nodes during normal conditions</strong>, so the number of messages exchanged is not exponential.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>如何实现的呢？在后面的"Fault Tolerance # Heartbeat and gossip messages"章节中， 进行了说明:</p>
+<blockquote>
+<p>Usually a node will ping a few random nodes every second so that the total number of ping packets sent (and pong packets received) by each node is a constant amount regardless of the number of nodes in the cluster.</p>
+</blockquote>
+</blockquote>
+<h3 id="nodes#handshake">Nodes handshake</h3>
+<blockquote>
+<p>NOTE: </p>
+<p>这一段其实告诉我们如何组建Redis cluster</p>
+</blockquote>
+<p>Nodes always accept connections on the cluster bus port, and even reply to pings when received, even if the pinging node is not trusted. However, all other packets will be discarded by the receiving node if the sending node is not considered part of the cluster.</p>
+<p>A node will accept another node as part of the cluster only in two ways:</p>
+<p>1、If a node presents itself with a <code>MEET</code> message. A meet message is exactly like a <a href="https://redis.io/commands/ping">PING</a> message, but forces the receiver to accept the node as part of the cluster. Nodes will send <code>MEET</code> messages to other nodes <strong>only if</strong> the system administrator requests this via the following command:</p>
+<p><code>CLUSTER MEET ip port</code></p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、<a href="https://redis.io/commands/cluster-meet">CLUSTER MEET ip port</a></p>
+<p>二、显然，通过"CLUSTER MEET ip port" command来组建Redis cluster</p>
+<p>三、这种方式是administrator来组建Redis cluster</p>
+</blockquote>
+<p>2、A node will also register another node as part of the cluster if a node that is already trusted will gossip about this other node. So if A knows B, and B knows C, eventually B will send gossip messages to A about C. When this happens, A will register C as part of the network, and will try to connect with C.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、这种方式是Redis node通过gossip协议来auto discover其他node，然后与它建立连接</p>
+</blockquote>
+<p>This means that as long as we join nodes in any connected graph, they'll eventually form a fully connected graph automatically. This means that the cluster is able to auto-discover other nodes, but only if there is a trusted relationship that was forced by the system administrator.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、必须要由administrator首先建立基本的连接，然后才能够实现全连接图</p>
+</blockquote>
+<p>This mechanism makes the cluster more robust but prevents different Redis clusters from accidentally mixing after change of IP addresses or other network related events.</p>
+<h2 id="redirection#and#resharding">Redirection and resharding</h2>
+<h3 id="moved#redirection">MOVED Redirection</h3>
+<p>A Redis client is free to send queries to every node in the cluster, including <strong>slave nodes</strong>. The node will analyze the query, and if it is acceptable (that is, only a single key is mentioned in the query, or the multiple keys mentioned are all to the same <strong>hash slot</strong>) it will lookup what node is responsible for the <strong>hash slot</strong> where the key or keys belong.</p>
+<p>If the <strong>hash slot</strong> is served by the node, the query is simply processed, otherwise the node will check its internal <strong>hash slot to node map</strong>（hash slot到node的映射关系）, and will reply to the client with a <code>MOVED</code> error, like in the following example:</p>
+<div class="highlight"><pre><span></span><code>GET x
+-MOVED 3999 127.0.0.1:6381
+</code></pre></div>
+<p>The error includes the <strong>hash slot</strong> of the key (3999) and the <code>ip:port</code> of the instance that can serve the query. The client needs to reissue the query to the specified node's IP address and port. Note that even if the client waits a long time before reissuing the query, and in the meantime the cluster configuration changed, the destination node will reply again with a <code>MOVED</code> error if the <strong>hash slot</strong> 3999 is now served by another node. The same happens if the contacted node had no updated information.</p>
+<p>So while from the point of view of the cluster nodes are identified by IDs we try to simplify our interface with the client just exposing a map between <strong>hash slots</strong> and <strong>Redis nodes</strong> identified by IP:port pairs.</p>
+<p>The client is not required to, but should try to memorize that hash slot 3999 is served by 127.0.0.1:6381. This way once a new command needs to be issued it can compute the hash slot of the target key and have a greater chance of choosing the right node.</p>
+<p>An alternative is to just refresh the whole <strong>client-side cluster layout</strong> using the <a href="https://redis.io/commands/cluster-nodes">CLUSTER NODES</a> or <a href="https://redis.io/commands/cluster-slots">CLUSTER SLOTS</a>commands when a <code>MOVED</code> redirection is received. When a redirection is encountered, it is likely multiple slots were reconfigured rather than just one, so updating the client configuration as soon as possible is often the best strategy.</p>
+<p>Note that when the Cluster is stable (no ongoing changes in the configuration), eventually all the clients will obtain a map of hash slots -&gt; nodes, making the cluster efficient, with clients directly addressing the right nodes without redirections, proxies or other single point of failure entities.</p>
+<p>A client <strong>must be also able to handle -ASK redirections</strong> that are described later in this document, otherwise it is not a complete Redis Cluster client.</p>
+<h3 id="cluster#live#reconfiguration">Cluster live reconfiguration</h3>
+<blockquote>
+<p>NOTE: </p>
+<p>一、这一段所描述的其实就是resharding</p>
+<p>二、Redis使用的是hash tag，resharding的过程其实就是对hash slot的移动</p>
+</blockquote>
+<p>Redis Cluster supports the ability to add and remove nodes while the cluster is running. Adding or removing a node is abstracted into the same operation: moving a hash slot from one node to another. This means that the same basic mechanism can be used in order to rebalance the cluster, add or remove nodes, and so forth.</p>
+<p>1、To add a new node to the cluster an empty node is added to the cluster and some set of hash slots are moved from existing nodes to the new node.</p>
+<p>2、To remove a node from the cluster the hash slots assigned to that node are moved to other existing nodes.</p>
+<p>3、To rebalance the cluster a given set of hash slots are moved between nodes.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、对Redis cluster进行CRUD:</p>
+<p>1、选择节点</p>
+<p>2、删除节点</p>
+<p>3、修改节点</p>
+<p>4、对节点进行查询</p>
+</blockquote>
+<p>The core of the implementation is the ability to move <strong>hash slots</strong> around. From a practical point of view a hash slot is just a set of keys, so what Redis Cluster really does during <em>resharding</em> is to move keys from an instance to another instance. Moving a hash slot means moving all the keys that happen to hash into this hash slot.</p>
+<p>To understand how this works we need to show the <code>CLUSTER</code> subcommands that are used to manipulate the <strong><em>slots translation table</em></strong> in a <strong>Redis Cluster node</strong>.</p>
+<blockquote>
+<p>NOTE: slots translation table应该是由<code>cluster.h:struct clusterState</code>的<code>migrating_slots_to</code> 、<code>importing_slots_from</code>、<code>slots</code>成员变量实现的；</p>
+</blockquote>
+<p>The following subcommands are available (among others not useful in this case):</p>
+<p>1、<a href="https://redis.io/commands/cluster-addslots">CLUSTER ADDSLOTS</a> slot1 [slot2] ... [slotN]</p>
+<p>2、<a href="https://redis.io/commands/cluster-delslots">CLUSTER DELSLOTS</a> slot1 [slot2] ... [slotN]</p>
+<p>3、<a href="https://redis.io/commands/cluster-setslot">CLUSTER SETSLOT</a> slot NODE node</p>
+<p>4、<a href="https://redis.io/commands/cluster-setslot">CLUSTER SETSLOT</a> slot MIGRATING node</p>
+<p>5、<a href="https://redis.io/commands/cluster-setslot">CLUSTER SETSLOT</a> slot IMPORTING node</p>
+<p>The first two commands, <code>ADDSLOTS</code> and <code>DELSLOTS</code>, are simply used to assign (or remove) slots to a Redis node. Assigning a slot means to tell a given <strong>master node</strong> that it will be in charge of storing and serving content for the specified hash slot.</p>
+<p>After the hash slots are assigned they will propagate across the cluster using the gossip protocol, as specified later in the <em>configuration propagation</em> section.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、是 "Hash slots configuration propagation" 段</p>
+</blockquote>
+<h4 id="addslots"><code>ADDSLOTS</code></h4>
+<p>The <code>ADDSLOTS</code> command is usually used when a new cluster is created from scratch to assign each <strong>master node</strong> a subset of all the 16384 hash slots available.</p>
+<h4 id="delslots"><code>DELSLOTS</code></h4>
+<p>The <code>DELSLOTS</code> is mainly used for manual modification of a cluster configuration or for debugging tasks: in practice it is rarely used.</p>
+<h4 id="setslot"><code>SETSLOT</code></h4>
+<p>The <code>SETSLOT</code> subcommand is used to assign a slot to a specific node ID if the <code>SETSLOT &lt;slot&gt; NODE</code> form is used. Otherwise the <strong>slot</strong> can be set in the two special states <code>MIGRATING</code> and <code>IMPORTING</code>. Those two special states are used in order to migrate a <strong>hash slot</strong> from one node to another.</p>
+<p>1、When a slot is set as <strong>MIGRATING</strong>, the node will accept all queries that are about this <strong>hash slot</strong>, but only if the key in question exists, otherwise the query is forwarded using a <code>-ASK</code> redirection to the node that is target of the migration.</p>
+<p>2、When a slot is set as <strong>IMPORTING</strong>, the node will accept all queries that are about this <strong>hash slot</strong>, but only if the request is preceded by an <code>ASKING</code> command. If the <code>ASKING</code> command was not given by the client, the query is redirected to the real hash slot owner via a <code>-MOVED</code> redirection error, as would happen normally.</p>
+<h4 id="hash#slot#migration">Hash slot migration</h4>
+<p>Let's make this clearer with an example of <strong>hash slot migration</strong>. Assume that we have two Redis master nodes, called A and B. We want to move hash slot 8 from A to B, so we issue commands like this:</p>
+<ul>
+<li>We send B: CLUSTER SETSLOT 8 IMPORTING A</li>
+<li>We send A: CLUSTER SETSLOT 8 MIGRATING B</li>
+</ul>
+<p>All the other nodes will continue to point clients to node "A" every time they are queried with a key that belongs to hash slot 8, so what happens is that:</p>
+<ul>
+<li>All queries about existing keys are processed by "A".</li>
+<li>All queries about non-existing keys in A are processed by "B", because "A" will redirect clients to "B".</li>
+</ul>
+<p>This way we no longer create new keys in "A". In the meantime, a special program called <code>redis-trib</code> used during reshardings and Redis Cluster configuration will <strong>migrate</strong> existing keys in hash slot 8 from A to B. This is performed using the following command:</p>
+<div class="highlight"><pre><span></span><code>CLUSTER GETKEYSINSLOT slot count
+</code></pre></div>
+<p>The above command will return <code>count</code> keys in the specified <strong>hash slot</strong>. For every <strong>key</strong> returned, <code>redis-trib</code> sends node "A" a <a href="https://redis.io/commands/migrate">MIGRATE</a> command, that will migrate the specified key from A to B in an <strong>atomic way</strong> (both instances are locked for the time (usually very small time) needed to migrate a key so there are no race conditions). This is how <a href="https://redis.io/commands/migrate">MIGRATE</a>works:</p>
+<div class="highlight"><pre><span></span><code>MIGRATE target_host target_port key target_database id timeout
+</code></pre></div>
+<p><a href="https://redis.io/commands/migrate">MIGRATE</a> will connect to the <strong>target instance</strong>, send a serialized version of the key, and once an <strong>OK code</strong> is received, the old key from its own dataset will be deleted. From the point of view of an external client a <strong>key</strong> exists either in A or B at any given time.</p>
+<p>In <strong>Redis Cluster</strong> there is no need to specify a database other than 0, but <a href="https://redis.io/commands/migrate">MIGRATE</a> is a general command that can be used for other tasks not involving Redis Cluster. <a href="https://redis.io/commands/migrate">MIGRATE</a> is optimized to be as fast as possible even when moving complex keys such as long lists, but in Redis Cluster reconfiguring the cluster where big keys are present is not considered a wise procedure if there are latency constraints in the application using the database.</p>
+<p>When the migration process is finally finished, the <code>SETSLOT &lt;slot&gt; NODE &lt;node-id&gt;</code> command is sent to the two nodes involved in the migration in order to set the slots to their normal state again. The same command is usually sent to all other nodes to avoid waiting for the natural propagation of the new configuration across the cluster.</p>
+<blockquote>
+<p>NOTE: 移动key，是否需要移动该key对应的数据？需要的，要想完整地理解这一节的内容，需要阅读：<a href="https://www.cnblogs.com/leeSmall/p/8414687.html">Redis系列九：redis集群高可用</a></p>
+</blockquote>
+<h3 id="ask#redirection">ASK redirection</h3>
+<h3 id="clients#first#connection#and#handling#of#redirections">Clients first connection and handling of redirections</h3>
+<h3 id="multiple#keys#operations">Multiple keys operations</h3>
+<h3 id="scaling#reads#using#slave#nodes">Scaling reads using slave nodes</h3>
+<blockquote>
+<p>NOTE: </p>
+<p>这和读写分离有关，参见: </p>
+<p>zhihu <a href="https://www.zhihu.com/question/38768751">redis需要读写分离吗？</a></p>
+<p>cnblogs <a href="https://www.cnblogs.com/williamjie/p/11250713.html">Redis读写分离技术解析</a></p>
+</blockquote>
+<p>Normally slave nodes will redirect clients to the authoritative master for the hash slot involved in a given command, however clients can use slaves in order to scale reads using the <a href="https://redis.io/commands/readonly">READONLY</a> command.</p>
+<p><a href="https://redis.io/commands/readonly">READONLY</a> tells a <strong>Redis Cluster slave node</strong> that the client is ok reading possibly stale data and is not interested in running write queries.</p>
+<p>When the connection is in <strong>readonly mode</strong>, the cluster will send a redirection to the client only if the operation involves keys not served by the slave's master node. This may happen because:</p>
+<p>1、The client sent a command about hash slots never served by the master of this slave.</p>
+<p>2、The cluster was reconfigured (for example resharded) and the slave is no longer able to serve commands for a given hash slot.</p>
+<p>When this happens the client should update its hashslot map as explained in the previous sections.</p>
+<p>The readonly state of the connection can be cleared using the <a href="https://redis.io/commands/readwrite">READWRITE</a> command.</p>
+<h2 id="fault#tolerance">Fault Tolerance</h2>
+<h3 id="heartbeat#and#gossip#messages">Heartbeat and gossip messages</h3>
+<p>Redis Cluster nodes continuously exchange ping and pong packets. Those two kind of packets have the same structure, and both carry important configuration information. The only actual difference is the <strong>message type field</strong>. We'll refer to the sum of ping and pong packets as <em>heartbeat packets</em>.</p>
+<p>Usually nodes send <strong>ping packets</strong> that will trigger the receivers to reply with <strong>pong packets</strong>. However this is not necessarily true. It is possible for nodes to just send <strong>pong packets</strong> to send information to other nodes about their configuration, without triggering a reply. This is useful, for example, in order to broadcast a new configuration as soon as possible.</p>
+<p>Usually a node will ping a few random nodes every second so that the total number of <strong>ping packets</strong> sent (and <strong>pong packets</strong> received) by each node is a constant amount regardless of the number of nodes in the cluster.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>这是非常重要的，在 "Cluster topology" 章节中，就谈到了这个问题</p>
+</blockquote>
+<p>However every node makes sure to ping every other node that hasn't sent a ping or received a pong for longer than half the <code>NODE_TIMEOUT</code> time. Before <code>NODE_TIMEOUT</code> has elapsed, nodes also try to reconnect the <strong>TCP link</strong> with another node to make sure nodes are not believed to be unreachable only because there is a problem in the current TCP connection.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、需要注意的是，每个node不是每秒钟都去ping cluster中剩余的其他的所有的node，而是保证能够在half of the  <code>NODE_TIMEOUT</code>中能够ping到cluster中剩余的其他的所有的node，所以它需要做的是每秒钟只ping一部分。</p>
+<p>二、为什么是half the <code>NODE_TIMEOUT</code> time？在下面的Failure detection章节中给出了这样做的原因。</p>
+</blockquote>
+<p>The number of messages globally exchanged can be sizable if <code>NODE_TIMEOUT</code> is set to a small figure and the number of nodes (N) is very large, since every node will try to ping every other node for which they don't have fresh information every half the <code>NODE_TIMEOUT</code> time.</p>
+<p>For example in a 100 node cluster with a node timeout set to 60 seconds, every node will try to send 99 pings every 30 seconds, with a total amount of pings of 3.3 per second. Multiplied by 100 nodes, this is 330 pings per second in the total cluster.</p>
+<p>There are ways to lower the number of messages, however there have been no reported issues with the bandwidth currently used by <strong>Redis Cluster failure detection</strong>, so for now the obvious and direct design is used. Note that even in the above example, the 330 packets per second exchanged are evenly divided among 100 different nodes, so the traffic each node receives is acceptable.</p>
+<h3 id="heartbeat#packet#content">Heartbeat packet content</h3>
+<p>Ping and pong packets contain a <strong>header</strong> that is common to all types of packets (for instance packets to request a <strong>failover vote</strong>), and a special <strong>Gossip Section</strong> that is specific of Ping and Pong packets.</p>
+<p>The <strong>common header</strong> has the following information:</p>
+<p>1、Node ID, a 160 bit pseudorandom string that is assigned the first time a node is created and remains the same for all the life of a Redis Cluster node.</p>
+<p>2、The <code>currentEpoch</code> and <code>configEpoch</code> fields of the sending node that are used to mount the distributed algorithms used by Redis Cluster (this is explained in detail in the next sections). If the node is a slave the <code>configEpoch</code> is the last known <code>configEpoch</code> of its master.</p>
+<p>3、The <strong>node flags</strong>, indicating if the node is a slave, a master, and other single-bit node information.</p>
+<p>4、A bitmap of the hash slots served by the sending node, or if the node is a slave, a bitmap of the slots served by its master.</p>
+<p>5、The sender <strong>TCP base port</strong> (that is, the port used by Redis to accept client commands; add 10000 to this to obtain the cluster bus port).</p>
+<p>6、The state of the cluster from the point of view of the sender (down or ok).</p>
+<p>7、The master node ID of the sending node, if it is a slave.</p>
+<h3 id="failure#detection">Failure detection</h3>
+<p><strong>Redis Cluster failure detection</strong> is used to recognize when a master or slave node is no longer reachable by the majority of nodes and then respond by promoting a slave to the role of master. When <strong>slave promotion</strong> is not possible the cluster is put in an <strong>error state</strong> to stop receiving queries from clients.</p>
+<p>As already mentioned, every node takes a list of flags associated with other known nodes. There are two flags that are used for <strong>failure detection</strong> that are called <code>PFAIL</code> and <code>FAIL</code>. <code>PFAIL</code> means <em>Possible failure</em>, and is a non-acknowledged failure type. <code>FAIL</code> means that a node is failing and that this condition was confirmed by a majority of masters within a fixed amount of time.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>阅读了下面的内容就能够明白最后这段话中关于<code>FAIL</code>的解释中的两个限制条件：</p>
+<p>1、confirmed by a majority of masters </p>
+<p>2、within a fixed amount of time</p>
+</blockquote>
+<h4 id="pfail#flag">PFAIL flag:</h4>
+<p>A node flags another node with the <code>PFAIL</code> flag when the node is not reachable for more than <code>NODE_TIMEOUT</code> time. Both master and slave nodes can flag another node as <code>PFAIL</code>, regardless of its type.</p>
+<p>The concept of non-reachability for a Redis Cluster node is that we have an <strong>active ping</strong> (a ping that we sent for which we have yet to get a reply) pending for longer than <code>NODE_TIMEOUT</code>. For this mechanism to work the <code>NODE_TIMEOUT</code> must be large compared to the <strong>network round trip time</strong>. In order to add reliability during normal operations, nodes will try to reconnect with other nodes in the cluster as soon as half of the <code>NODE_TIMEOUT</code> has elapsed without a reply to a ping. This mechanism ensures that connections are kept alive so <strong>broken connections</strong> usually won't result in <strong>false failure reports</strong> between nodes.</p>
+<h4 id="fail#flag">FAIL flag:</h4>
+<p>The <code>PFAIL</code> flag alone is just local information every node has about other nodes, but it is not sufficient to trigger a <strong>slave promotion</strong>. For a node to be considered down（down表示fail了） the <code>PFAIL</code> condition needs to be escalated to a <code>FAIL</code> condition.</p>
+<p>As outlined in the node heartbeats section of this document, every node sends <strong>gossip messages</strong> to every other node including the <strong>state</strong> of a few random known nodes. Every node eventually receives a set of node flags for every other node. This way every node has a mechanism to signal other nodes about <strong>failure conditions</strong> they have detected.</p>
+<p>A <code>PFAIL</code> condition is escalated to a <code>FAIL</code> condition when the following set of conditions are met:</p>
+<ul>
+<li>Some node, that we'll call A, has another node B flagged as <code>PFAIL</code>.</li>
+<li>Node A collected, via gossip sections, information about the state of B from the point of view of the majority of masters in the cluster.</li>
+<li>The majority of masters signaled the <code>PFAIL</code> or <code>FAIL</code> condition within <code>NODE_TIMEOUT * FAIL_REPORT_VALIDITY_MULT</code> time. (The validity factor is set to 2 in the current implementation, so this is just two times the <code>NODE_TIMEOUT</code> time).</li>
+</ul>
+<p>If all the above conditions are true, Node A will:</p>
+<ul>
+<li>Mark the node as <code>FAIL</code>.</li>
+<li>Send a <code>FAIL</code> message to all the reachable nodes.</li>
+</ul>
+<p>The <code>FAIL</code> message will force every receiving node to mark the node in <code>FAIL</code> state, whether or not it already flagged the node in <code>PFAIL</code> state.</p>
+<p>Note that <em>the FAIL flag is mostly one way</em>. That is, a node can go from <code>PFAIL</code> to <code>FAIL</code>, but a <code>FAIL</code> flag can only be cleared in the following situations:</p>
+<ul>
+<li>The node is already reachable and is a slave. In this case the <code>FAIL</code> flag can be cleared as slaves are not failed over.</li>
+<li>The node is already reachable and is a master not serving any slot. In this case the <code>FAIL</code> flag can be cleared as masters without slots do not really participate in the cluster and are waiting to be configured in order to join the cluster.</li>
+<li>The node is already reachable and is a master, but a long time (N times the <code>NODE_TIMEOUT</code>) has elapsed without any detectable slave promotion. It's better for it to rejoin the cluster and continue in this case.</li>
+</ul>
+<p>It is useful to note that while the <code>PFAIL</code> -&gt; <code>FAIL</code> transition uses a form of <strong>agreement</strong>, the agreement used is <strong>weak</strong>:</p>
+<ol>
+<li>Nodes collect views of other nodes over some time period, so even if the majority of master nodes need to "agree", actually this is just <strong>state</strong> that we collected from different nodes at different times and we are not sure, nor we require, that at a given moment the majority of masters agreed. However we discard <strong>failure reports</strong> which are <strong>old</strong>, so the failure was signaled by the majority of masters within a <strong>window of time</strong>.</li>
+<li>While every node detecting the <code>FAIL</code> condition will force that condition on other nodes in the cluster using the <code>FAIL</code> message, there is no way to ensure the message will reach all the nodes. For instance a node may detect the <code>FAIL</code> condition and because of a partition will not be able to reach any other node.</li>
+</ol>
+<p>However the <strong>Redis Cluster failure detection</strong> has a <strong>liveness requirement</strong>: eventually all the nodes should agree about the state of a given node. There are two cases that can originate from split brain conditions. Either some minority of nodes believe the node is in <code>FAIL</code> state, or a minority of nodes believe the node is not in <code>FAIL</code> state. In both the cases eventually the cluster will have a single view of the state of a given node:</p>
+<p><strong>Case 1</strong>: If a majority of masters have flagged a node as <code>FAIL</code>, because of failure detection and the <em>chain effect</em> it generates, every other node will eventually flag the master as <code>FAIL</code>, since in the specified <strong>window of time</strong> enough failures will be reported.</p>
+<p><strong>Case 2</strong>: When only a minority of masters have flagged a node as <code>FAIL</code>, the <strong>slave promotion</strong> will not happen (as it uses a more formal algorithm that makes sure everybody knows about the promotion eventually) and every node will clear the <code>FAIL</code> state as per the <code>FAIL</code> state clearing rules above (i.e. no promotion after N times the <code>NODE_TIMEOUT</code> has elapsed).</p>
+<p><strong>The FAIL flag is only used as a trigger to run the safe part of the algorithm</strong> for the <strong>slave promotion</strong>. In theory a slave may act independently and start a <strong>slave promotion</strong> when its master is not reachable, and wait for the masters to refuse to provide the acknowledgment if the master is actually reachable by the majority. However the added complexity of the <code>PFAIL -&gt; FAIL</code> state, the weak agreement, and the <code>FAIL</code> message forcing the propagation of the state in the shortest amount of time in the reachable part of the cluster, have practical advantages. Because of these mechanisms, usually all the nodes will stop accepting writes at about the same time if the cluster is in an error state. This is a desirable feature from the point of view of applications using Redis Cluster. Also erroneous election attempts initiated by slaves that can't reach its master due to local problems (the master is otherwise reachable by the majority of other master nodes) are avoided.</p>
+<h2 id="configuration#handling#propagation#and#failovers">Configuration handling, propagation, and failovers</h2>
+<blockquote>
+<p>NOTE: </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>currentEpoch</code></td>
+<td></td>
+<td>Cluster current epoch 是 cluster 中所有的node的consensus共识</td>
+</tr>
+<tr>
+<td><code>configEpoch</code></td>
+<td>Configuration epoch</td>
+<td>每个node的configuration</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<h3 id="cluster#current#epoch">Cluster current epoch</h3>
+<p>Redis Cluster uses a concept similar to the Raft algorithm "term". In Redis Cluster the term is called <strong>epoch</strong> instead, and it is used in order to give incremental versioning to events. When multiple nodes provide conflicting information, it becomes possible for another node to understand which state is the most up to date.</p>
+<p>The <code>currentEpoch</code> is a 64 bit unsigned number.</p>
+<p>At node creation every Redis Cluster node, both slaves and master nodes, set the <code>currentEpoch</code> to 0.</p>
+<p>Every time a packet is received from another node, if the epoch of the sender (part of the cluster bus messages header) is greater than the local node epoch, the <code>currentEpoch</code> is updated to the sender epoch.</p>
+<p>Because of these semantics, eventually all the nodes will agree to the greatest <code>configEpoch</code> in the cluster.</p>
+<p>This information is used when the state of the cluster is changed and a node seeks agreement in order to perform some action.</p>
+<p>Currently this happens only during <strong>slave promotion</strong>, as described in the next section. Basically the epoch is a <strong>logical clock</strong> for the cluster and dictates(表明) that given information wins over one with a smaller epoch.</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、raft算法</p>
+<p>二、"epoch is a <strong>logical clock</strong> for the cluster"</p>
+<p>三、consensus共识</p>
+</blockquote>
+<h3 id="configuration#epoch">Configuration epoch</h3>
+<p>Every master always advertises(广为告知) its <code>configEpoch</code> in ping and pong packets along with a bitmap advertising the set of slots it serves.</p>
+<p>The <code>configEpoch</code> is set to zero in masters when a new node is created.</p>
+<p>A new <code>configEpoch</code> is created during <strong>slave election</strong>. Slaves trying to replace failing masters increment their epoch and try to get authorization from a majority of masters. When a slave is authorized, a new unique <code>configEpoch</code> is created and the slave turns into a master using the new <code>configEpoch</code>.</p>
+<p>As explained in the next sections, the <code>configEpoch</code> helps to resolve conflicts when different nodes claim divergent（相异的） configurations (a condition that may happen because of network partitions and node failures).</p>
+<p>Slave nodes also advertise(广为告知) the <code>configEpoch</code> field in ping and pong packets, but in the case of slaves the field represents the <code>configEpoch</code> of its master as of the last time they exchanged packets. This allows other instances to detect when a slave has an <strong>old configuration</strong> that needs to be updated (master nodes will not grant votes to slaves with an old configuration).</p>
+<blockquote>
+<p>NOTE: 上面这段话是比较不好理解的，它的意思是：Slave node在它们的ping and pong packets中也会带上<code>configEpoch</code>字段，但是在这种情况下，这个<code>configEpoch</code>字段</p>
+</blockquote>
+<p>Every time the <code>configEpoch</code> changes for some known node, it is permanently stored in the <code>nodes.conf</code> file by all the nodes that receive this information. The same also happens for the <code>currentEpoch</code> value. These two variables are guaranteed to be saved and <code>fsync-ed</code> to disk when updated before a node continues its operations.</p>
+<p>The <code>configEpoch</code> values generated using a simple algorithm during failovers are guaranteed to be new, incremental, and unique.</p>
+<h3 id="slave#election#and#promotion">Slave election and promotion</h3>
+<p>Slave election and promotion is handled by <strong>slave nodes</strong>, with the help of master nodes that vote for the slave to promote. A slave election happens when a master is in <code>FAIL</code> state from the point of view of at least one of its slaves that has the prerequisites（前提条件） in order to become a master.</p>
+<p>In order for a slave to promote itself to master, it needs to start an election and win it. All the slaves for a given master can start an election if the master is in <code>FAIL</code> state, however only one slave will win the election and promote itself to master.</p>
+<p>A slave starts an election when the following conditions are met:</p>
+<ul>
+<li>The slave's master is in <code>FAIL</code> state.</li>
+<li>The master was serving a non-zero number of slots.</li>
+<li>The slave <strong>replication link</strong> was disconnected from the master for no longer than a given amount of time, in order to ensure the promoted slave's data is reasonably fresh. This time is user configurable.</li>
+</ul>
+<p>In order to be elected, the first step for a slave is to increment its <code>currentEpoch</code> counter, and request votes from master instances.</p>
+<p>Votes are requested by the slave by broadcasting a <code>FAILOVER_AUTH_REQUEST</code> packet to every master node of the cluster. Then it waits for a maximum time of two times the <code>NODE_TIMEOUT</code> for replies to arrive (but always for at least 2 seconds).</p>
+<p>Once a master has voted for a given slave, replying positively with a <code>FAILOVER_AUTH_ACK</code>, it can no longer vote for another slave of the same master for a period of <code>NODE_TIMEOUT * 2</code>. In this period it will not be able to reply to other authorization requests for the same master. This is not needed to guarantee safety, but useful for preventing multiple slaves from getting elected (even if with a different <code>configEpoch</code>) at around the same time, which is usually not wanted.</p>
+<p>A slave discards any <code>AUTH_ACK</code> replies with an epoch that is less than the <code>currentEpoch</code> at the time the vote request was sent. This ensures it doesn't count votes intended for a previous election.</p>
+<p>Once the slave receives ACKs from the majority of masters, it wins the election. Otherwise if the majority is not reached within the period of two times <code>NODE_TIMEOUT</code> (but always at least 2 seconds), the election is aborted and a new one will be tried again after <code>NODE_TIMEOUT * 4</code> (and always at least 4 seconds).</p>
+<h3 id="slave#rank">Slave rank</h3>
+<h3 id="masters#reply#to#slave#vote#request">Masters reply to slave vote request</h3>
+<h3 id="practical#example#of#configuration#epoch#usefulness#during#partitions">Practical example of configuration epoch usefulness during partitions</h3>
+<h3 id="hash#slots#configuration#propagation">Hash slots configuration propagation</h3>
+<h3 id="update#messages#a#closer#look">UPDATE messages, a closer look</h3>
+<h3 id="how#nodes#rejoin#the#cluster">How nodes rejoin the cluster</h3>
+<h3 id="replica#migration">Replica migration</h3>
+<h3 id="replica#migration#algorithm">Replica migration algorithm</h3>
+<h3 id="configepoch#conflicts#resolution#algorithm">configEpoch conflicts resolution algorithm</h3>
+<h3 id="node#resets">Node resets</h3>
+<h3 id="removing#nodes#from#a#cluster">Removing nodes from a cluster</h3>
+<h2 id="publishsubscribe">Publish/Subscribe</h2>
+<h2 id="appendix">Appendix</h2>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../redis-doc-Redis-Cluster-Tutorial/" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Introduction
+            </div>
+          </div>
+        </a>
+      
+      
+        <a href="../Sharding-strategy/" class="md-footer__link md-footer__link--next" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Introduction
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.ca5457b8.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+    
+  </body>
+</html>

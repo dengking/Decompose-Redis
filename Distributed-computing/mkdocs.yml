@@ -1,0 +1,5 @@
+nav:
+    - Introduction: index.md
+    - Consensus-raft: Consensus-raft
+    - Consistency: Consistency
+    - Write-safety-analysis: Write-safety-analysis

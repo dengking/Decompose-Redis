@@ -1,0 +1,3653 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Project documentation with Markdown.">
+      
+      
+      
+        <meta name="author" content="DengKing">
+      
+      
+        <link rel="canonical" href="https://dengking.github.io/decompose-redis/Expert-cnblogs-gqtc-redis%E7%B3%BB%E5%88%97/Sentinel/20-sentinel%E4%B8%80%E5%88%9D%E5%A7%8B%E5%8C%96-%E5%BB%BA%E9%93%BE/">
+      
+      <link rel="shortcut icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.3">
+    
+    
+      
+        <title>Introduction - decompose-redis</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.1655a90d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.7fa14f5b.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../../css/extra.css">
+    
+    
+      
+        
+<script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-27795084-5","mkdocs.org"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#cnblogs#redis20sentinel" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="https://dengking.github.io/decompose-redis" title="decompose-redis" class="md-header__button md-logo" aria-label="decompose-redis">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            decompose-redis
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Introduction
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="md-header__options">
+      
+    </div>
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/dengking/decompose-redis" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://dengking.github.io/decompose-redis" title="decompose-redis" class="md-nav__button md-logo" aria-label="decompose-redis">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    decompose-redis
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/dengking/decompose-redis" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      <label class="md-nav__link" for="__nav_2">
+        Books
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Books" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Books
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Books/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      <label class="md-nav__link" for="__nav_3">
+        Expert-antirez
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Expert-antirez" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Expert-antirez
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Expert-antirez/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" >
+      
+      <label class="md-nav__link" for="__nav_3_2">
+        An-update-about-Redis-developments-in-2019
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="An-update-about-Redis-developments-in-2019" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          An-update-about-Redis-developments-in-2019
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Expert-antirez/An-update-about-Redis-developments-in-2019/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
+      
+      <label class="md-nav__link" for="__nav_4">
+        Expert-cnblogs-gqtc-redis系列
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Expert-cnblogs-gqtc-redis系列" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Expert-cnblogs-gqtc-redis系列
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_2" type="checkbox" id="__nav_4_2" checked>
+      
+      <label class="md-nav__link" for="__nav_4_2">
+        Sentinel
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Sentinel" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_2">
+          <span class="md-nav__icon md-icon"></span>
+          Sentinel
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_2_1" type="checkbox" id="__nav_4_2_1" checked>
+      
+      <label class="md-nav__link" for="__nav_4_2_1">
+        20-sentinel一初始化-建链
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="20-sentinel一初始化-建链" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          20-sentinel一初始化-建链
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Introduction
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Introduction
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    一：哨兵进程
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    二：数据结构
+  </a>
+  
+    <nav class="md-nav" aria-label="二：数据结构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#struct#sentinelstate" class="md-nav__link">
+    struct sentinelState
+  </a>
+  
+    <nav class="md-nav" aria-label="struct sentinelState">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sentinelstatemasters" class="md-nav__link">
+    sentinelState::masters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#struct#sentinelredisinstance" class="md-nav__link">
+    struct sentinelRedisInstance
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tcp" class="md-nav__link">
+    TCP连接
+  </a>
+  
+    <nav class="md-nav" aria-label="TCP连接">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sentinelredisinstanceccsentinelredisinstancepc" class="md-nav__link">
+    sentinelRedisInstance::cc、sentinelRedisInstance::pc
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sentinelredisinstancesentinelssentinelredisinstanceslaves" class="md-nav__link">
+    主节点实例: sentinelRedisInstance::sentinels、sentinelRedisInstance::slaves
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    从节点实例
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    三：初始化
+  </a>
+  
+    <nav class="md-nav" aria-label="三：初始化">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sentinelcsentinelhandleconfiguration" class="md-nav__link">
+    sentinel.c:sentinelHandleConfiguration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sentinelccreatesentinelredisinstance" class="md-nav__link">
+    sentinel.c:createSentinelRedisInstance
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    四：哨兵进程的“主函数”
+  </a>
+  
+    <nav class="md-nav" aria-label="四：哨兵进程的“主函数”">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sentineltimer" class="md-nav__link">
+    sentinelTimer
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sentinelhandledictofredisinstances" class="md-nav__link">
+    sentinelHandleDictOfRedisInstances
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sentinelhandleredisinstance" class="md-nav__link">
+    sentinelHandleRedisInstance
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    五：建链
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_2_2" type="checkbox" id="__nav_4_2_2" >
+      
+      <label class="md-nav__link" for="__nav_4_2_2">
+        22-sentinel三客观下线以及故障转移之选举领导节点
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="22-sentinel三客观下线以及故障转移之选举领导节点" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          22-sentinel三客观下线以及故障转移之选举领导节点
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../22-sentinel%E4%B8%89%E5%AE%A2%E8%A7%82%E4%B8%8B%E7%BA%BF%E4%BB%A5%E5%8F%8A%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB%E4%B9%8B%E9%80%89%E4%B8%BE%E9%A2%86%E5%AF%BC%E8%8A%82%E7%82%B9/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_2_3" type="checkbox" id="__nav_4_2_3" >
+      
+      <label class="md-nav__link" for="__nav_4_2_3">
+        23-sentinel四故障转移流程
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="23-sentinel四故障转移流程" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          23-sentinel四故障转移流程
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../23-sentinel%E5%9B%9B%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB%E6%B5%81%E7%A8%8B/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_3" type="checkbox" id="__nav_4_3" >
+      
+      <label class="md-nav__link" for="__nav_4_3">
+        Cluster
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Cluster" data-md-level="2">
+        <label class="md-nav__title" for="__nav_4_3">
+          <span class="md-nav__icon md-icon"></span>
+          Cluster
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_3_1" type="checkbox" id="__nav_4_3_1" >
+      
+      <label class="md-nav__link" for="__nav_4_3_1">
+        25-集群一握手-心跳消息以及下线检测
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="25-集群一握手-心跳消息以及下线检测" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          25-集群一握手-心跳消息以及下线检测
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Cluster/25-%E9%9B%86%E7%BE%A4%E4%B8%80%E6%8F%A1%E6%89%8B-%E5%BF%83%E8%B7%B3%E6%B6%88%E6%81%AF%E4%BB%A5%E5%8F%8A%E4%B8%8B%E7%BA%BF%E6%A3%80%E6%B5%8B/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_3_2" type="checkbox" id="__nav_4_3_2" >
+      
+      <label class="md-nav__link" for="__nav_4_3_2">
+        26-集群二键的分配与迁移
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="26-集群二键的分配与迁移" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          26-集群二键的分配与迁移
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Cluster/26-%E9%9B%86%E7%BE%A4%E4%BA%8C%E9%94%AE%E7%9A%84%E5%88%86%E9%85%8D%E4%B8%8E%E8%BF%81%E7%A7%BB/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4_3_3" type="checkbox" id="__nav_4_3_3" >
+      
+      <label class="md-nav__link" for="__nav_4_3_3">
+        27-集群三主从复制-故障转移
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="27-集群三主从复制-故障转移" data-md-level="3">
+        <label class="md-nav__title" for="__nav_4_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          27-集群三主从复制-故障转移
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Cluster/27-%E9%9B%86%E7%BE%A4%E4%B8%89%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6-%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      <label class="md-nav__link" for="__nav_5">
+        Expert-cnblogs-小不点啊
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Expert-cnblogs-小不点啊" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Expert-cnblogs-小不点啊
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Expert-cnblogs-%E5%B0%8F%E4%B8%8D%E7%82%B9%E5%95%8A/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5_2" type="checkbox" id="__nav_5_2" >
+      
+      <label class="md-nav__link" for="__nav_5_2">
+        Redis系列九-redis集群高可用
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Redis系列九-redis集群高可用" data-md-level="2">
+        <label class="md-nav__title" for="__nav_5_2">
+          <span class="md-nav__icon md-icon"></span>
+          Redis系列九-redis集群高可用
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Expert-cnblogs-%E5%B0%8F%E4%B8%8D%E7%82%B9%E5%95%8A/Redis%E7%B3%BB%E5%88%97%E4%B9%9D-redis%E9%9B%86%E7%BE%A4%E9%AB%98%E5%8F%AF%E7%94%A8/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      <label class="md-nav__link" for="__nav_6">
+        Basic
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Basic" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Basic
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2" type="checkbox" id="__nav_6_2" >
+      
+      <label class="md-nav__link" for="__nav_6_2">
+        main
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="main" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          main
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/main/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_2" type="checkbox" id="__nav_6_2_2" >
+      
+      <label class="md-nav__link" for="__nav_6_2_2">
+        Event&&handler
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Event&&handler" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          Event&&handler
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/main/Event%26%26handler/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_3" type="checkbox" id="__nav_6_2_3" >
+      
+      <label class="md-nav__link" for="__nav_6_2_3">
+        redis-doc-Redis-internals
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="redis-doc-Redis-internals" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          redis-doc-Redis-internals
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/main/redis-doc-Redis-internals/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3" type="checkbox" id="__nav_6_3" >
+      
+      <label class="md-nav__link" for="__nav_6_3">
+        Event-library
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Event-library" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_3">
+          <span class="md-nav__icon md-icon"></span>
+          Event-library
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Event-library/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_2" type="checkbox" id="__nav_6_3_2" >
+      
+      <label class="md-nav__link" for="__nav_6_3_2">
+        official-doc
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="official-doc" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          official-doc
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Event-library/official-doc/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_3" type="checkbox" id="__nav_6_3_3" >
+      
+      <label class="md-nav__link" for="__nav_6_3_3">
+        Low-level-IO-multiplex
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Low-level-IO-multiplex" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          Low-level-IO-multiplex
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Event-library/Low-level-IO-multiplex/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3_4" type="checkbox" id="__nav_6_3_4" >
+      
+      <label class="md-nav__link" for="__nav_6_3_4">
+        High-level
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="High-level" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_3_4">
+          <span class="md-nav__icon md-icon"></span>
+          High-level
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Event-library/High-level/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4" type="checkbox" id="__nav_6_4" >
+      
+      <label class="md-nav__link" for="__nav_6_4">
+        Network
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Network" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_4">
+          <span class="md-nav__icon md-icon"></span>
+          Network
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Network/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_5" type="checkbox" id="__nav_6_5" >
+      
+      <label class="md-nav__link" for="__nav_6_5">
+        Redis-server
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Redis-server" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_5">
+          <span class="md-nav__icon md-icon"></span>
+          Redis-server
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Redis-server/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_5_2" type="checkbox" id="__nav_6_5_2" >
+      
+      <label class="md-nav__link" for="__nav_6_5_2">
+        Redis-Signals-Handling
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Redis-Signals-Handling" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_5_2">
+          <span class="md-nav__icon md-icon"></span>
+          Redis-Signals-Handling
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Redis-server/Redis-Signals-Handling/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_5_2_2" type="checkbox" id="__nav_6_5_2_2" >
+      
+      <label class="md-nav__link" for="__nav_6_5_2_2">
+        redis-doc-Redis-Signals-Handling
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="redis-doc-Redis-Signals-Handling" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_5_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          redis-doc-Redis-Signals-Handling
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Redis-server/Redis-Signals-Handling/redis-doc-Redis-Signals-Handling/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_6" type="checkbox" id="__nav_6_6" >
+      
+      <label class="md-nav__link" for="__nav_6_6">
+        Thread-model
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Thread-model" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_6">
+          <span class="md-nav__icon md-icon"></span>
+          Thread-model
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Thread-model/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_6_2" type="checkbox" id="__nav_6_6_2" >
+      
+      <label class="md-nav__link" for="__nav_6_6_2">
+        alibabacloud-Improving-Redis-Performance-through-Multi-Thread
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="alibabacloud-Improving-Redis-Performance-through-Multi-Thread" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          alibabacloud-Improving-Redis-Performance-through-Multi-Thread
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Thread-model/alibabacloud-Improving-Redis-Performance-through-Multi-Thread/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_6_3" type="checkbox" id="__nav_6_6_3" >
+      
+      <label class="md-nav__link" for="__nav_6_6_3">
+        zhihu-Redis-6.0-多线程IO处理过程详解
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="zhihu-Redis-6.0-多线程IO处理过程详解" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_6_3">
+          <span class="md-nav__icon md-icon"></span>
+          zhihu-Redis-6.0-多线程IO处理过程详解
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Thread-model/zhihu-Redis-6.0-%E5%A4%9A%E7%BA%BF%E7%A8%8BIO%E5%A4%84%E7%90%86%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_6_4" type="checkbox" id="__nav_6_6_4" >
+      
+      <label class="md-nav__link" for="__nav_6_6_4">
+        Background-IO-thread
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Background-IO-thread" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_6_4">
+          <span class="md-nav__icon md-icon"></span>
+          Background-IO-thread
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Thread-model/Background-IO-thread/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_6_5" type="checkbox" id="__nav_6_6_5" >
+      
+      <label class="md-nav__link" for="__nav_6_6_5">
+        Read-code
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Read-code" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_6_5">
+          <span class="md-nav__icon md-icon"></span>
+          Read-code
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Thread-model/Read-code/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_7" type="checkbox" id="__nav_6_7" >
+      
+      <label class="md-nav__link" for="__nav_6_7">
+        Background-process
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Background-process" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_7">
+          <span class="md-nav__icon md-icon"></span>
+          Background-process
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Background-process/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8" type="checkbox" id="__nav_6_8" >
+      
+      <label class="md-nav__link" for="__nav_6_8">
+        Data-structure
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Data-structure" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_8">
+          <span class="md-nav__icon md-icon"></span>
+          Data-structure
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Data-structure/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8_2" type="checkbox" id="__nav_6_8_2" >
+      
+      <label class="md-nav__link" for="__nav_6_8_2">
+        redis-doc-Redis-data-type
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="redis-doc-Redis-data-type" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_8_2">
+          <span class="md-nav__icon md-icon"></span>
+          redis-doc-Redis-data-type
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Data-structure/redis-doc-Redis-data-type/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8_3" type="checkbox" id="__nav_6_8_3" >
+      
+      <label class="md-nav__link" for="__nav_6_8_3">
+        Generic-double-linked-list
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Generic-double-linked-list" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_8_3">
+          <span class="md-nav__icon md-icon"></span>
+          Generic-double-linked-list
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Data-structure/Generic-double-linked-list/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8_4" type="checkbox" id="__nav_6_8_4" >
+      
+      <label class="md-nav__link" for="__nav_6_8_4">
+        Rax
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Rax" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_8_4">
+          <span class="md-nav__icon md-icon"></span>
+          Rax
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Data-structure/Rax/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8_5" type="checkbox" id="__nav_6_8_5" >
+      
+      <label class="md-nav__link" for="__nav_6_8_5">
+        Dict
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Dict" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_8_5">
+          <span class="md-nav__icon md-icon"></span>
+          Dict
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Data-structure/Dict/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Data-structure/Dict/Dict-usage/" class="md-nav__link">
+        Dict-usage
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_8_5_3" type="checkbox" id="__nav_6_8_5_3" >
+      
+      <label class="md-nav__link" for="__nav_6_8_5_3">
+        Incremental-rehash
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Incremental-rehash" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_8_5_3">
+          <span class="md-nav__icon md-icon"></span>
+          Incremental-rehash
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Data-structure/Dict/Incremental-rehash/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_9" type="checkbox" id="__nav_6_9" >
+      
+      <label class="md-nav__link" for="__nav_6_9">
+        Memory-management
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Memory-management" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_9">
+          <span class="md-nav__icon md-icon"></span>
+          Memory-management
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Memory-management/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_9_2" type="checkbox" id="__nav_6_9_2" >
+      
+      <label class="md-nav__link" for="__nav_6_9_2">
+        zmalloc
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="zmalloc" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_9_2">
+          <span class="md-nav__icon md-icon"></span>
+          zmalloc
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Memory-management/zmalloc/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_10" type="checkbox" id="__nav_6_10" >
+      
+      <label class="md-nav__link" for="__nav_6_10">
+        Persistence
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Persistence" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_10">
+          <span class="md-nav__icon md-icon"></span>
+          Persistence
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Basic/Persistence/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      <label class="md-nav__link" for="__nav_7">
+        Deploy-topology
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Deploy-topology" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Deploy-topology
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../deploy-topology/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      <label class="md-nav__link" for="__nav_8">
+        Distributed-computing
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Distributed-computing" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Distributed-computing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Distributed-computing/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2" type="checkbox" id="__nav_8_2" >
+      
+      <label class="md-nav__link" for="__nav_8_2">
+        Consensus-raft
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Consensus-raft" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_2">
+          <span class="md-nav__icon md-icon"></span>
+          Consensus-raft
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Distributed-computing/Consensus-raft/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2" type="checkbox" id="__nav_8_2_2" >
+      
+      <label class="md-nav__link" for="__nav_8_2_2">
+        zhihu-Redis集群中的纪元-epoch
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="zhihu-Redis集群中的纪元-epoch" data-md-level="3">
+        <label class="md-nav__title" for="__nav_8_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          zhihu-Redis集群中的纪元-epoch
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Distributed-computing/Consensus-raft/zhihu-Redis%E9%9B%86%E7%BE%A4%E4%B8%AD%E7%9A%84%E7%BA%AA%E5%85%83-epoch/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_3" type="checkbox" id="__nav_8_3" >
+      
+      <label class="md-nav__link" for="__nav_8_3">
+        Consistency
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Consistency" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_3">
+          <span class="md-nav__icon md-icon"></span>
+          Consistency
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Distributed-computing/Consistency/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_4" type="checkbox" id="__nav_8_4" >
+      
+      <label class="md-nav__link" for="__nav_8_4">
+        Write-safety-analysis
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Write-safety-analysis" data-md-level="2">
+        <label class="md-nav__title" for="__nav_8_4">
+          <span class="md-nav__icon md-icon"></span>
+          Write-safety-analysis
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Distributed-computing/Write-safety-analysis/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      <label class="md-nav__link" for="__nav_9">
+        HA
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="HA" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          HA
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../HA/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2" type="checkbox" id="__nav_9_2" >
+      
+      <label class="md-nav__link" for="__nav_9_2">
+        Sentinel
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Sentinel" data-md-level="2">
+        <label class="md-nav__title" for="__nav_9_2">
+          <span class="md-nav__icon md-icon"></span>
+          Sentinel
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../HA/Sentinel/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_2_2" type="checkbox" id="__nav_9_2_2" >
+      
+      <label class="md-nav__link" for="__nav_9_2_2">
+        Redis-Sentinel-Documentation
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Redis-Sentinel-Documentation" data-md-level="3">
+        <label class="md-nav__title" for="__nav_9_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          Redis-Sentinel-Documentation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../HA/Sentinel/Redis-Sentinel-Documentation/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9_3" type="checkbox" id="__nav_9_3" >
+      
+      <label class="md-nav__link" for="__nav_9_3">
+        Replication
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Replication" data-md-level="2">
+        <label class="md-nav__title" for="__nav_9_3">
+          <span class="md-nav__icon md-icon"></span>
+          Replication
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../HA/Replication/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10" type="checkbox" id="__nav_10" >
+      
+      <label class="md-nav__link" for="__nav_10">
+        Cluster
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Cluster" data-md-level="1">
+        <label class="md-nav__title" for="__nav_10">
+          <span class="md-nav__icon md-icon"></span>
+          Cluster
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cluster/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_2" type="checkbox" id="__nav_10_2" >
+      
+      <label class="md-nav__link" for="__nav_10_2">
+        redis-doc-Redis-Cluster-Tutorial
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="redis-doc-Redis-Cluster-Tutorial" data-md-level="2">
+        <label class="md-nav__title" for="__nav_10_2">
+          <span class="md-nav__icon md-icon"></span>
+          redis-doc-Redis-Cluster-Tutorial
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cluster/redis-doc-Redis-Cluster-Tutorial/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_3" type="checkbox" id="__nav_10_3" >
+      
+      <label class="md-nav__link" for="__nav_10_3">
+        redis-doc-Redis-Cluster-Specification
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="redis-doc-Redis-Cluster-Specification" data-md-level="2">
+        <label class="md-nav__title" for="__nav_10_3">
+          <span class="md-nav__icon md-icon"></span>
+          redis-doc-Redis-Cluster-Specification
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cluster/redis-doc-Redis-Cluster-Specification/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_4" type="checkbox" id="__nav_10_4" >
+      
+      <label class="md-nav__link" for="__nav_10_4">
+        Sharding-strategy
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Sharding-strategy" data-md-level="2">
+        <label class="md-nav__title" for="__nav_10_4">
+          <span class="md-nav__icon md-icon"></span>
+          Sharding-strategy
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cluster/Sharding-strategy/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_5" type="checkbox" id="__nav_10_5" >
+      
+      <label class="md-nav__link" for="__nav_10_5">
+        Gossip
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Gossip" data-md-level="2">
+        <label class="md-nav__title" for="__nav_10_5">
+          <span class="md-nav__icon md-icon"></span>
+          Gossip
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cluster/Gossip/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_5_2" type="checkbox" id="__nav_10_5_2" >
+      
+      <label class="md-nav__link" for="__nav_10_5_2">
+        redis-cluster-gossip-aliyun
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="redis-cluster-gossip-aliyun" data-md-level="3">
+        <label class="md-nav__title" for="__nav_10_5_2">
+          <span class="md-nav__icon md-icon"></span>
+          redis-cluster-gossip-aliyun
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cluster/Gossip/redis-cluster-gossip-aliyun/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_6" type="checkbox" id="__nav_10_6" >
+      
+      <label class="md-nav__link" for="__nav_10_6">
+        Read-the-code
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Read-the-code" data-md-level="2">
+        <label class="md-nav__title" for="__nav_10_6">
+          <span class="md-nav__icon md-icon"></span>
+          Read-the-code
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cluster/Read-the-code/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10_7" type="checkbox" id="__nav_10_7" >
+      
+      <label class="md-nav__link" for="__nav_10_7">
+        读写分离
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="读写分离" data-md-level="2">
+        <label class="md-nav__title" for="__nav_10_7">
+          <span class="md-nav__icon md-icon"></span>
+          读写分离
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cluster/%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_11" type="checkbox" id="__nav_11" >
+      
+      <label class="md-nav__link" for="__nav_11">
+        Command
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Command" data-md-level="1">
+        <label class="md-nav__title" for="__nav_11">
+          <span class="md-nav__icon md-icon"></span>
+          Command
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Command/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_12" type="checkbox" id="__nav_12" >
+      
+      <label class="md-nav__link" for="__nav_12">
+        Clients
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Clients" data-md-level="1">
+        <label class="md-nav__title" for="__nav_12">
+          <span class="md-nav__icon md-icon"></span>
+          Clients
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_12_1" type="checkbox" id="__nav_12_1" >
+      
+      <label class="md-nav__link" for="__nav_12_1">
+        library-Redis-plus-plus
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="library-Redis-plus-plus" data-md-level="2">
+        <label class="md-nav__title" for="__nav_12_1">
+          <span class="md-nav__icon md-icon"></span>
+          library-Redis-plus-plus
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Clients/library-Redis-plus-plus/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_12_2" type="checkbox" id="__nav_12_2" >
+      
+      <label class="md-nav__link" for="__nav_12_2">
+        Redis-cli
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Redis-cli" data-md-level="2">
+        <label class="md-nav__title" for="__nav_12_2">
+          <span class="md-nav__icon md-icon"></span>
+          Redis-cli
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Clients/Redis-cli/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_12_2_2" type="checkbox" id="__nav_12_2_2" >
+      
+      <label class="md-nav__link" for="__nav_12_2_2">
+        linenoise
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="linenoise" data-md-level="3">
+        <label class="md-nav__title" for="__nav_12_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          linenoise
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Clients/Redis-cli/linenoise/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_13" type="checkbox" id="__nav_13" >
+      
+      <label class="md-nav__link" for="__nav_13">
+        Application
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Application" data-md-level="1">
+        <label class="md-nav__title" for="__nav_13">
+          <span class="md-nav__icon md-icon"></span>
+          Application
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_13_1" type="checkbox" id="__nav_13_1" >
+      
+      <label class="md-nav__link" for="__nav_13_1">
+        Redis-Cache
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Redis-Cache" data-md-level="2">
+        <label class="md-nav__title" for="__nav_13_1">
+          <span class="md-nav__icon md-icon"></span>
+          Redis-Cache
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Application/Redis-Cache/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_13_1_2" type="checkbox" id="__nav_13_1_2" >
+      
+      <label class="md-nav__link" for="__nav_13_1_2">
+        CSDN-彻底搞懂缓存穿透-缓存击穿-缓存雪崩
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="CSDN-彻底搞懂缓存穿透-缓存击穿-缓存雪崩" data-md-level="3">
+        <label class="md-nav__title" for="__nav_13_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          CSDN-彻底搞懂缓存穿透-缓存击穿-缓存雪崩
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Application/Redis-Cache/CSDN-%E5%BD%BB%E5%BA%95%E6%90%9E%E6%87%82%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F-%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF-%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14" type="checkbox" id="__nav_14" >
+      
+      <label class="md-nav__link" for="__nav_14">
+        Amazon-ElastiCache
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Amazon-ElastiCache" data-md-level="1">
+        <label class="md-nav__title" for="__nav_14">
+          <span class="md-nav__icon md-icon"></span>
+          Amazon-ElastiCache
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Amazon-ElastiCache/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_14_2" type="checkbox" id="__nav_14_2" >
+      
+      <label class="md-nav__link" for="__nav_14_2">
+        High-availability-using-replication-groups
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="High-availability-using-replication-groups" data-md-level="2">
+        <label class="md-nav__title" for="__nav_14_2">
+          <span class="md-nav__icon md-icon"></span>
+          High-availability-using-replication-groups
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Amazon-ElastiCache/High-availability-using-replication-groups/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    一：哨兵进程
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    二：数据结构
+  </a>
+  
+    <nav class="md-nav" aria-label="二：数据结构">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#struct#sentinelstate" class="md-nav__link">
+    struct sentinelState
+  </a>
+  
+    <nav class="md-nav" aria-label="struct sentinelState">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sentinelstatemasters" class="md-nav__link">
+    sentinelState::masters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#struct#sentinelredisinstance" class="md-nav__link">
+    struct sentinelRedisInstance
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tcp" class="md-nav__link">
+    TCP连接
+  </a>
+  
+    <nav class="md-nav" aria-label="TCP连接">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sentinelredisinstanceccsentinelredisinstancepc" class="md-nav__link">
+    sentinelRedisInstance::cc、sentinelRedisInstance::pc
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sentinelredisinstancesentinelssentinelredisinstanceslaves" class="md-nav__link">
+    主节点实例: sentinelRedisInstance::sentinels、sentinelRedisInstance::slaves
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    从节点实例
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    三：初始化
+  </a>
+  
+    <nav class="md-nav" aria-label="三：初始化">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sentinelcsentinelhandleconfiguration" class="md-nav__link">
+    sentinel.c:sentinelHandleConfiguration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sentinelccreatesentinelredisinstance" class="md-nav__link">
+    sentinel.c:createSentinelRedisInstance
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    四：哨兵进程的“主函数”
+  </a>
+  
+    <nav class="md-nav" aria-label="四：哨兵进程的“主函数”">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sentineltimer" class="md-nav__link">
+    sentinelTimer
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sentinelhandledictofredisinstances" class="md-nav__link">
+    sentinelHandleDictOfRedisInstances
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sentinelhandleredisinstance" class="md-nav__link">
+    sentinelHandleRedisInstance
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    五：建链
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="cnblogs#redis20sentinel">cnblogs <a href="https://www.cnblogs.com/gqtcgq/p/7247050.html">Redis源码解析：20sentinel(一)初始化、建链</a></h1>
+<blockquote>
+<p>NOTE: </p>
+<p>一、首先需要了解拓扑结构</p>
+<p>jianshu <a href="https://www.jianshu.com/p/06ab9daf921d">Redis哨兵（Sentinel）模式</a></p>
+<p><img alt="img" src="https://upload-images.jianshu.io/upload_images/11320039-3f40b17c0412116c.png?imageMogr2/auto-orient/strip|imageView2/2/w/747/format/webp" /></p>
+</blockquote>
+<p>sentinel(哨兵)是redis的高可用解决方案。由一个或多个sentinel实例组成的分布式系统，可以监控任意多个主节点，以及它们属下的所有从节点。当某个主节点下线时，sentinel可以将下线主节点属下的某个从节点升级为新的主节点。</p>
+<h2 id="_1">一：哨兵进程</h2>
+<h2 id="_2">二：数据结构</h2>
+<h3 id="struct#sentinelstate"><code>struct sentinelState</code></h3>
+<p>在哨兵模式中，最主要的数据结构就是<code>sentinelState</code>。</p>
+<blockquote>
+<p>NOTE: </p>
+<p>在<code>sentinel.c</code>中定义</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><span class="cm">/* Main state. */</span>
+<span class="k">struct</span> <span class="nc">sentinelState</span> <span class="p">{</span>
+    <span class="kt">uint64_t</span> <span class="n">current_epoch</span><span class="p">;</span>     <span class="cm">/* Current epoch. */</span>
+    <span class="n">dict</span> <span class="o">*</span><span class="n">masters</span><span class="p">;</span>      <span class="cm">/* Dictionary of master sentinelRedisInstances.</span>
+<span class="cm">                           Key is the instance name, value is the</span>
+<span class="cm">                           sentinelRedisInstance structure pointer. */</span>
+    <span class="kt">int</span> <span class="n">tilt</span><span class="p">;</span>           <span class="cm">/* Are we in TILT mode? */</span>
+    <span class="kt">int</span> <span class="n">running_scripts</span><span class="p">;</span>    <span class="cm">/* Number of scripts in execution right now. */</span>
+    <span class="n">mstime_t</span> <span class="n">tilt_start_time</span><span class="p">;</span>   <span class="cm">/* When TITL started. */</span>
+    <span class="n">mstime_t</span> <span class="n">previous_time</span><span class="p">;</span>     <span class="cm">/* Last time we ran the time handler. */</span>
+    <span class="n">list</span> <span class="o">*</span><span class="n">scripts_queue</span><span class="p">;</span>    <span class="cm">/* Queue of user scripts to execute. */</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">announce_ip</span><span class="p">;</span>      <span class="cm">/* IP addr that is gossiped to other sentinels if</span>
+<span class="cm">                               not NULL. */</span>
+    <span class="kt">int</span> <span class="n">announce_port</span><span class="p">;</span>      <span class="cm">/* Port that is gossiped to other sentinels if</span>
+<span class="cm">                               non zero. */</span>
+<span class="p">}</span> <span class="n">sentinel</span><span class="p">;</span>
+</code></pre></div>
+<h4 id="sentinelstatemasters"><code>sentinelState::masters</code></h4>
+<p>在<code>sentinelState</code>结构中，最主要的成员就是字典<code>masters</code>。该字典中记录当前哨兵所要监控和交互的所有实例。这些实例包括主节点、从节点和其他哨兵。</p>
+<p><code>masters</code>字典以主节点的名字为key，以主节点实例结构<code>sentinelRedisInstance</code>为value。主节点的名字通过解析配置文件得到。</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、"主节点的名字通过解析配置文件得到"是什么意思？</p>
+<p>参见下面的"初始化"章节可知: 用户需要在sentinel的配置文件中，指定由它监控的master节点；</p>
+</blockquote>
+<h3 id="struct#sentinelredisinstance"><code>struct sentinelRedisInstance</code></h3>
+<p>而<code>sentinelRedisInstance</code>结构的定义如下：</p>
+<div class="highlight"><pre><span></span><code><span class="k">typedef</span> <span class="k">struct</span> <span class="nc">sentinelRedisInstance</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">flags</span><span class="p">;</span>      <span class="cm">/* See SRI_... defines */</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>     <span class="cm">/* Master name from the point of view of this sentinel. */</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">runid</span><span class="p">;</span>    <span class="cm">/* run ID of this instance. */</span>
+    <span class="kt">uint64_t</span> <span class="n">config_epoch</span><span class="p">;</span>  <span class="cm">/* Configuration epoch. */</span>
+    <span class="n">sentinelAddr</span> <span class="o">*</span><span class="n">addr</span><span class="p">;</span> <span class="cm">/* Master host. */</span>
+    <span class="n">redisAsyncContext</span> <span class="o">*</span><span class="n">cc</span><span class="p">;</span> <span class="cm">/* Hiredis context for commands. */</span>
+    <span class="n">redisAsyncContext</span> <span class="o">*</span><span class="n">pc</span><span class="p">;</span> <span class="cm">/* Hiredis context for Pub / Sub. */</span>
+    <span class="kt">int</span> <span class="n">pending_commands</span><span class="p">;</span>   <span class="cm">/* Number of commands sent waiting for a reply. */</span>
+    <span class="n">mstime_t</span> <span class="n">cc_conn_time</span><span class="p">;</span> <span class="cm">/* cc connection time. */</span>
+    <span class="n">mstime_t</span> <span class="n">pc_conn_time</span><span class="p">;</span> <span class="cm">/* pc connection time. */</span>
+    <span class="p">...</span>
+
+    <span class="cm">/* Master specific. */</span>
+    <span class="n">dict</span> <span class="o">*</span><span class="n">sentinels</span><span class="p">;</span>    <span class="cm">/* Other sentinels monitoring the same master. */</span>
+    <span class="n">dict</span> <span class="o">*</span><span class="n">slaves</span><span class="p">;</span>       <span class="cm">/* Slaves for this master instance. */</span>
+    <span class="p">...</span>
+
+    <span class="cm">/* Slave specific. */</span>
+    <span class="p">...</span>
+    <span class="k">struct</span> <span class="nc">sentinelRedisInstance</span> <span class="o">*</span><span class="n">master</span><span class="p">;</span> <span class="cm">/* Master instance if it&#39;s slave. */</span>
+    <span class="p">...</span>
+
+    <span class="cm">/* Failover */</span>
+    <span class="p">...</span>
+    <span class="k">struct</span> <span class="nc">sentinelRedisInstance</span> <span class="o">*</span><span class="n">promoted_slave</span><span class="p">;</span> 
+    <span class="p">...</span>
+<span class="p">}</span> <span class="n">sentinelRedisInstance</span><span class="p">;</span>
+</code></pre></div>
+<blockquote>
+<p>NOTE: </p>
+<p>一、在<code>sentinel.c</code>中定义；</p>
+<p>在最新版的Redis中，上述结构体已经改变了</p>
+</blockquote>
+<p>在哨兵模式中，所有的主节点、从节点以及哨兵实例，都是由<code>sentinelRedisInstance</code>结构表示的。</p>
+<h3 id="tcp">TCP连接</h3>
+<p>哨兵会与其监控的所有主节点、该主节点下属的所有从节点，以及与之监控相同主节点的其他哨兵之间建立TCP连接。</p>
+<p>哨兵与主节点和从节点之间会建立两个TCP连接，分别用于发送命令和订阅HELLO频道；</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、对应了如下两个<code>redisAsyncContext</code></p>
+<div class="highlight"><pre><span></span><code><span class="n">redisAsyncContext</span> <span class="o">*</span><span class="n">cc</span><span class="p">;</span> <span class="cm">/* Hiredis context for commands. */</span>
+<span class="n">redisAsyncContext</span> <span class="o">*</span><span class="n">pc</span><span class="p">;</span> <span class="cm">/* Hiredis context for Pub / Sub. */</span>
+</code></pre></div>
+<p>在最新版Redis中，它们定义在:</p>
+<div class="highlight"><pre><span></span><code> <span class="k">struct</span> <span class="nc">instanceLink</span> 
+</code></pre></div>
+</blockquote>
+<p>哨兵与其他哨兵之间只建立一个发送命令的TCP连接（因为哨兵本身不支持订阅模式）；</p>
+<h4 id="sentinelredisinstanceccsentinelredisinstancepc"><code>sentinelRedisInstance::cc</code>、<code>sentinelRedisInstance::pc</code></h4>
+<p>哨兵与其他节点进行通信，使用的是Hiredis中的异步方式。因此，<code>sentinelRedisInstance</code>结构中的<code>cc</code>，就是用于命令连接的异步上下文；而其中的<code>pc</code>，就是用于订阅连接的异步上下文；</p>
+<h3 id="sentinelredisinstancesentinelssentinelredisinstanceslaves">主节点实例: <code>sentinelRedisInstance::sentinels</code>、<code>sentinelRedisInstance::slaves</code></h3>
+<p>除了公共部分，不同类型的实例还会有自己特有的属性。比如对于**主节点实例**而言，它的特有属性有：</p>
+<p>1、<code>sentinels</code>字典：用于记录监控相同主节点其他哨兵实例。该字典以哨兵名字为key，以哨兵实例<code>sentinelRedisInstance</code>结构为key；</p>
+<p>2、<code>slaves</code>字典：用于记录该主节点实例的所有从节点实例。该字典以从节点名字为key，以从节点实例<code>sentinelRedisInstance</code>结构为key；</p>
+<p>因此总结而言就是：<code>sentinelState</code>结构中的字典<code>masters</code>中，记录了本哨兵要监控的所有主节点实例，而在表示每个主节点实例的<code>sentinelRedisInstance</code>结构中，字典<code>sentinels</code>中记录了监控该主节点的其他哨兵实例，字典<code>slaves</code>记录了该主节点的所有下属从节点。</p>
+<p>这种设计方式非常巧妙，以**主节点**为核心，将当前哨兵所监控的实例进行分组，每个主节点及其属下的从节点和哨兵，组成一个监控单位，不同监控单位之间的流程是相互隔离的。</p>
+<blockquote>
+<p>NOTE: </p>
+<p>一、这是自然而然的设计，因为Redis sentinel的目的就是对主节点监控、automatic failover；因此，就需要知道这个主节点的从节点、其他监控这个主节点的sentinel；显然它们就构成了一个监控单位；显然这个监控单位的核心是"主节点"，这个监控单位就是为了保证这个主节点的HA的；</p>
+<p>二、"不同监控单位之间的流程是相互隔离的"</p>
+<p>需要注意的是，在Redis cluster被标准化之前，民间也是有cluster方案的；在民间的cluster方案中，就会同时存在多个master；</p>
+</blockquote>
+<h3 id="_3">从节点实例</h3>
+<p>对于**从节点实例**而言，<code>sentinelRedisInstance</code>结构中也有一些它所各有的属性，比如<code>master</code>指针，就指向了它的主节点的<code>sentinelRedisInstance</code>结构；</p>
+<p><code>sentinelRedisInstance</code>结构中还包含与故障转移相关的属性，这在分析哨兵的故障转移流程的代码时会介绍。</p>
+<h2 id="_4">三：初始化</h2>
+<p>在哨兵模式下，启动时必须指定一个配置文件，这也是哨兵模式和redis服务器不同的地方，哨兵模式不支持命令行方式的参数配置。</p>
+<blockquote>
+<p>NOTE: </p>
+<p>主要是指定需要由它监控的master</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code>sentinel monitor mymaster <span class="m">127</span>.0.0.1 <span class="m">6379</span> <span class="m">2</span>
+sentinel down-after-milliseconds mymaster <span class="m">60000</span>
+sentinel failover-timeout mymaster <span class="m">180000</span>
+sentinel parallel-syncs mymaster <span class="m">1</span>
+
+sentinel monitor resque <span class="m">192</span>.168.1.3 <span class="m">6380</span> <span class="m">4</span>
+sentinel down-after-milliseconds resque <span class="m">10000</span>
+sentinel failover-timeout resque <span class="m">180000</span>
+sentinel parallel-syncs resque <span class="m">5</span>
+</code></pre></div>
+<p>在配置文件中，只需要指定主节点的名字、ip和port信息，而从节点和其他哨兵的信息，都是在信息交互的过程中自动发现的。</p>
+<blockquote>
+<p>NOTE:</p>
+<p>Redis cluster中，通过gossip来进行自动发现</p>
+</blockquote>
+<h3 id="sentinelcsentinelhandleconfiguration"><code>sentinel.c:sentinelHandleConfiguration</code></h3>
+<p>在源代码<code>sentinel.c</code>中，函数<code>sentinelHandleConfiguration</code>就是用于解析哨兵配置选项的函数。</p>
+<div class="highlight"><pre><span></span><code><span class="kt">char</span> <span class="o">*</span><span class="nf">sentinelHandleConfiguration</span><span class="p">(</span><span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="kt">int</span> <span class="n">argc</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">sentinelRedisInstance</span> <span class="o">*</span><span class="n">ri</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">strcasecmp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="s">&quot;monitor&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">argc</span> <span class="o">==</span> <span class="mi">5</span><span class="p">)</span> <span class="p">{</span>
+        <span class="cm">/* monitor &lt;name&gt; &lt;host&gt; &lt;port&gt; &lt;quorum&gt; */</span>
+        <span class="kt">int</span> <span class="n">quorum</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">4</span><span class="p">]);</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">quorum</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="s">&quot;Quorum must be 1 or greater.&quot;</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">createSentinelRedisInstance</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">SRI_MASTER</span><span class="p">,</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                        <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span><span class="n">quorum</span><span class="p">,</span><span class="nb">NULL</span><span class="p">)</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">switch</span><span class="p">(</span><span class="n">errno</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="nl">EBUSY</span><span class="p">:</span> <span class="k">return</span> <span class="s">&quot;Duplicated master name.&quot;</span><span class="p">;</span>
+            <span class="k">case</span> <span class="nl">ENOENT</span><span class="p">:</span> <span class="k">return</span> <span class="s">&quot;Can&#39;t resolve master instance hostname.&quot;</span><span class="p">;</span>
+            <span class="k">case</span> <span class="nl">EINVAL</span><span class="p">:</span> <span class="k">return</span> <span class="s">&quot;Invalid port number&quot;</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>上面的代码，就是根据参数值，直接调用<code>createSentinelRedisInstance</code>函数，创建一个<code>SRI_MASTER</code>标记的主节点实例。</p>
+<h3 id="sentinelccreatesentinelredisinstance"><code>sentinel.c:createSentinelRedisInstance</code></h3>
+<p><code>createSentinelRedisInstance</code>函数的代码如下：</p>
+<div class="highlight"><pre><span></span><code><span class="n">sentinelRedisInstance</span> <span class="o">*</span><span class="nf">createSentinelRedisInstance</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">hostname</span><span class="p">,</span> <span class="kt">int</span> <span class="n">port</span><span class="p">,</span> <span class="kt">int</span> <span class="n">quorum</span><span class="p">,</span> <span class="n">sentinelRedisInstance</span> <span class="o">*</span><span class="n">master</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">sentinelRedisInstance</span> <span class="o">*</span><span class="n">ri</span><span class="p">;</span>
+    <span class="n">sentinelAddr</span> <span class="o">*</span><span class="n">addr</span><span class="p">;</span>
+    <span class="n">dict</span> <span class="o">*</span><span class="n">table</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">slavename</span><span class="p">[</span><span class="mi">128</span><span class="p">],</span> <span class="o">*</span><span class="n">sdsname</span><span class="p">;</span>
+
+    <span class="n">redisAssert</span><span class="p">(</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">SRI_MASTER</span><span class="o">|</span><span class="n">SRI_SLAVE</span><span class="o">|</span><span class="n">SRI_SENTINEL</span><span class="p">));</span>
+    <span class="n">redisAssert</span><span class="p">((</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">SRI_MASTER</span><span class="p">)</span> <span class="o">||</span> <span class="n">master</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">);</span>
+
+    <span class="cm">/* Check address validity. */</span>
+    <span class="n">addr</span> <span class="o">=</span> <span class="n">createSentinelAddr</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span><span class="n">port</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">addr</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+
+    <span class="cm">/* For slaves and sentinel we use ip:port as name. */</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">SRI_SLAVE</span><span class="o">|</span><span class="n">SRI_SENTINEL</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">snprintf</span><span class="p">(</span><span class="n">slavename</span><span class="p">,</span><span class="k">sizeof</span><span class="p">(</span><span class="n">slavename</span><span class="p">),</span>
+            <span class="n">strchr</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span><span class="sc">&#39;:&#39;</span><span class="p">)</span> <span class="o">?</span> <span class="s">&quot;[%s]:%d&quot;</span> <span class="o">:</span> <span class="s">&quot;%s:%d&quot;</span><span class="p">,</span>
+            <span class="n">hostname</span><span class="p">,</span><span class="n">port</span><span class="p">);</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">slavename</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="cm">/* Make sure the entry is not duplicated. This may happen when the same</span>
+<span class="cm">     * name for a master is used multiple times inside the configuration or</span>
+<span class="cm">     * if we try to add multiple times a slave or sentinel with same ip/port</span>
+<span class="cm">     * to a master. */</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">SRI_MASTER</span><span class="p">)</span> <span class="n">table</span> <span class="o">=</span> <span class="n">sentinel</span><span class="p">.</span><span class="n">masters</span><span class="p">;</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">SRI_SLAVE</span><span class="p">)</span> <span class="n">table</span> <span class="o">=</span> <span class="n">master</span><span class="o">-&gt;</span><span class="n">slaves</span><span class="p">;</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">SRI_SENTINEL</span><span class="p">)</span> <span class="n">table</span> <span class="o">=</span> <span class="n">master</span><span class="o">-&gt;</span><span class="n">sentinels</span><span class="p">;</span>
+    <span class="n">sdsname</span> <span class="o">=</span> <span class="n">sdsnew</span><span class="p">(</span><span class="n">name</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">dictFind</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="n">sdsname</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">releaseSentinelAddr</span><span class="p">(</span><span class="n">addr</span><span class="p">);</span>
+        <span class="n">sdsfree</span><span class="p">(</span><span class="n">sdsname</span><span class="p">);</span>
+        <span class="n">errno</span> <span class="o">=</span> <span class="n">EBUSY</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="cm">/* Create the instance object. */</span>
+    <span class="n">ri</span> <span class="o">=</span> <span class="n">zmalloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">ri</span><span class="p">));</span>
+    <span class="cm">/* Note that all the instances are started in the disconnected state,</span>
+<span class="cm">     * the event loop will take care of connecting them. */</span>
+    <span class="n">ri</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">=</span> <span class="n">flags</span> <span class="o">|</span> <span class="n">SRI_DISCONNECTED</span><span class="p">;</span>
+    <span class="n">ri</span><span class="o">-&gt;</span><span class="n">name</span> <span class="o">=</span> <span class="n">sdsname</span><span class="p">;</span>
+    <span class="n">ri</span><span class="o">-&gt;</span><span class="n">runid</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">ri</span><span class="o">-&gt;</span><span class="n">config_epoch</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ri</span><span class="o">-&gt;</span><span class="n">addr</span> <span class="o">=</span> <span class="n">addr</span><span class="p">;</span>
+    <span class="n">ri</span><span class="o">-&gt;</span><span class="n">cc</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">ri</span><span class="o">-&gt;</span><span class="n">pc</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="p">...</span>
+    <span class="n">dictAdd</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">ri</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">,</span> <span class="n">ri</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">ri</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>参数<code>name</code>表示该实例的名字，主节点的名字在配置文件中配置的；从节点和哨兵的名字由hostname和port组成；</p>
+<p>如果该实例为主节点，则参数<code>master</code>为NULL，最终会将该实例存放到字典<code>sentinel.masters</code>中；</p>
+<p>如果该实例为从节点或哨兵，则参数<code>master</code>不能为NULL，将该实例存放到字典<code>master-&gt;slaves</code>或<code>master-&gt;sentinels</code>中；</p>
+<blockquote>
+<p>NOTE:</p>
+<p>一、参数<code>master</code> 指的是函数的入参<code>master</code></p>
+</blockquote>
+<p>如果字典中已经存在同名实例，则设置errno为EBUSY，并且返回NULL，表示创建实例失败；</p>
+<p>因此，解析完哨兵的配置文件之后，就已经把所有要监控的主节点实例插入到字典<code>sentinel.masters</code>中了。下一步，就是开始向主节点进行TCP建链了。</p>
+<h2 id="_5">四：哨兵进程的“主函数”</h2>
+<p>在介绍哨兵进程的各种流程之前，需要先了解一下哨兵进程的“主函数”。</p>
+<blockquote>
+<p>NOTE: </p>
+<p>从后面可知，"哨兵进程的“主函数”"就是<code>sentinelHandleRedisInstance</code></p>
+</blockquote>
+<h3 id="sentineltimer"><code>sentinelTimer</code></h3>
+<p>在redis服务器中的定时器函数<code>serverCron</code>中，每隔100ms就会调用一次<code>sentinelTimer</code>函数。该函数就是哨兵进程的主要处理函数，哨兵中的所有流程都是在该函数中处理的。</p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span> <span class="nf">sentinelTimer</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">sentinelCheckTiltCondition</span><span class="p">();</span>
+    <span class="n">sentinelHandleDictOfRedisInstances</span><span class="p">(</span><span class="n">sentinel</span><span class="p">.</span><span class="n">masters</span><span class="p">);</span>
+    <span class="n">sentinelRunPendingScripts</span><span class="p">();</span>
+    <span class="n">sentinelCollectTerminatedScripts</span><span class="p">();</span>
+    <span class="n">sentinelKillTimedoutScripts</span><span class="p">();</span>
+
+    <span class="cm">/* We continuously change the frequency of the Redis &quot;timer interrupt&quot;</span>
+<span class="cm">     * in order to desynchronize every Sentinel from every other.</span>
+<span class="cm">     * This non-determinism avoids that Sentinels started at the same time</span>
+<span class="cm">     * exactly continue to stay synchronized asking to be voted at the</span>
+<span class="cm">     * same time again and again (resulting in nobody likely winning the</span>
+<span class="cm">     * election because of split brain voting). */</span>
+    <span class="n">server</span><span class="p">.</span><span class="n">hz</span> <span class="o">=</span> <span class="n">REDIS_DEFAULT_HZ</span> <span class="o">+</span> <span class="n">rand</span><span class="p">()</span> <span class="o">%</span> <span class="n">REDIS_DEFAULT_HZ</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>最后，修改<code>server.hz</code>，增加其随机性，以避免投票选举时发生冲突；</p>
+<blockquote>
+<p>NOTE: </p>
+<div class="highlight"><pre><span></span><code>    <span class="cm">/* We continuously change the frequency of the Redis &quot;timer interrupt&quot;</span>
+<span class="cm">     * in order to desynchronize every Sentinel from every other.</span>
+<span class="cm">     * This non-determinism avoids that Sentinels started at the same time</span>
+<span class="cm">     * exactly continue to stay synchronized asking to be voted at the</span>
+<span class="cm">     * same time again and again (resulting in nobody likely winning the</span>
+<span class="cm">     * election because of split brain voting). */</span>
+    <span class="n">server</span><span class="p">.</span><span class="n">hz</span> <span class="o">=</span> <span class="n">REDIS_DEFAULT_HZ</span> <span class="o">+</span> <span class="n">rand</span><span class="p">()</span> <span class="o">%</span> <span class="n">REDIS_DEFAULT_HZ</span><span class="p">;</span>
+</code></pre></div>
+<p>这是raft算法的"随机超时"机制，在下面文章中进行了介绍:</p>
+<p>1、csdn <a href="https://blog.csdn.net/jackson0714/article/details/113144730?spm=1001.2014.3001.5501">用动图讲解分布式 Raft</a></p>
+</blockquote>
+<h3 id="sentinelhandledictofredisinstances"><code>sentinelHandleDictOfRedisInstances</code></h3>
+<p><code>sentinelHandleDictOfRedisInstances</code>函数，是处理该哨兵中保存的所有实例的函数。它的代码如下：</p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span> <span class="nf">sentinelHandleDictOfRedisInstances</span><span class="p">(</span><span class="n">dict</span> <span class="o">*</span><span class="n">instances</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">dictIterator</span> <span class="o">*</span><span class="n">di</span><span class="p">;</span>
+    <span class="n">dictEntry</span> <span class="o">*</span><span class="n">de</span><span class="p">;</span>
+    <span class="n">sentinelRedisInstance</span> <span class="o">*</span><span class="n">switch_to_promoted</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+
+    <span class="cm">/* There are a number of things we need to perform against every master. */</span>
+    <span class="n">di</span> <span class="o">=</span> <span class="n">dictGetIterator</span><span class="p">(</span><span class="n">instances</span><span class="p">);</span>
+    <span class="k">while</span><span class="p">((</span><span class="n">de</span> <span class="o">=</span> <span class="n">dictNext</span><span class="p">(</span><span class="n">di</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">sentinelRedisInstance</span> <span class="o">*</span><span class="n">ri</span> <span class="o">=</span> <span class="n">dictGetVal</span><span class="p">(</span><span class="n">de</span><span class="p">);</span>
+
+        <span class="n">sentinelHandleRedisInstance</span><span class="p">(</span><span class="n">ri</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ri</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">SRI_MASTER</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">sentinelHandleDictOfRedisInstances</span><span class="p">(</span><span class="n">ri</span><span class="o">-&gt;</span><span class="n">slaves</span><span class="p">);</span>
+            <span class="n">sentinelHandleDictOfRedisInstances</span><span class="p">(</span><span class="n">ri</span><span class="o">-&gt;</span><span class="n">sentinels</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">ri</span><span class="o">-&gt;</span><span class="n">failover_state</span> <span class="o">==</span> <span class="n">SENTINEL_FAILOVER_STATE_UPDATE_CONFIG</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">switch_to_promoted</span> <span class="o">=</span> <span class="n">ri</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">switch_to_promoted</span><span class="p">)</span>
+        <span class="n">sentinelFailoverSwitchToPromotedSlave</span><span class="p">(</span><span class="n">switch_to_promoted</span><span class="p">);</span>
+    <span class="n">dictReleaseIterator</span><span class="p">(</span><span class="n">di</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>函数的最后，如果针对某个主节点，发起了故障转移流程，并且流程已经到了最后一步，则会调用函数<code>sentinelFailoverSwitchToPromotedSlave</code>进行处理；</p>
+<h3 id="sentinelhandleredisinstance"><code>sentinelHandleRedisInstance</code></h3>
+<p><code>sentinelHandleRedisInstance</code>函数，就是相当于哨兵进程的“主函数”。有关实例的几乎所有动作，都在该函数中进行的。该函数的代码如下：</p>
+<h2 id="_6">五：建链</h2>
+<p>哨兵对于其所监控的所有**主节点**，及其属下的所有**从节点**，都会建立两个**TCP连接**。一个用于发送命令，一个用于订阅其**HELLO频道**。而哨兵对于监控**同一主节点**的其他哨兵实例，只建立一个**命令连接**。</p>
+<p>哨兵向主节点和从节点建立的**订阅连接**，主要是为了监控同一主节点的所有哨兵之间，能够相互发现，以及交换信息。</p>
+<blockquote>
+<p>NOTE: </p>
+<p>为什么要专门使用一个特殊的连接？</p>
+</blockquote>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../../" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Introduction
+            </div>
+          </div>
+        </a>
+      
+      
+        <a href="../22-sentinel%E4%B8%89%E5%AE%A2%E8%A7%82%E4%B8%8B%E7%BA%BF%E4%BB%A5%E5%8F%8A%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB%E4%B9%8B%E9%80%89%E4%B8%BE%E9%A2%86%E5%AF%BC%E8%8A%82%E7%82%B9/" class="md-footer__link md-footer__link--next" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Introduction
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../../assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.ca5457b8.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      
+    
+  </body>
+</html>

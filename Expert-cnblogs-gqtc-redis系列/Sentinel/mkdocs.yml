@@ -1,0 +1,4 @@
+nav:
+    - 20-sentinel一初始化-建链: 20-sentinel一初始化-建链
+    - 22-sentinel三客观下线以及故障转移之选举领导节点: 22-sentinel三客观下线以及故障转移之选举领导节点
+    - 23-sentinel四故障转移流程: 23-sentinel四故障转移流程

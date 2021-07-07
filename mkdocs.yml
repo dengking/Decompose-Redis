@@ -1,30 +1,15 @@
 nav:
     - Home: index.md
     - Books: Books
-    # 按照redis设计与实现(第二版).pdf的组织结构来进行排版
-    
-################## 第一部分 data structure##################
-    # 首先描述redis中的data structure，因为redis是一个data structure server
-    - Data-structure: Data-structure
-    
-################## 第二部分 stand-alone redis，即 单机数据库##################
-    # 首先搞清楚redis是一个event-driven system
-    - Event-library: Event-library
-    # 描述redis是如何实现底层网络通信的
-    # - Network: Network
-    # 描述redis是如何进行持久化的
-    # - Persistence: Persistence
-    
-################## 第三部分 cluster redis，即 多机数据库##################
-    # 主备是redis实现高可用的基础
-    # - Replication: Replication
-    # - High-available: High-available
-    - Sentinel: Sentinel
-    
-################## 第四部分 描述redis各个独立功能的实现
+    - Expert-antirez: Expert-antirez
+    - Expert-cnblogs-gqtc-redis系列: Expert-cnblogs-gqtc-redis系列
+    - Expert-cnblogs-小不点啊: Expert-cnblogs-小不点啊
+    - Basic: Basic
+    - Deploy-topology: deploy-topology
+    - Distributed-computing: Distributed-computing
+    - HA: HA
+    - Cluster: cluster
     - Command: Command
-    # redis客户端
-    - Clients: Clients
-    
-    # 描述redis-cli的实现
-    - Redis-cli: Redis-cli
+    - Clients: Clients # redis客户端
+    - Application: Application
+    - Amazon-ElastiCache: Amazon-ElastiCache

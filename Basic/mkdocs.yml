@@ -5,6 +5,7 @@ nav:
     - Network: Network # 描述redis是如何实现底层网络通信的        
     - Redis-server: Redis-server
     - Thread-model: Thread-model
+    - Redis-db: Redis-db
     - Background-process: Background-process
     - Data-structure: Data-structure # 首先描述redis中的data structure，因为redis是一个data structure server
     - Memory-management: Memory-management  # Redis的memory management

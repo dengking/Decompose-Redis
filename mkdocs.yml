@@ -65,6 +65,8 @@ nav:
   - "Redis\u7CFB\u5217\u4E5D-redis\u96C6\u7FA4\u9AD8\u53EF\u7528":
     - Introduction: "Expert-cnblogs-\u5C0F\u4E0D\u70B9\u554A/Redis\u7CFB\u5217\u4E5D\
         -redis\u96C6\u7FA4\u9AD8\u53EF\u7528/index.md"
+- "CSDN-redis\u6E90\u7801\u6D45\u6790":
+  - Introduction: "CSDN-redis\u6E90\u7801\u6D45\u6790/index.md"
 - Basic:
   - Introduction: Basic/index.md
   - main:
@@ -100,6 +102,8 @@ nav:
       - Introduction: Basic/Thread-model/Background-IO-thread/index.md
     - Read-code:
       - Introduction: Basic/Thread-model/Read-code/index.md
+  - Redis-db:
+    - Introduction: Basic/Redis-db/index.md
   - Background-process:
     - Introduction: Basic/Background-process/index.md
   - Data-structure:
@@ -119,10 +123,15 @@ nav:
     - Introduction: Basic/Memory-management/index.md
     - zmalloc:
       - Introduction: Basic/Memory-management/zmalloc/index.md
+      - "Redis\u5185\u5B58\u7BA1\u7406\u7684\u57FA\u77F3zmallc\u6E90\u7801\u89E3\u8BFB":
+        - Introduction: "Basic/Memory-management/zmalloc/Redis\u5185\u5B58\u7BA1\u7406\
+            \u7684\u57FA\u77F3zmallc\u6E90\u7801\u89E3\u8BFB/index.md"
   - Persistence:
     - Introduction: Basic/Persistence/index.md
 - Deploy-topology:
   - Introduction: deploy-topology/index.md
+  - rtfm-Redis:
+    - Introduction: deploy-topology/rtfm-Redis/index.md
 - Distributed-computing:
   - Introduction: Distributed-computing/index.md
   - Consensus-raft:
@@ -142,6 +151,8 @@ nav:
       - Introduction: HA/Sentinel/Redis-Sentinel-Documentation/index.md
   - Replication:
     - Introduction: HA/Replication/index.md
+    - redis-doc-Replication:
+      - Introduction: HA/Replication/redis-doc-Replication/index.md
 - Cluster:
   - Introduction: cluster/index.md
   - redis-doc-Redis-Cluster-Tutorial:

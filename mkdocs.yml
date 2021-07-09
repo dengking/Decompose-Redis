@@ -85,12 +85,14 @@ nav:
       - Introduction: Basic/Event-library/High-level/index.md
   - Network:
     - Introduction: Basic/Network/index.md
+  - Redis-client:
+    - Introduction: Basic/Redis-client/index.md
+    - Redis-doc-Redis-Clients-Handling:
+      - Introduction: Basic/Redis-client/Redis-doc-Redis-Clients-Handling/index.md
+    - Read-code:
+      - Introduction: Basic/Redis-client/Read-code/index.md
   - Redis-server:
     - Introduction: Basic/Redis-server/index.md
-    - Redis-Signals-Handling:
-      - Introduction: Basic/Redis-server/Redis-Signals-Handling/index.md
-      - redis-doc-Redis-Signals-Handling:
-        - Introduction: Basic/Redis-server/Redis-Signals-Handling/redis-doc-Redis-Signals-Handling/index.md
   - Thread-model:
     - Introduction: Basic/Thread-model/index.md
     - alibabacloud-Improving-Redis-Performance-through-Multi-Thread:
@@ -128,6 +130,10 @@ nav:
             \u7684\u57FA\u77F3zmallc\u6E90\u7801\u89E3\u8BFB/index.md"
   - Persistence:
     - Introduction: Basic/Persistence/index.md
+  - Redis-Signals-Handling:
+    - Introduction: Basic/Redis-Signals-Handling/index.md
+    - redis-doc-Redis-Signals-Handling:
+      - Introduction: Basic/Redis-Signals-Handling/redis-doc-Redis-Signals-Handling/index.md
 - Deploy-topology:
   - Introduction: deploy-topology/index.md
   - rtfm-Redis:

@@ -7,3 +7,11 @@ Redis是data structure server，本章对Redis的data structure进行介绍。
 ## TODO
 
 jameshfisher [How is the Redis sorted set implemented?](https://jameshfisher.com/2018/04/22/redis-sorted-set/)
+
+
+
+## 官方文档
+
+- http://redis.io/topics/data-types
+- http://redis.io/topics/data-types-intro
+- http://redis.io/topics/faq

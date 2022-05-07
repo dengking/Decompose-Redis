@@ -4,3 +4,5 @@ nav:
     - Generic-double-linked-list: Generic-double-linked-list
     - Rax: Rax
     - Dict: Dict
+    - Sorted-ordered-set: Sorted-ordered-set
+    

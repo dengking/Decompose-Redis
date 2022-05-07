@@ -10,9 +10,9 @@
 
 state machine: sentinel
 
-# file event
+## file event
 
-## `readQueryFromClient`
+### `readQueryFromClient` handler
 
 在创建client的时候设置
 
@@ -40,18 +40,20 @@ client *createClient(int fd) {
     
 }
 ```
-### Redis `aeFileEvent` and `struct client`
+#### Redis `aeFileEvent` and `struct client`
 
-server端接受到了client端的请求后才会创建`struct client` instance；client端的socket file descriptor有对应的`aeFileEvent` 
+server端接受到了client端的请求后才会创建`struct client` instance；
+
+client端的socket file descriptor有对应的`aeFileEvent` 
 
 上述就展示了client和event之间的关联
 
 
 
 
-### `readQueryFromClient`的实现分析
+#### `readQueryFromClient`的实现分析
 
-#### `readQueryFromClient`实现Redis Protocol
+###### `readQueryFromClient`实现Redis Protocol
 
 
 
@@ -66,7 +68,7 @@ server端接受到了client端的请求后才会创建`struct client` instance�
 
 
 
-## `acceptTcpHandler`
+### `acceptTcpHandler`
 
 ```c
 void initServer(void) {
@@ -98,21 +100,21 @@ void initServer(void) {
 
 
 
-## `acceptUnixHandler`
+### `acceptUnixHandler`
 
 
 
-## `moduleBlockedClientPipeReadable`
+### `moduleBlockedClientPipeReadable`
 
 
 
 
 
-## replication
+### replication
 
-### `replication.c:syncWithMaster`
+#### `replication.c:syncWithMaster`
 
-```
+```C++
     int fd;
 
     fd = anetTcpNonBlockBestEffortBindConnect(NULL,
@@ -134,40 +136,40 @@ void initServer(void) {
 
 
 
-# time event
+## time event
 
 从目前redis的实现来看，`aeCreateTimeEvent`所创建的time event有：
 
 - `server.c:serverCron`
 - `module.c:moduleTimerHandler`
 
-## `serverCron`
+### `serverCron`
 
 `serverCron`实现主要的按照time进行poll，它包含如下的一些poll：
 
 
 
-### `replicationCron`
+#### `replicationCron`
 
 
 
-### poll backgroud process的状态
+#### poll backgroud process的状态
 
 它会poll background saving process的状态，在它完成的时候，会调用`backgroundSaveDoneHandler`或者`backgroundRewriteDoneHandler`。参见《`redis-code-analysis-background process.md`》。
 
 
 
-### `clusterCron`
+#### `clusterCron`
 
 
 
-### `databasesCron`
+#### `databasesCron`
 
 This function handles 'background' operations we are required to do incrementally in Redis databases, such as active key expiring, resizing, rehashing
 
 
 
-### `clientsCron`
+#### `clientsCron`
 
-This function is called by `serverCron()` and is used in order to perform operations on clients that are important to perform constantly. For instancewe use this function in order to disconnect clients after a timeout, including clients blocked in some blocking command with a non-zero timeout.The function makes some effort to process all the clients every second, even if this cannot be strictly guaranteed, since `serverCron()` may be called with an actual frequency lower than `server.hz` in case of latency events like slowcommands.It is very important for this function, and the functions it calls, to be very fast: sometimes Redis has tens of hundreds of connected clients, and the default `server.hz` value is 10, so sometimes here we need to process thousandsof clients per second, turning this function into a source of latency.
+> This function is called by `serverCron()` and is used in order to perform operations on clients that are important to perform constantly. For instancewe use this function in order to disconnect clients after a timeout, including clients blocked in some blocking command with a non-zero timeout.The function makes some effort to process all the clients every second, even if this cannot be strictly guaranteed, since `serverCron()` may be called with an actual frequency lower than `server.hz` in case of latency events like slowcommands.It is very important for this function, and the functions it calls, to be very fast: sometimes Redis has tens of hundreds of connected clients, and the default `server.hz` value is 10, so sometimes here we need to process thousandsof clients per second, turning this function into a source of latency.
 

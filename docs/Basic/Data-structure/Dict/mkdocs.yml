@@ -1,4 +1,4 @@
 nav:
     - Introduction: index.md
-    - Dict-usage: Dict-usage.md
     - Incremental-rehash: Incremental-rehash
+    

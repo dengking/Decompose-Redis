@@ -12,8 +12,7 @@ int main()
 	daemonize;
 	initServer; // 非常重要的一步，建立event 和 event handler的映射
 	aeMain(server.el); // event loop、main loop
-    aeDeleteEventLoop(server.el); // 退出event loop、main loop
-
+  aeDeleteEventLoop(server.el); // 退出event loop、main loop
 }
 ```
 

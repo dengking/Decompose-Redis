@@ -136,13 +136,17 @@ Inside `server.c` you can find code that handles other vital things of the Redis
 
 ### `networking.c`
 
+> NOTE :
+>
+> 新版本的redis中的networking已经没有使用该文件了，而是使用的`anet.c`
+
 This file defines all the I/O functions with clients, masters and replicas (which in Redis are just special clients):
 
 1、`createClient()` allocates and initializes a new client.
 
 2、the `addReply*()` family of functions are used by commands implementations in order to append data to the **client structure**, that will be transmitted to the client as a **reply** for a given command executed.
 
-3、`writeToClient()` transmits the data pending in the output buffers to the client and is called by the *writable event handler* `sendReplyToClient()`.
+3、`writeToClient()` transmits the data pending in the **output buffers** to the client and is called by the *writable event handler* `sendReplyToClient()`.
 
 4、`readQueryFromClient()` is the *readable event handler* and accumulates data from read from the client into the query buffer.
 
@@ -150,16 +154,14 @@ This file defines all the I/O functions with clients, masters and replicas (whic
 
 6、`freeClient()` deallocates, disconnects and removes a client.
 
+> NOTE: 显然，这个模块所描述的都是和network相关的实现，它们应该都是由event loop来进行调用；在`server.h`的`struct client`是支持上述操作的data structure；
 
 
-***SUMMARY*** : 显然，这个模块所描述的都是和network相关的实现，它们应该都是由event loop来进行调用；在`server.h`的`struct client`是支持上述操作的data structure；
-
-***SUMMARY*** : 新版本的redis中的networking已经没有使用该文件了，而是使用的`anet.c`
 
 
-### aof.c and rdb.c
+### `aof.c` and `rdb.c`
 
-As you can guess from the names these files implement the RDB and AOF persistence for Redis. Redis uses a persistence model based on the `fork()` system call in order to create a thread with the same (shared) memory content of the **main Redis thread**. This secondary thread dumps the content of the memory on disk. This is used by `rdb.c` to create the snapshots on disk and by `aof.c` in order to perform the AOF rewrite when the append only file gets too big.
+As you can guess from the names these files implement the RDB and AOF persistence for Redis. Redis uses a **persistence model** based on the `fork()` system call in order to create a thread with the same (shared) memory content of the **main Redis thread**. This secondary thread dumps the content of the memory on disk. This is used by `rdb.c` to create the snapshots on disk and by `aof.c` in order to perform the AOF rewrite when the append only file gets too big.
 
 The implementation inside `aof.c` has additional functions in order to implement an API that allows commands to append new commands into the AOF file as clients execute them.
 
@@ -167,7 +169,7 @@ The `call()` function defined inside `server.c` is responsible to call the funct
 
 
 
-### db.c
+### `db.c`
 
 Certain Redis commands operate on specific data types, others are general. Examples of generic commands are `DEL` and `EXPIRE`. They operate on keys and not on their values specifically. All those generic commands are defined inside `db.c`.
 
@@ -175,31 +177,43 @@ Moreover `db.c` implements an API in order to perform certain operations on the 
 
 The most important functions inside `db.c` which are used in many commands implementations are the following:
 
-- `lookupKeyRead()` and `lookupKeyWrite()` are used in order to get a pointer to the value associated to a given key, or `NULL` if the key does not exist.
-- `dbAdd()` and its higher level counterpart `setKey()` create a new key in a Redis database.
-- `dbDelete()` removes a key and its associated value.
-- `emptyDb()` removes an entire single database or all the databases defined.
+1、`lookupKeyRead()` and `lookupKeyWrite()` are used in order to get a pointer to the value associated to a given key, or `NULL` if the key does not exist.
+
+2、`dbAdd()` and its higher level counterpart `setKey()` create a new key in a Redis database.
+
+> NOTE:
+>
+> 上面这段话的意思是: `dbAdd()`、 `setKey()` 两个函数都是用于在 Redis database 中 "create a new key "
+
+3、`dbDelete()` removes a key and its associated value.
+
+4、`emptyDb()` removes an entire single database or all the databases defined.
 
 The rest of the file implements the generic commands exposed to the client.
 
 
 
-### object.c
+### `object.c`
 
 The `robj` structure defining **Redis objects** was already described. Inside `object.c` there are all the functions that operate with **Redis objects** at a basic level, like functions to allocate new objects, handle the reference counting and so forth. Notable functions inside this file:
 
-- `incrRefcount()` and `decrRefCount()` are used in order to increment or decrement an object reference count. When it drops to 0 the object is finally freed.
-- `createObject()` allocates a new object. There are also specialized functions to allocate string objects having a specific content, like `createStringObjectFromLongLong()` and similar functions.
+1、`incrRefcount()` and `decrRefCount()` are used in order to increment or decrement an object reference count. When it drops to 0 the object is finally freed.
+
+2、`createObject()` allocates a new object. There are also specialized functions to allocate string objects having a specific content, like `createStringObjectFromLongLong()` and similar functions.
 
 This file also implements the `OBJECT` command.
 
 ​	
 
-### replication.c
+### `replication.c`
 
 This is one of the most complex files inside Redis, it is recommended to approach it only after getting a bit familiar with the rest of the code base. In this file there is the implementation of both the **master** and **replica** role of Redis.
 
 One of the most important functions inside this file is `replicationFeedSlaves()` that writes commands to the clients representing replica instances connected to our master, so that the replicas can get the writes performed by the clients: this way their data set will remain synchronized with the one in the master.
+
+> NOTE:
+>
+> 这段话总结得非常好
 
 This file also implements both the `SYNC` and `PSYNC` commands that are used in order to perform the first synchronization between masters and replicas, or to continue the replication after a disconnection.
 
@@ -218,6 +232,10 @@ This file also implements both the `SYNC` and `PSYNC` commands that are used in 
 
 
 ### Anatomy of a Redis command
+
+> NOTE:
+>
+> 一、"anatomy"的意思是剖析、解剖
 
 All the Redis commands are defined in the following way:
 

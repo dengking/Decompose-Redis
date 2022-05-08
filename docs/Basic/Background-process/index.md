@@ -26,14 +26,6 @@ rdb backgroud saving process的设计还是遵循的event driven programming，�
 
 
 
-
-
-
-
-
-
-
-
 ## aof background saving process
 
 `aof.c:rewriteAppendOnlyFileBackground`会fork一个process

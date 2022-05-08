@@ -9,7 +9,7 @@ nav:
     - Deploy-topology: deploy-topology
     - Distributed-computing: Distributed-computing
     - HA: HA
-    - Cluster: cluster
+    - Cluster: Cluster-
     - Command: Command
     - Clients: Clients # redis客户端
     - Application: Application

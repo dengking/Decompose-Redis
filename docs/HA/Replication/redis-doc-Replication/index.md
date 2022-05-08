@@ -4,13 +4,13 @@ At the base of Redis replication (excluding the high availability features provi
 
 This system works using three main mechanisms:
 
-1. When a master and a slave instances are well-connected, the master keeps the slave updated by sending a stream of commands to the slave, in order to replicate the effects on the dataset happening in the master side due to: client writes, keys expired or evicted, any other action changing the master dataset.
+1、When a master and a slave instances are well-connected, the master keeps the slave updated by sending a stream of commands to the slave, in order to replicate the effects on the dataset happening in the master side due to: client writes, keys expired or evicted, any other action changing the master dataset.
 
-   ***SUMMARY*** : 在`replication.c:replicationFeedSlaves`中实现的这个过程
+> NOTE:  : 在`replication.c:replicationFeedSlaves`中实现的这个过程
 
-2. When the link between the master and the slave breaks, for network issues or because a timeout is sensed in the master or the slave, the slave reconnects and attempts to proceed with a **partial resynchronization**: it means that it will try to just obtain the part of the stream of commands it missed during the disconnection.
+2、When the link between the master and the slave breaks, for network issues or because a timeout is sensed in the master or the slave, the slave reconnects and attempts to proceed with a **partial resynchronization**: it means that it will try to just obtain the part of the stream of commands it missed during the disconnection.
 
-3. When a **partial resynchronization** is not possible, the slave will ask for a **full resynchronization**. This will involve a more complex process in which the master needs to create a snapshot of all its data, send it to the slave, and then continue sending the stream of commands as the dataset changes.
+3、When a **partial resynchronization** is not possible, the slave will ask for a **full resynchronization**. This will involve a more complex process in which the master needs to create a snapshot of all its data, send it to the slave, and then continue sending the stream of commands as the dataset changes.
 
 Redis uses by default **asynchronous replication**, which being low latency and high performance, is the natural replication mode for the vast majority of Redis use cases. However Redis slaves asynchronously acknowledge the amount of data they received periodically with the master. So the master does not wait every time for a command to be processed by the slaves, however it knows, if needed, what slave already processed what command. This allows to have optional **syncrhonous replication**.
 
@@ -24,25 +24,25 @@ The following are some very important facts about Redis replication:
 
 - Redis uses **asynchronous replication**, with asynchronous slave-to-master acknowledges of the amount of data processed.
 
-  ***SUMMARY*** :如何实现的asynchronous replication？是通过new一个thread来实现？
+  > NOTE:  :如何实现的asynchronous replication？是通过new一个thread来实现？
 
 - A master can have multiple slaves.
 
 - Slaves are able to accept connections from other slaves. Aside from connecting a number of slaves to the same master, slaves can also be connected to other slaves in a cascading-like structure. Since Redis 4.0, all the sub-slaves will receive exactly the same **replication stream** from the **master**.
 
-  ***SUMMARY*** : 是谁向sub-slaves 发送replication stream？应该还是master，这样会比较简单一些。是这样的，最后一句话就证实了；
+  > NOTE:  : 是谁向sub-slaves 发送replication stream？应该还是master，这样会比较简单一些。是这样的，最后一句话就证实了；
 
 - **Redis replication** is **non-blocking** on the **master side**. This means that the master will continue to handle queries when one or more slaves perform the **initial synchronization** or a **partial resynchronization**.
 
 - Replication is also largely **non-blocking** on the **slave side**. While the slave is performing the initial synchronization, it can handle queries using the old version of the dataset, assuming you configured Redis to do so in `redis.conf`. Otherwise, you can configure Redis slaves to return an error to clients if the **replication stream** is down. However, after the initial sync, the old dataset must be deleted and the new one must be loaded. The slave will block incoming connections during this brief **window** (that can be as long as many seconds for very large datasets). Since Redis 4.0 it is possible to configure Redis so that the deletion of the old data set happens in a different thread, however loading the new initial dataset will still happen in the main thread and block the slave.
 
-  ***SUMMARY*** :如何实现的？
+  > NOTE:  :如何实现的？
 
 - Replication can be used both for **scalability**, in order to have multiple slaves for **read-only queries** (for example, slow O(N) operations can be offloaded to slaves), or simply for improving **data safety** and **high availability**.
 
 - It is possible to use replication to avoid the cost of having the master writing the full dataset to disk: a typical technique involves configuring your master `redis.conf` to avoid persisting to disk at all, then connect a slave configured to save from time to time, or with AOF enabled. However this setup must be handled with care, since a restarting master will start with an empty dataset: if the slave tries to synchronized with it, the slave will be emptied as well.
 
-  ***SUMMARY*** : 下面这一段描述了这种场景
+  > NOTE:  : 下面这一段描述了这种场景
 
 
 
@@ -72,11 +72,11 @@ Replication ID, offset
 
 Identifies an exact version of the dataset of a master.
 
-***SUMMARY*** : `struct redisServer`的字段`replid`就表示replication ID，`master_repl_offset`就表示current replication offset 
+> NOTE:  : `struct redisServer`的字段`replid`就表示replication ID，`master_repl_offset`就表示current replication offset 
 
 When slaves connects to masters, they use the `PSYNC` command in order to send their old **master replication ID** and the **offsets** they processed so far. This way the master can send just the **incremental part** needed. However if there is not enough *backlog* in the master buffers, or if the slave is referring to an history (replication ID) which is no longer known, than a **full resynchronization** happens: in this case the slave will get a full copy of the dataset, from scratch.
 
-***SUMMARY*** : `struct redisServer`的字段`repl_backlog`就表示Replication backlog for partial syncs，它是一个circular array。
+> NOTE:  : `struct redisServer`的字段`repl_backlog`就表示Replication backlog for partial syncs，它是一个circular array。
 
 The master starts a **background saving process** in order to produce an RDB file. At the same time it starts to buffer all new write commands received from the clients. When the **background saving** is complete, the master transfers the **database file** to the **slave**, which saves it on disk, and then loads it into memory. The master will then send all **buffered commands** to the slave. This is done as a **stream of commands** and is in the same format of the Redis protocol itself.
 
@@ -86,7 +86,7 @@ As already said, slaves are able to automatically reconnect when the **master-sl
 
 
 
-***SUMMARY*** : 两个process之间是如何进行通信的？
+> NOTE:  : 两个process之间是如何进行通信的？
 
 
 

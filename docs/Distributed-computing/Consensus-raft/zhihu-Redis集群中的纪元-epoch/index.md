@@ -1,5 +1,11 @@
 # zhihu [Redis 集群中的纪元(epoch)](https://zhuanlan.zhihu.com/p/44658603)
 
+> NOTE: 
+>
+> redis的epoch，非常类似于lamport clock
+
+
+
 ## **纪元（epoch）**
 
 Redis Cluster 使用了类似于 ***Raft*** 算法 ***term***（任期）的概念称为 ***epoch***（纪元），用来给**事件**增加**版本号**。Redis 集群中的纪元主要是两种：***currentEpoch*** 和 ***configEpoch***。

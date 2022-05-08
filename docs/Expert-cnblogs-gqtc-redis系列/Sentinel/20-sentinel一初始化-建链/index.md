@@ -43,9 +43,7 @@ struct sentinelState {
 
 #### `sentinelState::masters`
 
-在`sentinelState`结构中，最主要的成员就是字典`masters`。该字典中记录当前哨兵所要监控和交互的所有实例。这些实例包括主节点、从节点和其他哨兵。
-
-
+在`sentinelState`结构中，最主要的成员就是字典`masters`。该字典中记录当前哨兵所要监控和交互的所有实例。这些实例包括**主节点**、**从节点**和**其他哨兵**。
 
 `masters`字典以主节点的名字为key，以主节点实例结构`sentinelRedisInstance`为value。主节点的名字通过解析配置文件得到。
 

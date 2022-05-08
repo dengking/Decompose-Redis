@@ -58,6 +58,10 @@ Will perform nodes reconfiguration if the master went down – will choose a new
 
 Requires at least three Sentinel instances to have a quorum for a new master election and to decide if one of a Redis nodes goes down
 
+> NOTE: 
+>
+> "quorum"的意思是"法定人数"
+
 
 
 #### Redis Cluster
